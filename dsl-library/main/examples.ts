@@ -1,0 +1,26 @@
+import { SF, deploy } from "../lib/lib"
+
+function runExamples() {
+const f11: SF<number, number> = SF.arr((x: number) => x + 5)
+// const f1: SF<number, string> = f11
+
+const f2 = SF.arr((x: number) => x.toString())
+const f3 = SF.arr((x: string) => x.toString())
+
+const g1 = f11.then(f2)
+// const g2 = f11.then(f3)
+
+
+const q = f2.first<boolean>()
+
+const combine = SF.arr((x: [string, boolean]) => x[1])
+
+const all = q.then(combine)
+
+
+console.log("hi!")
+const d = deploy(g1)
+d(4, (r) => console.log(r))
+}
+
+export { runExamples }

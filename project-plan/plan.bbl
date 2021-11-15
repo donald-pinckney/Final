@@ -1,0 +1,44 @@
+\begin{thebibliography}{1}
+
+\bibitem{baldini:trilemma}
+Ioana Baldini, Perry Cheng, Stephen~J. Fink, Nick Mitchell, Vinod Muthusamy,
+  Rodric Rabbah, Philippe Suter, and Olivier Tardieu.
+\newblock The serverless trilemma: Function composition for serverless
+  computing.
+\newblock In {\em ACM SIGPLAN International Symposium on New Ideas, New
+  Paradigms, and Reflections on Programming and Software (Onward!)}, 2017.
+
+\bibitem{chong:swift}
+Stephen Chong, Jed Liu, Andrew~C. Myers, Xin Qi, K.~Vikram, Lantian Zheng, and
+  Xin Zheng.
+\newblock Secure web applications via automatic partitioning.
+\newblock In {\em Proceedings of Twenty-First ACM SIGOPS Symposium on Operating
+  Systems Principles}, SOSP '07, page 31–44, New York, NY, USA, 2007.
+  Association for Computing Machinery.
+
+\bibitem{hughes:arrows}
+John Hughes.
+\newblock Generalising monads to arrows.
+\newblock {\em Science of Computer Programming}, 37(1--3):67--111, May 2000.
+
+\bibitem{jangda:lambda-lambda}
+Abhinav Jangda, Donald Pinckney, Yuriy Brun, and Arjun Guha.
+\newblock Formal foundations of serverless computing.
+\newblock {\em Proc. ACM Program. Lang.}, 3(OOPSLA), October 2019.
+
+\bibitem{flapjax}
+Leo~A. Meyerovich, Arjun Guha, Jacob Baskin, Gregory~H. Cooper, Michael
+  Greenberg, Aleks Bromfield, and Shriram Krishnamurthi.
+\newblock Flapjax: A programming language for ajax applications.
+\newblock In {\em Proceedings of the 24th ACM SIGPLAN Conference on Object
+  Oriented Programming Systems Languages and Applications}, OOPSLA '09, page
+  1–20, New York, NY, USA, 2009. Association for Computing Machinery.
+
+\bibitem{nilsson:afrp}
+Henrik Nilsson, Antony Courtney, and John Peterson.
+\newblock Functional reactive programming, continued.
+\newblock In {\em Proceedings of the 2002 ACM SIGPLAN Workshop on Haskell},
+  Haskell '02, page 51–64, New York, NY, USA, 2002. Association for Computing
+  Machinery.
+
+\end{thebibliography}

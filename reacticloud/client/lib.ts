@@ -1,4 +1,4 @@
-import { deploy, DeployedSF } from "./deploy"
+import { deploy, RunnableSF } from "./deploy"
 import { SF } from "../dsl/lib"
 
-export { deploy, SF, DeployedSF }
+export { deploy, SF, RunnableSF }

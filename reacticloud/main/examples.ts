@@ -1,4 +1,4 @@
-import { SF, deploy, DeployedSF } from "../client/lib"
+import { SF, deploy, RunnableSF } from "../client/lib"
 
 function runExamples() {
   const f11: SF<number, number> = SF.arr((x: number) => x + 5)

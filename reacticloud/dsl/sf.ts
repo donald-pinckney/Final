@@ -68,13 +68,17 @@ class SF<A, B> {
   } 
 }
 
+var GLOBAL_UNIQUE_ARR_ID = 0
+
 class SF_arr<A, B> {
   private fn: (arg: A, cont: (r: B) => void) => void;
   private constraint: LocationConstraint
+  private uniqueId: number
 
   constructor(f: (arg: A, cont: (r: B) => void) => void, constraint: LocationConstraint = "unconstrained") {
     this.fn = f
     this.constraint = constraint
+    this.uniqueId = GLOBAL_UNIQUE_ARR_ID++
   }
 }
 
@@ -101,4 +105,4 @@ class SF_first<A, B> {
   }
 }
 
-export { SF, SF_arr, SF_then, SF_first }
+export { SF, SF_arr, SF_then, SF_first, Location, LocationConstraint }

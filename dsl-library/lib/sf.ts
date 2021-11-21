@@ -70,9 +70,11 @@ class SF<A, B> {
 
 class SF_arr<A, B> {
   private fn: (arg: A, cont: (r: B) => void) => void;
+  private constraint: LocationConstraint
 
   constructor(f: (arg: A, cont: (r: B) => void) => void, constraint: LocationConstraint = "unconstrained") {
     this.fn = f
+    this.constraint = constraint
   }
 }
 

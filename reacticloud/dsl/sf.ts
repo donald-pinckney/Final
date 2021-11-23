@@ -1,3 +1,4 @@
+import { RunnableSF } from "../client/deploy"
 
 type SF_core<A, B> =
   | SF_arr<A, B>
@@ -71,9 +72,9 @@ class SF<A, B> {
 var GLOBAL_UNIQUE_ARR_ID = 0
 
 class SF_arr<A, B> {
-  private fn: (arg: A, cont: (r: B) => void) => void;
-  private constraint: LocationConstraint
-  private uniqueId: number
+  fn: (arg: A, cont: (r: B) => void) => void;
+  constraint: LocationConstraint
+  uniqueId: number
 
   constructor(f: (arg: A, cont: (r: B) => void) => void, constraint: LocationConstraint = "unconstrained") {
     this.fn = f
@@ -83,8 +84,8 @@ class SF_arr<A, B> {
 }
 
 class SF_then<A, B> {
-  private f: SF_core<A, any>
-  private g: SF_core<any, B>
+  f: SF_core<A, any>
+  g: SF_core<any, B>
 
   constructor(f: SF_core<A, any>, g: SF_core<any, B>) {
     this.f = f
@@ -98,11 +99,51 @@ class SF_first<A, B> {
 
   // first_sf: SF_core<A', B'>
   // but we can't write this type, so use any instead
-  private first_sf: SF_core<any, any>
+  first_sf: SF_core<any, any>
 
   constructor(first_sf: SF_core<any, any>) {
     this.first_sf = first_sf
   }
 }
 
-export { SF, SF_arr, SF_then, SF_first, Location, LocationConstraint }
+
+function evalSF<A, B>(sf: SF<A, B>): RunnableSF<A, B> {
+  return evalSF_core(sf._wrapped)
+}
+
+function evalSF_core<A, B>(sf: SF_core<A, B>): RunnableSF<A, B> {
+  if(sf instanceof SF_arr) {
+    return x => {
+      return new Promise((resolve, reject) => {
+        sf.fn(x, r => {
+          resolve(r)
+        })
+      })
+    }
+  } else if(sf instanceof SF_then) {
+    const f = evalSF_core(sf.f)
+    const g = evalSF_core(sf.g)
+    return x => {
+      const fp = f(x)
+      return fp.then(y => g(y))
+    }
+  } else if(sf instanceof SF_first) {
+    // first: RunnableSF<A', B'>
+    const first = evalSF_core(sf.first_sf)
+    return (ac: any) => {
+      // ac: [A', C]
+      // return: Promise<[B', C]>
+
+      // first_p: Promise<B'>
+      const first_p = first(ac[0])
+
+      // prom: Promise<[B', C]>
+      const prom: Promise<B> = first_p.then(b => [b, ac[1]]) as Promise<B>
+      return prom
+    }
+  } else {
+    throw new Error("Unknown SF: " + sf)
+  }
+}
+
+export { SF, SF_core, SF_arr, SF_then, SF_first, Location, LocationConstraint }

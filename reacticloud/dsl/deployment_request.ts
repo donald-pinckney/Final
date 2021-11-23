@@ -1,4 +1,4 @@
-import { LocationConstraint, SF } from "./sf"
+import { LocationConstraint, SF_core } from "./sf"
 
 type SF_deployment_request_serialized<A, B> =
   | SF_deployment_request_serialized_arr<A, B>
@@ -57,7 +57,7 @@ class SF_deployment_request_first<A, B> {
 }
 
 
-function deploymentRequestForSF<A, B>(sf: SF<A, B>): SF_deployment_request_serialized<A, B> {
+function deploymentRequestForSF<A, B>(sf: SF_core<A, B>): SF_deployment_request_serialized<A, B> {
   // TODO: implement
   // throw new Error("TODO: unimplemented")
   let x: any = null

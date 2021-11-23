@@ -19,9 +19,11 @@ function runExamples() {
 
 
   console.log("hi!")
-  const d = deploy(g1, d => {
-    d(4, (r) => console.log(r))
-  })
+  // const d = deploy(g1, d => {
+  //   d(4, (r) => console.log(r))
+  // })
+
+  
 }
 
 

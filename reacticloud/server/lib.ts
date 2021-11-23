@@ -19,7 +19,12 @@ function serverMain() {
       console.log(req_ser)
       const deployment_req = deserialize(req_ser)
 
-      callback([])
+      // TODO: implement this
+      callback(0, [])
+    })
+
+    socket.on("input_available", (x, deploy_id, fn_id, input_id) => {
+      console.log(`Received input ${x} for (deploy_id: ${deploy_id}, fn_id: ${fn_id}, input_id: ${input_id})`)
     })
 
   })

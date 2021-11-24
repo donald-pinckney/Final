@@ -27,9 +27,14 @@ class SF<A, B> {
 
 
   static arr<A, B>(f: (x: A) => B, constraint: LocationConstraint = "unconstrained"): SF<A, B> {
-    const fAsyncStr = `(_arg, cont) => cont((${f.toString()})(_arg))`
-    const fAsync = eval(fAsyncStr)
-    return SF.arrAsync(fAsync, constraint)
+    if(constraint == "client") {
+      const fAsync = (x: A, cont: (r: B) => void) => cont(f(x))
+      return SF.arrAsync(fAsync, constraint)
+    } else {
+      const fAsyncStr = `(_arg, cont) => cont((${f.toString()})(_arg))`
+      const fAsync = eval(fAsyncStr)
+      return SF.arrAsync(fAsync, constraint)
+    }
   }
 
   static arrAsync<A, B>(f: (x: A, cont: (r: B) => void) => void, constraint: LocationConstraint = "unconstrained"): SF<A, B> {
@@ -68,7 +73,7 @@ class SF<A, B> {
     return this.and(other).then(op_arr)
   }
 
-  subscribe<C>(f: (x: B) => void): SF<A, void> {
+  subscribe(f: (x: B) => void): SF<A, void> {
     const subArr = SF.arrAsync<B, void>((xx: B, cont: (r: void) => void) => f(xx), "client")
     return this.then(subArr)
   } 

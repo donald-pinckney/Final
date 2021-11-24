@@ -6,6 +6,8 @@ import { placementListToMap, PlacementMap, SF_core_deployed, SF_arr_deployed, SF
 import { deploymentRequestForSF } from "../dsl/deployment_request"
 import { Location } from "../dsl/sf"
 
+import * as util from "util"
+
 
 console.log('Opening connection to server')
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io("ws://localhost:3000")
@@ -38,7 +40,8 @@ function deploy<A, B>(f: SF<A, B>): Promise<RunnableSF<A, B>> {
 
 function buildRunnableSF<A, B>(sf: SF_core<A, B>, deploy_id: number, placements: PlacementMap): RunnableSF<A, B> {
   const deployment = computeDeployment(sf, placements)
-  console.log(deployment)
+  console.log(util.inspect(deployment, false, null, true))
+
   throw new Error("Not implemented")
 }
 

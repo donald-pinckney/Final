@@ -35,7 +35,7 @@ function serverMain() {
       
       const deployedSF = computeDeployment(deployment_req, placementMap)
 
-      console.log(deployedSF)
+      console.log(util.inspect(deployedSF, false, null, true))
 
       callback(deployment_id, placementMapSer)
     })

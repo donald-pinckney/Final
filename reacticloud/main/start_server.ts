@@ -1,3 +1,3 @@
-import { serverMain } from "../server/lib";
+import { serverMain } from "../server/server";
 
 serverMain()

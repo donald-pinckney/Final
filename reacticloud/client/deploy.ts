@@ -11,8 +11,8 @@ console.log('Opening connection to server')
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io("ws://localhost:3000")
 
 
-socket.on("input_available", (x, deploy_id, fn_id, input_id) => {
-  console.log(`Received input ${x} for (deploy_id: ${deploy_id}, fn_id: ${fn_id}, input_id: ${input_id})`)
+socket.on("input_available", (x, deploy_id, arr_id, input_seq_id) => {
+  console.log(`Received input ${x} for (deploy_id: ${deploy_id}, arr_id: ${arr_id}, input_seq_id: ${input_seq_id})`)
 })
 
 

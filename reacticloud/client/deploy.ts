@@ -1,4 +1,3 @@
-import { SF } from "../dsl/lib"
 import { SF_core, SF_arr, SF_then, SF_first } from "../dsl/sf"
 import { io, Socket } from "socket.io-client";
 import { ClientToServerEvents, ServerToClientEvents } from "../client-server-messages/lib"
@@ -24,16 +23,16 @@ type RunnableSF<A, B> = (x: A) => void
 
 
 
-function deploy<A, B>(f: SF<A, B>): Promise<RunnableSF<A, B>> {
+function deploy<A, B>(f: SF_core<A, B>): Promise<RunnableSF<A, B>> {
 
-  let dep_req = deploymentRequestForSF(f._wrapped)
+  let dep_req = deploymentRequestForSF(f)
 
   return new Promise((resolve, reject) => {
     socket.emit('deploy', dep_req, (deploy_id, placementsList) => {
       const placements = placementListToMap(placementsList)
       console.log("received placements from server:")
       console.log(placements)
-      resolve(buildRunnableSF(f._wrapped, deploy_id, placements))
+      resolve(buildRunnableSF(f, deploy_id, placements))
     })
   })
 }

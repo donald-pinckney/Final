@@ -2,6 +2,7 @@ import { Server } from "socket.io"
 import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from "../client-server-messages/lib"
 import { deserialize } from "../dsl/deployment_request"
 
+import * as util from "util"
 
 function serverMain() {
 
@@ -18,6 +19,7 @@ function serverMain() {
       console.log("Received deployment request:")
       console.log(req_ser)
       const deployment_req = deserialize(req_ser)
+      console.log(util.inspect(deployment_req, false, null, true))
 
       // TODO: implement this
       callback(0, [])

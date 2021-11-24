@@ -1,5 +1,7 @@
 import { LocationConstraint, SF_core, SF_arr, SF_then, SF_first } from "./sf"
 
+// import * as util from "util"
+
 type SF_deployment_request_serialized<A, B> =
   | SF_deployment_request_serialized_arr<A, B>
   | SF_deployment_request_serialized_then<A, B>
@@ -35,6 +37,11 @@ class SF_deployment_request_arr<A, B> {
     this.uniqueId = uniqueId
     this.constraint = constraint
   }
+
+  // [util.inspect.custom](depth: any, opts: any) {
+  //   let constr = this.constraint.constraint == "client" ? this.constraint : { constraint: this.constraint.constraint, fn: this.constraint.fn.toString() }
+  //   return `SF_deployment_request_arr(${this.uniqueId}, ${JSON.stringify(constr)})`
+  // }
 }
 
 class SF_deployment_request_then<A, B> {
@@ -90,10 +97,19 @@ function deploymentRequestForSF<A, B>(sf: SF_core<A, B>): SF_deployment_request_
 }
 
 function deserialize<A, B>(serialized: SF_deployment_request_serialized<A, B>): SF_deployment_request<A, B> {
-  // TODO: implement
-  throw new Error("TODO: unimplemented!!!")
-  let x: any = null
-  return x
+  if(serialized.type == "arr") {
+    let constraintAndCode: ConstraintAndFn<A, B> =
+      serialized.constraint.constraint == "client" ?
+      { constraint: "client" } :
+      { fn: eval(serialized.constraint.fn_src), constraint: serialized.constraint.constraint }
+    return new SF_deployment_request_arr(serialized.uniqueId, constraintAndCode)
+  } else if(serialized.type == "then") {
+    return new SF_deployment_request_then(deserialize(serialized.f), deserialize(serialized.g))
+  } else if(serialized.type == "first") {
+    return new SF_deployment_request_first(deserialize(serialized.first_sf))
+  } else {
+    throw new Error(`Error: unknown serialized type: ${serialized}`)
+  }
 }
 
 

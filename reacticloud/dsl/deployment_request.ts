@@ -1,4 +1,4 @@
-import { LocationConstraint, SF_core } from "./sf"
+import { LocationConstraint, SF_core, SF_arr, SF_then, SF_first } from "./sf"
 
 type SF_deployment_request_serialized<A, B> =
   | SF_deployment_request_serialized_arr<A, B>
@@ -6,7 +6,9 @@ type SF_deployment_request_serialized<A, B> =
   | SF_deployment_request_serialized_first<A, B>
 
 
-type ConstraintAndCode = { fn_src: string, constraint: "unconstrained" | "cloud" } | { constraint: "client" }
+type ConstraintAndCode = 
+    { fn_src: string, constraint: "unconstrained" | "cloud" } 
+  | { constraint: "client" }
 
 type SF_deployment_request_serialized_arr<A, B> = { type: "arr", uniqueId: number, constraint: ConstraintAndCode }
 type SF_deployment_request_serialized_then<A, B> = { type: "then", f: SF_deployment_request_serialized<A, any>, g: SF_deployment_request_serialized<any, B> }
@@ -20,7 +22,9 @@ type SF_deployment_request<A, B> =
   | SF_deployment_request_first<A, B>
 
 
-type ConstraintAndFn<A, B> = { fn: (arg: A, cont: (r: B) => void) => void, constraint: "unconstrained" | "cloud" } | { constraint: "client" }
+type ConstraintAndFn<A, B> = 
+    { fn: (arg: A, cont: (r: B) => void) => void, constraint: "unconstrained" | "cloud" } 
+  | { constraint: "client" }
 
 
 class SF_deployment_request_arr<A, B> {
@@ -58,15 +62,36 @@ class SF_deployment_request_first<A, B> {
 
 
 function deploymentRequestForSF<A, B>(sf: SF_core<A, B>): SF_deployment_request_serialized<A, B> {
-  // TODO: implement
-  // throw new Error("TODO: unimplemented")
-  let x: any = null
-  return x
+  if(sf instanceof SF_arr) {
+    let constraintAndCode: ConstraintAndCode = 
+      sf.constraint == "client" ? 
+      { constraint: "client" } : 
+      { fn_src: sf.fn.toString(), constraint: sf.constraint }
+
+    return {
+      type: "arr",
+      uniqueId: sf.uniqueId,
+      constraint: constraintAndCode
+    }
+  } else if(sf instanceof SF_then) {
+    return {
+      type: "then",
+      f: deploymentRequestForSF(sf.f),
+      g: deploymentRequestForSF(sf.g)
+    }
+  } else if(sf instanceof SF_first) {
+    return {
+      type: "first",
+      first_sf: deploymentRequestForSF(sf.first_sf)
+    }
+  } else {
+    throw new Error(`Error: unknown sf type: ${sf}`)
+  }
 }
 
 function deserialize<A, B>(serialized: SF_deployment_request_serialized<A, B>): SF_deployment_request<A, B> {
   // TODO: implement
-  // throw new Error("TODO: unimplemented")
+  throw new Error("TODO: unimplemented")
   let x: any = null
   return x
 }

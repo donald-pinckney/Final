@@ -92,13 +92,13 @@ function computeDeployment<A, B>(dep_req: SF_deployment_request<A, B>, placement
       if(dep_req.constraint.constraint == "cloud" || dep_req.constraint.constraint == "unconstrained") {
         deploy = { location: "here", fn: dep_req.constraint.fn }
       } else {
-        throw new Error("BUG: Invalid placements. A client constraint function was assigned to cloud")
+        throw new Error("BUG: Invalid placements. A client constrained function was assigned to cloud")
       }
     } else if(place == "client") {
       if(dep_req.constraint.constraint == "client" || dep_req.constraint.constraint == "unconstrained") {
         deploy = { location: "there" }
       } else {
-        throw new Error("BUG: Invalid placements. A cloud constraint function was assigned to client")
+        throw new Error("BUG: Invalid placements. A cloud constrained function was assigned to client")
       }
     } else {
       throw new Error("BUG: Invalid placements")

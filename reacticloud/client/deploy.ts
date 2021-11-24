@@ -14,7 +14,8 @@ socket.on("input_available", (x, deploy_id, fn_id, input_id) => {
 })
 
 
-type RunnableSF<A, B> = (x: A) => Promise<B>
+type RunnableSF_core<A, B> = (x: A) => Promise<B>
+type RunnableSF<A, B> = (x: A) => void
 
 
 function buildRunnableSF<A, B>(sf: SF_core<A, B>, deploy_id: number, placements: serialized_placements): RunnableSF<A, B> {
@@ -34,6 +35,6 @@ function deploy<A, B>(f: SF<A, B>): Promise<RunnableSF<A, B>> {
   })
 }
 
-export { deploy, RunnableSF }
+export { deploy, RunnableSF, RunnableSF_core }
 
 

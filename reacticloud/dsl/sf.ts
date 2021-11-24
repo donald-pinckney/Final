@@ -1,4 +1,4 @@
-import { RunnableSF } from "../client/deploy"
+import { RunnableSF, RunnableSF_core } from "../client/deploy"
 
 type SF_core<A, B> =
   | SF_arr<A, B>
@@ -111,7 +111,7 @@ function evalSF<A, B>(sf: SF<A, B>): RunnableSF<A, B> {
   return evalSF_core(sf._wrapped)
 }
 
-function evalSF_core<A, B>(sf: SF_core<A, B>): RunnableSF<A, B> {
+function evalSF_core<A, B>(sf: SF_core<A, B>): RunnableSF_core<A, B> {
   if(sf instanceof SF_arr) {
     return x => {
       return new Promise((resolve, reject) => {

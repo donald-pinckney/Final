@@ -30,8 +30,8 @@ type ConstraintAndFn<A, B> =
 
 
 class SF_deployment_request_arr<A, B> {
-  private uniqueId: number
-  private constraint: ConstraintAndFn<A, B>
+  uniqueId: number
+  constraint: ConstraintAndFn<A, B>
 
   constructor(uniqueId: number, constraint: ConstraintAndFn<A, B>) {
     this.uniqueId = uniqueId
@@ -45,8 +45,8 @@ class SF_deployment_request_arr<A, B> {
 }
 
 class SF_deployment_request_then<A, B> {
-  private f: SF_deployment_request<A, any>
-  private g: SF_deployment_request<any, B>
+  f: SF_deployment_request<A, any>
+  g: SF_deployment_request<any, B>
 
   constructor(f: SF_deployment_request<A, any>, g: SF_deployment_request<any, B>) {
     this.f = f
@@ -60,7 +60,7 @@ class SF_deployment_request_first<A, B> {
 
   // first_sf: SF_deployment_request<A', B'>
   // but we can't write this type, so use any instead
-  private first_sf: SF_deployment_request<any, any>
+  first_sf: SF_deployment_request<any, any>
 
   constructor(first_sf: SF_deployment_request<any, any>) {
     this.first_sf = first_sf

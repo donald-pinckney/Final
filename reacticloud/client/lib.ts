@@ -1,32 +1,54 @@
 import { deploy, RunnableSF } from "./deploy"
-import { SF_core, 
+import { 
+  SF_core, 
   SF_arr, 
   SF_then, 
   SF_first, 
+  SF_permute,
+  SF_split,
+  SF_join,
   Location, 
   LocationConstraint,
   arr,
   arrAsync,
   then,
+  first1,
   first,
+  second1,
   second,
+  permute,
   parallel,
   and,
   lift2,
-  subscribe } from "../dsl/lib"
+  join,
+  split,
+  subscribe 
+} from "../dsl/lib"
 
-export { deploy, SF_core, 
+export { 
+  deploy, 
+  RunnableSF,
+  SF_core, 
   SF_arr, 
   SF_then, 
   SF_first, 
+  SF_permute,
+  SF_split,
+  SF_join,
   Location, 
   LocationConstraint,
   arr,
   arrAsync,
   then,
+  first1,
   first,
+  second1,
   second,
+  permute,
   parallel,
   and,
   lift2,
-  subscribe, RunnableSF }
+  join,
+  split,
+  subscribe
+}

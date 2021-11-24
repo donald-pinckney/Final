@@ -68,6 +68,10 @@ class SF_deployment_request_first<A, B> {
 }
 
 
+function assertUnreachable(x: never): never {
+  throw new Error("Didn't expect to get here");
+}
+
 function deploymentRequestForSF<A, B>(sf: SF_core<A, B>): SF_deployment_request_serialized<A, B> {
   if(sf instanceof SF_arr) {
     let constraintAndCode: ConstraintAndCode = 
@@ -92,7 +96,8 @@ function deploymentRequestForSF<A, B>(sf: SF_core<A, B>): SF_deployment_request_
       first_sf: deploymentRequestForSF(sf.first_sf)
     }
   } else {
-    throw new Error(`Error: unknown sf type: ${sf}`)
+    console.log(sf)
+    throw new Error(`Error: unknown SF type: ${typeof sf}`)
   }
 }
 

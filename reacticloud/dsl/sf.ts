@@ -13,6 +13,11 @@ type LocationConstraint =
   | "unconstrained"
   | Location
 
+var GLOBAL_UNIQUE_ARR_ID = 0
+
+function getFreshArrId() {
+  return GLOBAL_UNIQUE_ARR_ID++
+}
 
 class SF<A, B> {
   _wrapped: SF_core<A, B>
@@ -24,7 +29,7 @@ class SF<A, B> {
   static arr<A, B>(f: (x: A) => B, constraint: LocationConstraint = "unconstrained"): SF<A, B> {
     const fAsyncStr = `(_arg, cont) => cont((${f.toString()})(_arg))`
     const fAsync = eval(fAsyncStr)
-    return SF.arrAsync(f, constraint)
+    return SF.arrAsync(fAsync, constraint)
   }
 
   static arrAsync<A, B>(f: (x: A, cont: (r: B) => void) => void, constraint: LocationConstraint = "unconstrained"): SF<A, B> {
@@ -32,11 +37,11 @@ class SF<A, B> {
   }
 
   then<C>(next: SF<B, C>): SF<A, C> {
-    return new SF(new SF_then<A, C>(this._wrapped, next._wrapped))
+    return new SF(new SF_then<A, C>(this._wrapped.freshCopy(), next._wrapped.freshCopy()))
   }
 
   first<C>(): SF<[A, C], [B, C]> {
-    return new SF(new SF_first(this._wrapped))
+    return new SF(new SF_first(this._wrapped.freshCopy()))
   }
 
   second<C>(): SF<[C, A], [C, B]> {
@@ -69,7 +74,6 @@ class SF<A, B> {
   } 
 }
 
-var GLOBAL_UNIQUE_ARR_ID = 0
 
 class SF_arr<A, B> {
   fn: (arg: A, cont: (r: B) => void) => void;
@@ -79,7 +83,11 @@ class SF_arr<A, B> {
   constructor(f: (arg: A, cont: (r: B) => void) => void, constraint: LocationConstraint = "unconstrained") {
     this.fn = f
     this.constraint = constraint
-    this.uniqueId = GLOBAL_UNIQUE_ARR_ID++
+    this.uniqueId = getFreshArrId()
+  }
+
+  freshCopy(): SF_arr<A, B> {
+    return new SF_arr(this.fn, this.constraint)
   }
 }
 
@@ -90,6 +98,10 @@ class SF_then<A, B> {
   constructor(f: SF_core<A, any>, g: SF_core<any, B>) {
     this.f = f
     this.g = g
+  }
+
+  freshCopy(): SF_then<A, B> {
+    return new SF_then(this.f.freshCopy(), this.g.freshCopy())
   }
 }
 
@@ -103,6 +115,10 @@ class SF_first<A, B> {
 
   constructor(first_sf: SF_core<any, any>) {
     this.first_sf = first_sf
+  }
+
+  freshCopy(): SF_first<A, B> {
+    return new SF_first(this.first_sf.freshCopy())
   }
 }
 

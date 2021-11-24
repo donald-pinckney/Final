@@ -1,4 +1,4 @@
-import { LocationConstraint, SF_core, SF_arr, SF_then, SF_first } from "./sf"
+import { SF_core, SF_arr, SF_then, SF_first } from "./sf"
 
 // import * as util from "util"
 

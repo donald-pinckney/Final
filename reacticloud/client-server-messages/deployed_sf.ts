@@ -17,8 +17,7 @@ type SF_core_deployed<A, B> =
   | SF_first_deployed<A, B>
 
 
-
-type Arr_Deployment<A, B> = { location: "client", fn: (arg: A, cont: (r: B) => void) => void } | { location: "cloud" }
+type Arr_Deployment<A, B> = { location: "here", fn: (arg: A, cont: (r: B) => void) => void } | { location: "there" }
 
 class SF_arr_deployed<A, B> {
   private uniqueId: number
@@ -53,4 +52,14 @@ class SF_first_deployed<A, B> {
   }
 }
 
-// export { SF_core_deployed_serialized, SF_arr_deployed_serialized, SF_then_deployed_serialized, SF_first_deployed_serialized }
+
+export { 
+  SF_core_deployed, 
+  Arr_Deployment, 
+  SF_arr_deployed, 
+  SF_then_deployed, 
+  SF_first_deployed, 
+  PlacementMap, 
+  placementMapToList,
+  placementListToMap
+}

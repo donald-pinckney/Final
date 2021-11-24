@@ -1,8 +1,9 @@
 import { SF } from "../dsl/lib"
 import { SF_core } from "../dsl/sf"
 import { io, Socket } from "socket.io-client";
-import { ClientToServerEvents, ServerToClientEvents, serialized_placements } from "../client-server-messages/lib"
+import { ClientToServerEvents, ServerToClientEvents } from "../client-server-messages/lib"
 import { deploymentRequestForSF } from "../dsl/deployment_request"
+import { Location } from "../dsl/sf"
 
 
 console.log('Opening connection to server')
@@ -18,7 +19,7 @@ type RunnableSF_core<A, B> = (x: A) => Promise<B>
 type RunnableSF<A, B> = (x: A) => void
 
 
-function buildRunnableSF<A, B>(sf: SF_core<A, B>, deploy_id: number, placements: serialized_placements): RunnableSF<A, B> {
+function buildRunnableSF<A, B>(sf: SF_core<A, B>, deploy_id: number, placements: [number, Location][]): RunnableSF<A, B> {
   throw new Error("Not implemented")
 }
 

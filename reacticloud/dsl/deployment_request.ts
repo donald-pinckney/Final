@@ -1,4 +1,4 @@
-import { SF_core, SF_arr, SF_then, SF_first } from "./sf"
+// import { SF_core } from "./sf"
 
 // import * as util from "util"
 
@@ -68,32 +68,34 @@ class SF_deployment_request_first<A, B> {
 }
 
 
-function deploymentRequestForSF<A, B>(sf: SF_core<A, B>): SF_deployment_request_serialized<A, B> {
-  if(sf instanceof SF_arr) {
-    let constraintAndCode: ConstraintAndCode = 
-      sf.constraint == "client" ? 
-      { constraint: "client" } : 
-      { fn_src: sf.fn.toString(), constraint: sf.constraint }
+function deploymentRequestForSF<A, B>(sf: any): SF_deployment_request_serialized<A, B> {
+  throw new Error("not implemented")
 
-    return {
-      type: "arr",
-      uniqueId: sf.uniqueId,
-      constraint: constraintAndCode
-    }
-  } else if(sf instanceof SF_then) {
-    return {
-      type: "then",
-      f: deploymentRequestForSF(sf.f),
-      g: deploymentRequestForSF(sf.g)
-    }
-  } else if(sf instanceof SF_first) {
-    return {
-      type: "first",
-      first_sf: deploymentRequestForSF(sf.first_sf)
-    }
-  } else {
-    throw new Error(`Error: unknown sf type: ${sf}`)
-  }
+  // if(sf instanceof SF_arr) {
+  //   let constraintAndCode: ConstraintAndCode = 
+  //     sf.constraint == "client" ? 
+  //     { constraint: "client" } : 
+  //     { fn_src: sf.fn.toString(), constraint: sf.constraint }
+
+  //   return {
+  //     type: "arr",
+  //     uniqueId: sf.uniqueId,
+  //     constraint: constraintAndCode
+  //   }
+  // } else if(sf instanceof SF_then) {
+  //   return {
+  //     type: "then",
+  //     f: deploymentRequestForSF(sf.f),
+  //     g: deploymentRequestForSF(sf.g)
+  //   }
+  // } else if(sf instanceof SF_first) {
+  //   return {
+  //     type: "first",
+  //     first_sf: deploymentRequestForSF(sf.first_sf)
+  //   }
+  // } else {
+  //   throw new Error(`Error: unknown sf type: ${sf}`)
+  // }
 }
 
 function deserialize<A, B>(serialized: SF_deployment_request_serialized<A, B>): SF_deployment_request<A, B> {

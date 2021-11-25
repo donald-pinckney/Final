@@ -1,9 +1,19 @@
-import { RunnableSF, RunnableSF_core } from "../client/deploy"
+// type SF_core<A, B> = 
+//   | SF_arr<A, B>
+//   | SF_then<A, B>
+//   | SF_p1<A, B>
+//   | SF_p2<A, B>
+//   | SF_product<A, B>
 
-type SF_core<A, B> =
-  | SF_arr<A, B>
-  | SF_then<A, B>
-  | SF_first<A, B>
+type SF_core =
+  | SF_lambda
+  | SF_app
+  | SF_p1
+  | SF_p2
+  | SF_pair
+  | SF_fn
+  | SF_var
+  | SF_input
 
 type Location = 
   | "client"
@@ -21,162 +31,301 @@ function getFreshArrId() {
 
 
 
-function arr<A, B>(f: (x: A) => B, constraint: LocationConstraint = "unconstrained"): SF_core<A, B> {
-  if(constraint == "client") {
-    const fAsync = (x: A, cont: (r: B) => void) => cont(f(x))
-    return arrAsync(fAsync, constraint)
-  } else {
-    const fAsyncStr = `(_arg, cont) => cont((${f.toString()})(_arg))`
-    const fAsync = eval(fAsyncStr)
-    return arrAsync(fAsync, constraint)
+
+
+
+
+var freshVarId = 0
+function freshVar(): string {
+  return "x" + freshVarId++
+}
+
+
+class SF<A, B> {
+  _wrapped: SF_core
+  constructor(w: SF_core) {
+    this._wrapped = w
+  }
+
+
+  static arr<A, B>(f: (x: A) => B, constraint: LocationConstraint = "unconstrained"): SF<A, B> {
+    if(constraint == "client") {
+      const fAsync = (x: A, cont: (r: B) => void) => cont(f(x))
+      return SF.arrAsync(fAsync, constraint)
+    } else {
+      const fAsyncStr = `(_arg, cont) => cont((${f.toString()})(_arg))`
+      const fAsync = eval(fAsyncStr)
+      return SF.arrAsync(fAsync, constraint)
+    }
+  }
+
+  static arrAsync<A, B>(f: (x: A, cont: (r: B) => void) => void, constraint: LocationConstraint = "unconstrained"): SF<A, B> {
+    return new SF(new SF_fn(f, constraint))
+  }
+
+  static p1<A, B>(): SF<[A, B], A> {
+    const x = freshVar()
+    return new SF(new SF_lambda(x, new SF_p1(new SF_var(x))))
+  }
+  
+  static p2<A, B>(): SF<[A, B], B> {
+    const x = freshVar()
+    return new SF(new SF_lambda(x, new SF_p2(new SF_var(x))))
+  }
+
+  then<C>(next: SF<B, C>): SF<A, C> {
+    const x = freshVar()
+    return new SF(new SF_lambda(x, new SF_app(next._wrapped, new SF_app(this._wrapped, new SF_var(x)))))
+  }
+
+  first<C>(): SF<[A, C], [B, C]> {
+    const x = freshVar()
+    const xv = new SF_var(x)
+    return new SF(new SF_lambda(x, new SF_pair(new SF_app(this._wrapped, new SF_p1(xv)), new SF_p2(xv))))
+  }
+
+  second<C>(): SF<[C, A], [C, B]> {
+    const x = freshVar()
+    const xv = new SF_var(x)
+    const swap1: SF<[C, A], [A, C]> = new SF(new SF_lambda(x, new SF_pair(new SF_p2(xv), new SF_p1(xv))))
+    const y = freshVar()
+    const yv = new SF_var(y)
+    const swap2: SF<[B, C], [C, B]> = new SF(new SF_lambda(y, new SF_pair(new SF_p2(yv), new SF_p1(yv))))
+
+    return swap1.then(this.first()).then(swap2)
+  }
+
+  parallel<C, D>(other: SF<C, D>): SF<[A, C], [B, D]> {
+    const f = this.first<C>()
+    const g = other.second<B>()
+    return f.then(g)
+  }
+
+  and<C>(other: SF<A, C>): SF<A, [B, C]> {
+    const x = freshVar()
+    const xv = new SF_var(x)
+    const copy: SF<A, [A, A]> = new SF(new SF_lambda(x, new SF_pair(xv, xv)))
+    return copy.then(this.parallel(other))
+  }
+
+  lift2<C, D>(op: (args: [B, C]) => D, other: SF<A, C>): SF<A, D> {
+    const op_arr = SF.arr(op)
+    return this.and(other).then(op_arr)
+  }
+
+  subscribe(f: (x: B) => void): SF<A, void> {
+    const subArr = SF.arrAsync<B, void>((xx: B, cont: (r: void) => void) => f(xx), "client")
+    return this.then(subArr)
+  } 
+}
+
+
+
+class SF_lambda {
+  arg: string
+  body: SF_core
+
+  constructor(arg: string, body: SF_core) {
+    this.arg = arg
+    this.body = body
   }
 }
 
-function arrAsync<A, B>(f: (x: A, cont: (r: B) => void) => void, constraint: LocationConstraint = "unconstrained"): SF_core<A, B> {
-  return new SF_arr(f, constraint)
+class SF_app {
+  fn: SF_core
+  arg: SF_core
+
+  constructor(fn: SF_core, arg: SF_core) {
+    this.fn = fn
+    this.arg = arg
+  }
 }
 
-function then<A, B, C>(f: SF_core<A, B>, g: SF_core<B, C>): SF_core<A, C> {
-  return new SF_then<A, C>(f.freshCopy(), g.freshCopy())
+class SF_p1 {
+  e: SF_core
+  constructor(e: SF_core) {
+    this.e = e
+  }
 }
 
-function first<A, B, C>(f: SF_core<A, B>): SF_core<[A, C], [B, C]> {
-  return new SF_first(f.freshCopy())
+class SF_p2 {
+  e: SF_core
+  constructor(e: SF_core) {
+    this.e = e
+  }
 }
 
-function second<A, B, C>(f: SF_core<A, B>): SF_core<[C, A], [C, B]> {
-  const swap: <X, Y>(x: [X, Y]) => [Y, X] = <X, Y>(x: [X, Y]) => [x[1], x[0]]
+class SF_pair {
+  fst: SF_core
+  snd: SF_core
 
-  const swap1: SF_core<[C, A], [A, C]> = arr(swap)
-  const swap2: SF_core<[B, C], [C, B]> = arr(swap)
-  return then(swap1, then(first(f), swap2))
+  constructor(fst: SF_core, snd: SF_core) {
+    this.fst = fst
+    this.snd = snd
+  }
 }
 
-function parallel<A, B, C, D>(f: SF_core<A, B>, g: SF_core<C, D>): SF_core<[A, C], [B, D]> {
-  const ff: SF_core<[A, C], [B, C]> = first(f)
-  const gg: SF_core<[B, C], [B, D]> = second(g)
-  return then(ff, gg)
-}
-
-function and<A, B, C>(f: SF_core<A, B>, other: SF_core<A, C>): SF_core<A, [B, C]> {
-  const copy: SF_core<A, [A, A]> = arr(x => [x, x])
-  return then(copy, parallel(f, other))
-}
-
-function lift2<A, B, C, D>(f: SF_core<A, B>, op: (lhs: B, rhs: C) => D, other: SF_core<A, C>): SF_core<A, D> {
-  const op_arr = arr((args: [B, C]) => op(args[0], args[1]))
-  return then(and(f, other), op_arr)
-}
-
-function subscribe<A, B>(f: SF_core<A, B>, subFun: (x: B) => void): SF_core<A, void> {
-  const subArr = arrAsync<B, void>((xx: B, cont: (r: void) => void) => subFun(xx), "client")
-  return then(f, subArr)
-}
-
-
-
-
-class SF_arr<A, B> {
-  fn: (arg: A, cont: (r: B) => void) => void;
+class SF_fn {
+  fn: (arg: any, cont: (r: any) => void) => void;
   constraint: LocationConstraint
   uniqueId: number
 
-  constructor(f: (arg: A, cont: (r: B) => void) => void, constraint: LocationConstraint = "unconstrained") {
+  constructor(f: (arg: any, cont: (r: any) => void) => void, constraint: LocationConstraint) {
     this.fn = f
     this.constraint = constraint
     this.uniqueId = getFreshArrId()
   }
+}
 
-  freshCopy(): SF_arr<A, B> {
-    return new SF_arr(this.fn, this.constraint)
+class SF_var {
+  name: string
+
+  constructor(name: string) {
+    this.name = name
   }
 }
 
-class SF_then<A, B> {
-  f: SF_core<A, any>
-  g: SF_core<any, B>
+class SF_input {
+  constructor() {
 
-  constructor(f: SF_core<A, any>, g: SF_core<any, B>) {
-    this.f = f
-    this.g = g
-  }
-
-  freshCopy(): SF_then<A, B> {
-    return new SF_then(this.f.freshCopy(), this.g.freshCopy())
   }
 }
 
-class SF_first<A, B> {
-  // A must = (A', C)
-  // B must = (B', C)
+type normalized = { type: 'call', fn: SF_fn, arg: norm_p }
+type norm_p = { type: 'call', fn: SF_fn, arg: norm_p } | { type: 'pair', fst: norm_p, snd: norm_p } | { type: 'input' }
 
-  // first_sf: SF_core<A', B'>
-  // but we can't write this type, so use any instead
-  first_sf: SF_core<any, any>
+function normalize<A, B>(sf: SF<A, B>): normalized {
+  const rv = normalize_rec(new Env(), new SF_app(sf._wrapped, new SF_input))
+  return read_out_rv(rv)
+}
 
-  constructor(first_sf: SF_core<any, any>) {
-    this.first_sf = first_sf
-  }
-
-  freshCopy(): SF_first<A, B> {
-    return new SF_first(this.first_sf.freshCopy())
+function unwrap_fn(rv: RuntimeValue): SF_fn {
+  if(rv instanceof SF_fn) {
+    return rv
+  } else {
+    throw new Error("Expected SF_fn")
   }
 }
 
+function read_out_rv(rv: RuntimeValue): normalized {
+  if(rv instanceof SF_app) {
+    return { type: 'call', fn: unwrap_fn(rv.fn), arg: read_out_rv_p(rv.arg) }
+  } else {
+    throw new Error("Expected SF_app")
+  }
+}
 
-// function evalSF<A, B>(sf: SF<A, B>): RunnableSF<A, B> {
-//   return evalSF_core(sf._wrapped)
-// }
+function read_out_rv_p(rv: RuntimeValue): norm_p {
+  if(rv instanceof SF_app) {
+    return { type: 'call', fn: unwrap_fn(rv.fn), arg: read_out_rv_p(rv.arg) }
+  } else if(rv instanceof SF_pair) {
+    return { type: 'pair', fst: read_out_rv_p(rv.fst), snd: read_out_rv_p(rv.snd) }
+  } else if(rv instanceof SF_input) {
+    return { type: 'input' }
+  } else {
+    throw new Error("Expected SF_app or SF_pair or SF_input")
+  }
+}
 
-// function evalSF_core<A, B>(sf: SF_core<A, B>): RunnableSF_core<A, B> {
-//   if(sf instanceof SF_arr) {
-//     return x => {
-//       return new Promise((resolve, reject) => {
-//         sf.fn(x, r => {
-//           resolve(r)
-//         })
-//       })
-//     }
-//   } else if(sf instanceof SF_then) {
-//     const f = evalSF_core(sf.f)
-//     const g = evalSF_core(sf.g)
-//     return x => {
-//       const fp = f(x)
-//       return fp.then(y => g(y))
-//     }
-//   } else if(sf instanceof SF_first) {
-//     // first: RunnableSF<A', B'>
-//     const first = evalSF_core(sf.first_sf)
-//     return (ac: any) => {
-//       // ac: [A', C]
-//       // return: Promise<[B', C]>
+function is_neutral(e: SF_core): boolean {
+  return (e instanceof SF_input) || (e instanceof SF_fn)
+}
 
-//       // first_p: Promise<B'>
-//       const first_p = first(ac[0])
 
-//       // prom: Promise<[B', C]>
-//       const prom: Promise<B> = first_p.then(b => [b, ac[1]]) as Promise<B>
-//       return prom
-//     }
-//   } else {
-//     throw new Error("Unknown SF: " + sf)
-//   }
-// }
+type RuntimeValue = Closure | SF_core
+
+class Closure {
+  env: Env
+  varName: string
+  body: SF_core
+
+  constructor(env: Env, varName: string, body: SF_core) {
+    this.env = env
+    this.varName = varName
+    this.body = body
+  }
+}
+
+class Env {
+  map: Map<string, RuntimeValue>
+  constructor() {
+    this.map = new Map<string, RuntimeValue>()
+  }
+
+  get(name: string): RuntimeValue {
+    const v = this.map.get(name)
+    if (v === undefined) {
+      throw new Error(`Variable ${name} not found`)
+    } else {
+      return v
+    }
+  }
+  
+  push(name: string, value: RuntimeValue): Env {
+    const e = new Env()
+    e.map = new Map(this.map)
+    e.map.set(name, value)
+    return e
+  }
+}
+
+function normalize_rec(env: Env, sf: SF_core): RuntimeValue {
+  if (sf instanceof SF_app) {
+    const fn = normalize_rec(env, sf.fn)
+    const arg = normalize_rec(env, sf.arg)
+    if (fn instanceof Closure) {
+      return normalize_rec(fn.env.push(fn.varName, arg), fn.body)
+    } else if(is_neutral(fn)) {
+      return new SF_app(fn, arg)
+    } else {
+      throw new Error(`Cannot normalize ${sf}. Function is neither a lambda nor a neutral.`)
+    }
+  } else if (sf instanceof SF_lambda) {
+    return new Closure(env, sf.arg, sf.body)
+  } else if (sf instanceof SF_var) {
+    return env.get(sf.name)
+  } else if (sf instanceof SF_input) {
+    return sf
+  } else if (sf instanceof SF_pair) {
+    return new SF_pair(normalize_rec(env, sf.fst), normalize_rec(env, sf.snd))
+  } else if (sf instanceof SF_p1) {
+    const p = normalize_rec(env, sf.e)
+    if (p instanceof SF_pair) {
+      return p.fst
+    } else if(is_neutral(p)) {
+      return new SF_p1(p)
+    } else {
+      throw new Error(`Cannot normalize ${sf}. Argument is not a pair nor a neutral.`)
+    }
+  } else if (sf instanceof SF_p2) {
+    const p = normalize_rec(env, sf.e)
+    if (p instanceof SF_pair) {
+      return p.snd
+    } else if(is_neutral(p)) {
+      return new SF_p1(p)
+    } else {
+      throw new Error(`Cannot normalize ${sf}. Argument is not a pair nor a neutral.`)
+    }
+  } else if (sf instanceof SF_fn) {
+    return sf
+  } else {
+    console.log(sf)
+    throw new Error('Unrecognized sf')
+  }
+}
+
 
 export { 
-  SF_core, 
-  SF_arr, 
-  SF_then, 
-  SF_first, 
+  SF,
+  SF_core,
+  SF_lambda,
+  SF_app,
+  SF_p1,
+  SF_p2,
+  SF_pair,
+  SF_fn,
+  SF_var,
   Location, 
   LocationConstraint,
-  arr,
-  arrAsync,
-  then,
-  first,
-  second,
-  parallel,
-  and,
-  lift2,
-  subscribe
+  normalize
 }

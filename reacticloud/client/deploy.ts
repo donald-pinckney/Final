@@ -1,7 +1,7 @@
-import { SF, Location, normalize } from "../dsl/sf"
+import { SF, Location, normalize, buildDAG } from "../dsl/sf"
 import { ClientToServerEvents, ServerToClientEvents } from "../client-server-messages/lib"
 import { placementListToMap, PlacementMap, SF_core_deployed, SF_arr_deployed, SF_then_deployed, SF_first_deployed, Arr_Deployment } from "../client-server-messages/deployed_sf"
-import { deploymentRequestForSF } from "../dsl/deployment_request"
+// import { deploymentRequestForSF } from "../dsl/deployment_request"
 // import { Location } from "../dsl/sf"
 
 import { io, Socket } from "socket.io-client";
@@ -27,18 +27,23 @@ function deploy<A, B>(sf: SF<A, B>): Promise<RunnableSF<A, B>> {
 
   console.log(util.inspect(sf, false, null, true))
   const norm = normalize(sf)
+  console.log()
   console.log(util.inspect(norm, false, null, true))
+  const dag = buildDAG(norm)
 
-  let dep_req = deploymentRequestForSF(sf)
 
-  return new Promise((resolve, reject) => {
-    socket.emit('deploy', dep_req, (deploy_id, placementsList) => {
-      const placements = placementListToMap(placementsList)
-      console.log("received placements from server:")
-      console.log(placements)
-      resolve(buildRunnableSF(sf, deploy_id, placements))
-    })
-  })
+  throw new Error("unimplemented")
+
+  // let dep_req = deploymentRequestForSF(norm)
+
+  // return new Promise((resolve, reject) => {
+  //   socket.emit('deploy', dep_req, (deploy_id, placementsList) => {
+  //     const placements = placementListToMap(placementsList)
+  //     console.log("received placements from server:")
+  //     console.log(placements)
+  //     resolve(buildRunnableSF(sf, deploy_id, placements))
+  //   })
+  // })
 }
 
 function buildRunnableSF<A, B>(sf: SF<A, B>, deploy_id: number, placements: PlacementMap): RunnableSF<A, B> {

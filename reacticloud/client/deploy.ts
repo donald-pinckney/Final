@@ -1,6 +1,8 @@
-import { SF, Location, normalize, buildDAG } from "../dsl/sf"
+import { SF } from "../dsl/sf"
+import { buildDAG } from "../dsl/dag"
 import { ClientToServerEvents, ServerToClientEvents } from "../client-server-messages/lib"
-import { placementListToMap, PlacementMap, SF_core_deployed, SF_arr_deployed, SF_then_deployed, SF_first_deployed, Arr_Deployment } from "../client-server-messages/deployed_sf"
+import { placementListToMap, PlacementMap, SF_core_deployed } from "../client-server-messages/deployed_sf"
+
 // import { deploymentRequestForSF } from "../dsl/deployment_request"
 // import { Location } from "../dsl/sf"
 
@@ -25,11 +27,7 @@ type RunnableSF<A, B> = (x: A) => void
 
 function deploy<A, B>(sf: SF<A, B>): Promise<RunnableSF<A, B>> {
 
-  console.log(util.inspect(sf, false, null, true))
-  const norm = normalize(sf)
-  console.log()
-  console.log(util.inspect(norm, false, null, true))
-  const dag = buildDAG(norm)
+  const dag = buildDAG(sf)
 
 
   throw new Error("unimplemented")

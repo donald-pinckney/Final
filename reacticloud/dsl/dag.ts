@@ -1,20 +1,3 @@
-import { 
-  SF,
-  SF_core,
-  SF_lambda,
-  SF_app,
-  SF_p1,
-  SF_p2,
-  SF_pair,
-  SF_fn,
-  SF_var,
-  SF_input,
-} from './sf'
-
-import { buildDAG } from './compute_dag'
-
-
-
 class Dag<F> {
   nodes: Map<number, DagFunction<F>>
   initial_wires: { from: Selector[], to: SymbolicValue }[]
@@ -46,11 +29,7 @@ type Arity<D> =
   | { type: 'pair', fst: Arity<D>, snd: Arity<D> }
 
 
-
-
-
-// --------- Everything below here is used for DAG computation ----------
-
+import { buildDAG } from './compute_dag'
 
 export {
   buildDAG,

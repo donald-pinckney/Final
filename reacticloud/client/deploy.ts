@@ -11,22 +11,39 @@ import * as util from "util"
 import { PartitionedFn, RunnableDag } from "../dsl/dag_runner";
 
 
-console.log('Opening connection to server')
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io("ws://localhost:3000")
-socket.emit('iam', 'client')
+const socketsMap: Map<string, Socket<ServerToClientEvents, ClientToServerEvents>> = new Map()
 
+const input_available_callbacks: Map<string, (x: any, fn_id: number, input_seq_id: number, selector: Selector[]) => void> = new Map()
 
-const input_available_callbacks: Map<number, (x: any, fn_id: number, input_seq_id: number, selector: Selector[]) => void> = new Map()
+function getSocket(address: string, port: number): Socket<ServerToClientEvents, ClientToServerEvents> {
+  const addressPort = `${address}:${port}`
+  let sock = socketsMap.get(addressPort)
+  if(sock == undefined) {
+    console.log('Opening connection to orchestrator')
+    sock = io(`ws://${addressPort}`)
+    sock.emit('iam', 'client')
 
-socket.on("input_available", (x, deploy_id, fn_id, input_seq_id, selector) => {
-  const callback = input_available_callbacks.get(deploy_id)
-  if(callback == undefined) {
-    console.log("BUG: received input for which no callback is registered!")
-    console.log(`Received input ${x} for (deploy_id: ${deploy_id}, fn_id: ${fn_id}, input_seq_id: ${input_seq_id}), selector: ${selector})`)
+    sock.on("input_available", (x, deploy_id, fn_id, input_seq_id, selector) => {
+      const addressPortDeployId = `${addressPort}:${deploy_id}`
+
+      const callback = input_available_callbacks.get(addressPortDeployId)
+      if(callback == undefined) {
+        console.log("BUG: received input for which no callback is registered!")
+        console.log(`Received input ${x} for (deploy_id: ${deploy_id}, fn_id: ${fn_id}, input_seq_id: ${input_seq_id}), selector: ${selector})`)
+      } else {
+        callback(x, fn_id, input_seq_id, selector)
+      }
+    })
+
+    socketsMap.set(addressPort, sock)
+    return sock
   } else {
-    callback(x, fn_id, input_seq_id, selector)
+    return sock
   }
-})
+}
+
+
+
 
 type RunnableSF<A, B> = (x: A) => void
 
@@ -62,14 +79,17 @@ function partitionClientDag(dag: Dag<SF_fn>, partition: Map<number, RelativeLoca
   })
 }
 
-function deploy<A, B>(sf: SF<A, B>): Promise<RunnableSF<A, B>> {
+function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<RunnableSF<A, B>> {
+  const addressPort = `${address}:${port}`
 
+  const socket = getSocket(address, port)
   const dag = buildDAG(sf)
   const dagStripped = dag.map(stripClientFunction)
   const request = dagStripped.serialize()
 
   return new Promise((resolve, reject) => {
     socket.emit('client_orch_deploy', request, (dep_id, partitionList) => {
+      const addressPortDeployId = `${addressPort}:${dep_id}`
       const partition = new Map(partitionList)
       const clientDag = partitionClientDag(dag, partition)
 
@@ -80,7 +100,7 @@ function deploy<A, B>(sf: SF<A, B>): Promise<RunnableSF<A, B>> {
           socket.emit('input_available', x, dep_id, fn_id, input_seq_id, selector)
         })
 
-      input_available_callbacks.set(dep_id, (x, fn_id, input_seq_id, selector) => {
+      input_available_callbacks.set(addressPortDeployId, (x, fn_id, input_seq_id, selector) => {
         runnableDag.localInputAvailable(x, fn_id, input_seq_id, selector)
       })
 

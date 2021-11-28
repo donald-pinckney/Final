@@ -28,7 +28,7 @@ const f3 = f0.then(theAnd).then(after).then(SF.p1())
 
 // [x1 => i, x0 => f0 i]     p1 x0
 
-deploy(f3).then(runnable => {
+deploy("localhost", 3000, f3).then(runnable => {
   runnable(42)
 })
 

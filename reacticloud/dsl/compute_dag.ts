@@ -11,10 +11,10 @@ function buildDAG<A, B>(sf: SF<A, B>): Dag<SF_fn> {
 
 
 
-type norm_no_connections = normalized<{ def: SF_fn, inData: Arity<void>, outData: Arity<void> }, Arity<void>>
+type norm_no_connections = normalized<{ def: SF_fn, inData: Arity<null>, outData: Arity<null> }, Arity<null>>
 
-function symbolicValues(a_tmp: Arity<void>, fn_id_or_input: number | 'input'): Arity<SymbolicValue> {
-  function symbolicInputs_rec(a: Arity<void>, path: Selector[]): Arity<SymbolicValue> {
+function symbolicValues(a_tmp: Arity<null>, fn_id_or_input: number | 'input'): Arity<SymbolicValue> {
+  function symbolicInputs_rec(a: Arity<null>, path: Selector[]): Arity<SymbolicValue> {
     switch (a.type) {
       case 'singleton':
         return { type: 'singleton', data: {fn_id_or_input, path: path }}
@@ -27,7 +27,7 @@ function symbolicValues(a_tmp: Arity<void>, fn_id_or_input: number | 'input'): A
 }
 
 
-function checkConsistent(arg: Arity<SymbolicValue>, param: Arity<void>) {
+function checkConsistent(arg: Arity<SymbolicValue>, param: Arity<null>) {
   if(arg.type == 'singleton' && param.type == 'singleton') {
     return 
   } else if(arg.type == 'pair' && param.type == 'pair') {
@@ -189,12 +189,12 @@ function evaluateToDAG(e_tmp: norm_no_connections): Dag<SF_fn> {
   })
 
   const paramShapes = new Map(Array.from(argDatas.entries()).map(([f_id, a]) => {
-    return [f_id, mapArity(a, (s) => undefined)]
+    return [f_id, mapArity(a, (s) => null)]
   }))
 
 
   const nodes = new Map(Array.from(functions.entries()).map(([f_id, def]) => {
-    const param_shape = paramShapes.get(f_id) as Arity<undefined>
+    const param_shape = paramShapes.get(f_id) as Arity<null>
     const output_wires = arcs
       .filter(({from, to}) => from.fn_id_or_input == f_id)
       .map(({from, to}) => ({from: from.path, to}))
@@ -219,7 +219,7 @@ type arity_tmp =
 
 const UNK: arity_tmp = { type: 'unknown' }
 
-function minArity(check: arity_tmp): Arity<void> {
+function minArity(check: arity_tmp): Arity<null> {
   switch (check.type) {
     case 'pair':
       return { 
@@ -229,22 +229,22 @@ function minArity(check: arity_tmp): Arity<void> {
       }
   
     case 'singleton':
-      return { type: 'singleton', data: undefined }
+      return { type: 'singleton', data: null }
     
     case 'unknown':
-      return { type: 'singleton', data: undefined }
+      return { type: 'singleton', data: null }
 
     default:
       throw new Error("unknown arity temp: " + check)
   }
 }
 
-function analyzeArity_synth(x: normalized<SF_fn, void>, check: arity_tmp): [norm_no_connections, Arity<void>] {
+function analyzeArity_synth(x: normalized<SF_fn, null>, check: arity_tmp): [norm_no_connections, Arity<null>] {
   switch (x.type) {
     case 'call':
       const [annArg, arityArg] = analyzeArity_synth(x.arg, UNK)
       const outArity = minArity(check)
-      const fn_arity: { def: SF_fn, inData: Arity<void>, outData: Arity<void> } = 
+      const fn_arity: { def: SF_fn, inData: Arity<null>, outData: Arity<null> } = 
         { def: x.fn, inData: arityArg, outData: outArity }
       return [
         {type: 'call', fn: fn_arity, arg: annArg}, 
@@ -325,7 +325,7 @@ type normalized<F, I> =
   | { type: 'p2', e: normalized<F, I> } 
   | { type: 'input', data: I }
 
-function normalize<A, B>(sf: SF<A, B>): normalized<SF_fn, void> {
+function normalize<A, B>(sf: SF<A, B>): normalized<SF_fn, null> {
   const rv = normalize_rec(new Env(), new SF_app(sf._wrapped, new SF_input()))
   return read_out_rv(rv)
 }
@@ -338,13 +338,13 @@ function unwrap_fn(rv: RuntimeValue): SF_fn {
   }
 }
 
-function read_out_rv(rv: RuntimeValue): normalized<SF_fn, void> {
+function read_out_rv(rv: RuntimeValue): normalized<SF_fn, null> {
   if(rv instanceof SF_app) {
     return { type: 'call', fn: unwrap_fn(rv.fn), arg: read_out_rv(rv.arg) }
   } else if(rv instanceof SF_pair) {
     return { type: 'pair', fst: read_out_rv(rv.fst), snd: read_out_rv(rv.snd) }
   } else if(rv instanceof SF_input) {
-    return { type: 'input', data: undefined }
+    return { type: 'input', data: null }
   } else if(rv instanceof SF_p1) {
     return { type: 'p1', e: read_out_rv(rv.e) }
   } else if(rv instanceof SF_p2) {

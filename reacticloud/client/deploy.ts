@@ -1,6 +1,6 @@
-import { SF } from "../dsl/sf"
+import { SF, SF_fn } from "../dsl/sf"
 import { buildDAG } from "../dsl/dag"
-import { ClientToServerEvents, ServerToClientEvents } from "../client-server-messages/lib"
+import { ClientToServerEvents, ServerToClientEvents, FunctionDeployData } from "../client-server-messages/lib"
 import { placementListToMap, PlacementMap, SF_core_deployed } from "../client-server-messages/deployed_sf"
 
 // import { deploymentRequestForSF } from "../dsl/deployment_request"
@@ -25,9 +25,25 @@ type RunnableSF<A, B> = (x: A) => void
 
 
 
+// fn: (arg: any, cont: (r: any) => void) => void;
+//   constraint: LocationConstraint
+//   uniqueId: number
+
+
+function stripClientFunction(f: SF_fn): FunctionDeployData {
+  if(f.constraint == 'client') {
+    return { constraint: 'client' }
+  } else {
+    return { constraint: f.constraint, fnSrc: f.fn.toString() }
+  }
+}
+
 function deploy<A, B>(sf: SF<A, B>): Promise<RunnableSF<A, B>> {
 
   const dag = buildDAG(sf)
+  const dagStripped = dag.map(stripClientFunction)
+  const request = dagStripped.serialize()
+
 
 
   throw new Error("unimplemented")

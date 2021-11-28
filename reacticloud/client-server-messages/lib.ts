@@ -1,9 +1,17 @@
 // import { SF_deployment_request_serialized } from "../dsl/deployment_request"
 import { Location } from "../dsl/sf"
 
+import { SerializedDag } from "../dsl/dag"
+
+
+type FunctionDeployData = 
+    { constraint: 'client' }
+  | { constraint: 'cloud' | 'unconstrained', fnSrc: string }
+
+
+
 interface ClientToServerEvents {
-  // deploy: <A, B>(sf: SF_deployment_request_serialized<A, B>, callback: (deploy_id: number, placements: [number, Location][]) => void) => void;
-  deploy: <A, B>(sf: any, callback: (deploy_id: number, placements: [number, Location][]) => void) => void;
+  deploy: <A, B>(sf: SerializedDag<FunctionDeployData>, callback: (deploy_id: number, placements: [number, Location][]) => void) => void;
   input_available: <A>(x: A, deploy_id: number, arr_id: number, input_seq_id: number) => void;
 }
 
@@ -20,4 +28,4 @@ interface InterServerEvents {
 interface SocketData {
 }
 
-export { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData }
+export { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData, FunctionDeployData }

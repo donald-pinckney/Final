@@ -11,9 +11,11 @@ type FunctionDeployData =
 
 type Role = 'client' | 'worker'
 
+type RelativeLocation = 'here' | 'there'
+
 interface ClientToServerEvents {
   iam: (role: Role) => void;
-  client_orch_deploy: <A, B>(sf: SerializedDag<FunctionDeployData>, callback: (deploy_id: number, placements: [number, Location][]) => void) => void;
+  client_orch_deploy: <A, B>(sf: SerializedDag<FunctionDeployData>, callback: (deploy_id: number, partition: [number, RelativeLocation][]) => void) => void;
   input_available: <A>(x: A, deploy_id: number, fn_id: number, input_seq_id: number, selector: Selector[]) => void;
   worker_request_fn: (deploy_id: number, fn_id: number, reply_src: (src: string) => void) => void
 
@@ -30,4 +32,4 @@ interface InterServerEvents {
 interface SocketData {
 }
 
-export { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData, FunctionDeployData }
+export { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData, FunctionDeployData, RelativeLocation }

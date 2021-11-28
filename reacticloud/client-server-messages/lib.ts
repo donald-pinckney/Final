@@ -1,7 +1,7 @@
 // import { SF_deployment_request_serialized } from "../dsl/deployment_request"
 import { Location } from "../dsl/sf"
 
-import { SerializedDag } from "../dsl/dag"
+import { Selector, SerializedDag } from "../dsl/dag"
 
 
 type FunctionDeployData = 
@@ -9,17 +9,19 @@ type FunctionDeployData =
   | { constraint: 'cloud' | 'unconstrained', fnSrc: string }
 
 
+type Role = 'client' | 'worker'
 
 interface ClientToServerEvents {
-  deploy: <A, B>(sf: SerializedDag<FunctionDeployData>, callback: (deploy_id: number, placements: [number, Location][]) => void) => void;
-  input_available: <A>(x: A, deploy_id: number, arr_id: number, input_seq_id: number) => void;
+  iam: (role: Role) => void;
+  client_orch_deploy: <A, B>(sf: SerializedDag<FunctionDeployData>, callback: (deploy_id: number, placements: [number, Location][]) => void) => void;
+  input_available: <A>(x: A, deploy_id: number, fn_id: number, input_seq_id: number, selector: Selector[]) => void;
+  worker_request_fn: (deploy_id: number, fn_id: number, reply_src: (src: string) => void) => void
+
 }
 
 interface ServerToClientEvents {
-  input_available: <A>(x: A, deploy_id: number, arr_id: number, input_seq_id: number) => void;
-  // noArg: () => void;
-  // basicEmit: (a: number, b: string, c: Buffer) => void;
-  // withAck: (d: string, callback: (e: number) => void) => void;
+  input_available: <A>(x: A, deploy_id: number, fn_id: number, input_seq_id: number, selector: Selector[]) => void;
+  worker_run_fn: <A, B>(x: A, deploy_id: number, fn_id: number, done: (r: B) => void) => void;
 }
 
 interface InterServerEvents {

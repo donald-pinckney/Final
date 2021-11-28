@@ -32,4 +32,4 @@ interface InterServerEvents {
 interface SocketData {
 }
 
-export { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData, FunctionDeployData, RelativeLocation }
+export { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData, FunctionDeployData, RelativeLocation, Role }

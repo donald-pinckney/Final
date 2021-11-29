@@ -9,11 +9,16 @@ import * as util from "util"
 import { Selector, SerializedDag } from "../dsl/dag"
 import { FunctionTraceData, InputTraceData } from "../client-server-messages/trace_data"
 
-type ServerSocket = Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>
+type OrchestratorSocket = Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>
 
 class Orchestrator {
   io: Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>
+  
+  // Mutable state:
   unique_deployment_id: number
+  // runnable dag per deployment id
+  // current state of connected clients and workers
+  // tasks currently scheduled on workers
 
   constructor() {
     this.io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>()
@@ -32,6 +37,38 @@ class Orchestrator {
     
   }
 
+
+
+  // -------- Events received by orchestrator ---------
+
+  receiveDisconnect(socket: OrchestratorSocket) {
+    console.log("Socket disconnected: " + socket.id)
+  }
+
+  receiveDeployRequest(socket: OrchestratorSocket, dag: SerializedDag<FunctionDeployData>, callback: (deploy_id: number, partition: [number, RelativeLocation][]) => void) {
+    console.log("Received deploy request from socket: " + socket.id)
+    
+  }
+
+  receiveTraces(socket: OrchestratorSocket, original_deploy_id: number, fns_data: SerializedDag<FunctionTraceData>, inputs_data: InputTraceData) {
+    console.log("Received trace data from socket: " + socket.id)
+  }
+
+  receiveIam(socket: OrchestratorSocket, role: Role) {
+    console.log("Received iam from socket: " + socket.id)
+  }
+
+  receiveInputAvailable(socket: OrchestratorSocket, x: any, dep_id: number, fn_id: number, input_seq_id: number, selector: Selector[]) {
+    console.log("Received input available from socket: " + socket.id)
+
+  }
+
+  receiveWorkerRequestFn(socket: OrchestratorSocket, dep_id: number, fn_id: number, callback: (src: string) => void) {
+
+  }
+
+  // -------------- Helpers ---------------
+
   listen(port: number) {
     this.io.listen(port)
     console.log("Orchestrator listening")
@@ -40,33 +77,6 @@ class Orchestrator {
 
   freshDeploymentId(): number {
     return this.unique_deployment_id++
-  }
-
-
-  receiveDisconnect(socket: ServerSocket) {
-    console.log("Socket disconnected: " + socket.id)
-  }
-
-  receiveDeployRequest(socket: ServerSocket, dag: SerializedDag<FunctionDeployData>, callback: (deploy_id: number, partition: [number, RelativeLocation][]) => void) {
-    console.log("Received deploy request from socket: " + socket.id)
-    
-  }
-
-  receiveTraces(socket: ServerSocket, original_deploy_id: number, fns_data: SerializedDag<FunctionTraceData>, inputs_data: InputTraceData) {
-    console.log("Received trace data from socket: " + socket.id)
-  }
-
-  receiveIam(socket: ServerSocket, role: Role) {
-    console.log("Received iam from socket: " + socket.id)
-  }
-
-  receiveInputAvailable(socket: ServerSocket, x: any, dep_id: number, fn_id: number, input_seq_id: number, selector: Selector[]) {
-    console.log("Received input available from socket: " + socket.id)
-
-  }
-
-  receiveWorkerRequestFn(socket: ServerSocket, dep_id: number, fn_id: number, callback: (src: string) => void) {
-
   }
 }
 

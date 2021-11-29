@@ -85,8 +85,6 @@ class Worker {
   requestFn(dep_id: number, fn_id: number, reply_src: (src: string) => void) {
     this.socket.emit('worker_request_fn', dep_id, fn_id, reply_src)
   }
-
-
 }
 
 export { Worker }

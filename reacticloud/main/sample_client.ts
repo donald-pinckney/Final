@@ -28,7 +28,16 @@ const f3 = f0.then(theAnd).then(after).then(SF.p1())
 
 // [x1 => i, x0 => f0 i]     p1 x0
 
-deploy("localhost", 3000, f3).then(runnable => {
+
+const cliArgs = process.argv.slice(2)
+if(cliArgs.length != 2) {
+  console.log(`Usage: node out/main/sample_client.js [orchestrator address] [orchestrator port]`)
+}
+const address = cliArgs[0]
+const port = parseInt(cliArgs[1])
+
+
+deploy(address, port, f3).then(runnable => {
   runnable(42)
 })
 

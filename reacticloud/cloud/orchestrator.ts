@@ -7,6 +7,7 @@ import { DynamicPool } from "node-worker-threads-pool"
 
 import * as util from "util"
 import { Selector, SerializedDag } from "../dsl/dag"
+import { FunctionTraceData, InputTraceData } from "../client-server-messages/trace_data"
 
 type ServerSocket = Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>
 
@@ -22,6 +23,7 @@ class Orchestrator {
       console.log("Socket connected: " + socket.id)
       socket.on('disconnect', () => this.receiveDisconnect(socket))
       socket.on('client_orch_deploy', (dag, callback) => this.receiveDeployRequest(socket, dag, callback))
+      socket.on('client_orch_send_traces', (original_deploy_id, fns_data, inputs_data) => this.receiveTraces(socket, original_deploy_id, fns_data, inputs_data))
       socket.on('iam', (role) => this.receiveIam(socket, role))
       socket.on('input_available', (x, dep_id, fn_id, input_seq_id, selector) => this.receiveInputAvailable(socket, x, dep_id, fn_id, input_seq_id, selector))
       socket.on('worker_request_fn', (dep_id, fn_id, callback) => this.receiveWorkerRequestFn(socket, dep_id, fn_id, callback))
@@ -40,6 +42,7 @@ class Orchestrator {
     return this.unique_deployment_id++
   }
 
+
   receiveDisconnect(socket: ServerSocket) {
     console.log("Socket disconnected: " + socket.id)
   }
@@ -47,6 +50,10 @@ class Orchestrator {
   receiveDeployRequest(socket: ServerSocket, dag: SerializedDag<FunctionDeployData>, callback: (deploy_id: number, partition: [number, RelativeLocation][]) => void) {
     console.log("Received deploy request from socket: " + socket.id)
     
+  }
+
+  receiveTraces(socket: ServerSocket, original_deploy_id: number, fns_data: SerializedDag<FunctionTraceData>, inputs_data: InputTraceData) {
+    console.log("Received trace data from socket: " + socket.id)
   }
 
   receiveIam(socket: ServerSocket, role: Role) {

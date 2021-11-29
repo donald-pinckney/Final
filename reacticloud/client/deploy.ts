@@ -14,6 +14,7 @@ import { PartitionedFn, RunnableDag } from "../dsl/dag_runner";
 const socketsMap: Map<string, Socket<ServerToClientEvents, ClientToServerEvents>> = new Map()
 
 const input_available_callbacks: Map<string, (x: any, fn_id: number, input_seq_id: number, selector: Selector[]) => void> = new Map()
+const updated_deployment_callbacks: Map<string, (new_deploy_id: number, new_partition: [number, RelativeLocation][]) => void> = new Map()
 
 function getSocket(address: string, port: number): Socket<ServerToClientEvents, ClientToServerEvents> {
   const addressPort = `${address}:${port}`
@@ -32,6 +33,18 @@ function getSocket(address: string, port: number): Socket<ServerToClientEvents, 
         console.log(`Received input ${x} for (deploy_id: ${deploy_id}, fn_id: ${fn_id}, input_seq_id: ${input_seq_id}), selector: ${selector})`)
       } else {
         callback(x, fn_id, input_seq_id, selector)
+      }
+    })
+
+    sock.on("updated_deployment", (original_deploy_id, new_deploy_id, new_partition) => {
+      const addressPortDeployId = `${addressPort}:${original_deploy_id}`
+
+      const callback = updated_deployment_callbacks.get(addressPortDeployId)
+      if(callback == undefined) {
+        console.log("BUG: received updated deployment for which no callback is registered!")
+        console.log(`Received updated deployment for (original_deploy_id: ${original_deploy_id}, new_deploy_id: ${new_deploy_id})`)
+      } else {
+        callback(new_deploy_id, new_partition)
       }
     })
 
@@ -79,6 +92,9 @@ function partitionClientDag(dag: Dag<SF_fn>, partition: Map<number, RelativeLoca
   })
 }
 
+const SEND_NUM_THRESHOLD = 10
+const SEND_MS_THRESHOLD = 1000
+
 function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<RunnableSF<A, B>> {
   const addressPort = `${address}:${port}`
 
@@ -87,25 +103,67 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
   const dagStripped = dag.map(stripClientFunction)
   const request = dagStripped.serialize()
 
+
   return new Promise((resolve, reject) => {
-    socket.emit('client_orch_deploy', request, (dep_id, partitionList) => {
-      const addressPortDeployId = `${addressPort}:${dep_id}`
+    socket.emit('client_orch_deploy', request, (original_deploy_id, partitionList) => {
+      const addressPortDeployId = `${addressPort}:${original_deploy_id}`
+
       const partition = new Map(partitionList)
       const clientDag = partitionClientDag(dag, partition)
 
-      const runnableDag = 
-        new RunnableDag(clientDag, (fn, arg, done) => {
-          fn(arg, done)
-        }, (x, fn_id, input_seq_id, selector) => {
-          socket.emit('input_available', x, dep_id, fn_id, input_seq_id, selector)
-        })
+      let current_dep_id = original_deploy_id
+      const deployments: Map<number, RunnableDag<(arg: any, cont: (r: any) => void) => void>> = new Map()
+      const original_runnableDag = new RunnableDag(clientDag)
+
+      let last_trace_send_time_ms = Date.now()
+
+      original_runnableDag.runFnHere = (fn, arg, done) => {
+        fn(arg, done)
+      }
+      original_runnableDag.sendInputThere = (x, fn_id, input_seq_id, selector) => {
+        socket.emit('input_available', x, original_deploy_id, fn_id, input_seq_id, selector)
+      }
+
+      deployments.set(current_dep_id, original_runnableDag)
+
 
       input_available_callbacks.set(addressPortDeployId, (x, fn_id, input_seq_id, selector) => {
-        runnableDag.localInputAvailable(x, fn_id, input_seq_id, selector)
+        original_runnableDag.localInputAvailable(x, fn_id, input_seq_id, selector)
+      })
+
+      updated_deployment_callbacks.set(addressPortDeployId, (new_deploy_id, newPartitionList) => {
+        const newPartition = new Map(newPartitionList)
+        const newClientDag = partitionClientDag(dag, newPartition)
+        const new_runnableDag = new RunnableDag(newClientDag)
+
+        const addressPortDeployIdNew = `${addressPort}:${new_deploy_id}`
+
+        new_runnableDag.runFnHere = (fn, arg, done) => {
+          fn(arg, done)
+        }
+        new_runnableDag.sendInputThere = (x, fn_id, input_seq_id, selector) => {
+          socket.emit('input_available', x, new_deploy_id, fn_id, input_seq_id, selector)
+        }
+
+        input_available_callbacks.set(addressPortDeployIdNew, (x, fn_id, input_seq_id, selector) => {
+          new_runnableDag.localInputAvailable(x, fn_id, input_seq_id, selector)
+        })
+
+        deployments.set(new_deploy_id, new_runnableDag)
+        current_dep_id = new_deploy_id
       })
 
       resolve(initial_input => {
-        runnableDag.acceptInitialInput(initial_input)
+        const currentDag = deployments.get(current_dep_id) as RunnableDag<(arg: any, cont: (r: any) => void) => void>
+
+        const now = Date.now()
+        if(currentDag.getInputCount() > SEND_NUM_THRESHOLD && (now - last_trace_send_time_ms) > SEND_MS_THRESHOLD) {
+          last_trace_send_time_ms = now
+          const traceData = currentDag.getPartialTraceData()
+          socket.emit('client_orch_send_traces', original_deploy_id, traceData.fns, traceData.inputs)
+        }
+
+        currentDag.acceptInitialInput(initial_input)
       })      
     })
   })

@@ -144,6 +144,8 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
         current_dep_id = new_deploy_id
       })
 
+      let the_unique_seq_id = 0
+
       resolve(initial_input => {
         const currentDag = deployments.get(current_dep_id) as RunnableDag<(arg: any, cont: (r: any) => void) => void>
 
@@ -162,7 +164,7 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
           socket.emit('client_orch_send_traces', original_deploy_id, traceDataFn.serialize(), traceDataInput)
         }
 
-        currentDag.acceptInitialInput(initial_input)
+        currentDag.acceptInitialInput(initial_input, the_unique_seq_id++)
       })      
     })
   })

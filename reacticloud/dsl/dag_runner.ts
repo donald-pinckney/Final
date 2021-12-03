@@ -56,7 +56,9 @@ function updateArity<T>(arity: Arity<T>, path: Selector[], x: T) {
 class RunnableDag<F> {
   private dag: Dag<PartitionedFn<F>>
   private inputStates: Map<number, Dag<PartitionedFn<InputState>>>
-  private fresh_seq_id: number
+  private input_count: number
+  // private fresh_seq_id: number | null
+  // private initial_seq_id: number | null
 
   private inputTraceData: InputTraceData
   private functionTraceData: Dag<PartitionedFn<FunctionTraceData>>
@@ -67,7 +69,7 @@ class RunnableDag<F> {
 
   constructor(dag: Dag<PartitionedFn<F>>, here: Location) {
     this.dag = dag
-    this.fresh_seq_id = 0
+    this.input_count = 0
     this.inputStates = new Map()
     this.inputTraceData = new Map()
     this.functionTraceData = dag.map((_f_id, p) => {
@@ -78,8 +80,9 @@ class RunnableDag<F> {
     this.here = here
   }
 
-  acceptInitialInput(input: any) {
-    const seq_id = this.fresh_seq_id++
+  acceptInitialInput(input: any, seq_id: number) {
+    this.input_count++
+
     const initialState = this.dag.map((fn_id, f_data_part) => {
       const node = this.dag.getNode(fn_id)
       const shape = node.param_shape
@@ -123,7 +126,7 @@ class RunnableDag<F> {
         throw new Error('unreachable')
       }
       row.push({ 
-        selector: from, 
+        out_selector: from, 
         bytes: JSON.stringify(toSend).length
       })
     } else {
@@ -207,7 +210,7 @@ class RunnableDag<F> {
   }
 
   getInputCount(): number {
-    return this.fresh_seq_id
+    return this.input_count
   }
 
   extractPartialTraceData(): { inputs: InputTraceData, fns: Dag<FunctionTraceData> } {

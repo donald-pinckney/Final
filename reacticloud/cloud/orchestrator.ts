@@ -125,28 +125,57 @@ class Orchestrator {
     callback(this_deploy_id, partitionResponse)
   }
 
+  mergeSelectorSizes(originalSizes: {out_selector: Selector[], bytes: number}[], newSizes: {out_selector: Selector[], bytes: number}[]) {
+    const pathToStr = (sel: Selector[]) => sel.join(',')
+
+    const originalMap: Map<string, [number, Selector[]]> = new Map()
+
+    originalSizes.forEach(({out_selector, bytes}) => {
+      originalMap.set(pathToStr(out_selector), [bytes, out_selector])
+    })
+
+    newSizes.forEach(({out_selector, bytes}) => {
+      const path = pathToStr(out_selector)
+      const originalSizeAndPath = originalMap.get(path)
+      if(originalSizeAndPath == undefined) {
+        originalSizes.push({out_selector, bytes})
+      } else if(bytes != originalSizeAndPath[0]) {
+        throw new Error('BUG: incompatible duplicate traces!')
+      }
+    })    
+  }
+
   mergeTraceData(original_deploy_id: number, new_fns_traces: Dag<FunctionTraceData>, new_inputs_traces: InputTraceData) {
     const oldTraceData = this.allTraceData.get(original_deploy_id)
     if(oldTraceData === undefined) {
       throw new Error("BUG: received trace data before deployment for dep_id: " + original_deploy_id)
     }
+
     oldTraceData.fns_trace.map((fn_id, oldTraces) => {
       const newTraces = new_fns_traces.getNode(fn_id).data
-      newTraces.forEach((traceRow, seq_id) => {
-        if(oldTraces.has(seq_id)) {
-          console.log(`WARNING: duplicate trace data for original_deploy_id: ${original_deploy_id}, seq_id: ${seq_id}. Discarding new data`)
+      newTraces.forEach((newRow, new_seq_id) => {
+        const oldRow = oldTraces.get(new_seq_id)
+        if(oldRow != undefined) {
+          if(oldRow.exec_location != newRow.exec_location || oldRow.exec_time_ms != newRow.exec_time_ms) {
+            console.log(`BUG: incompatible fn trace data for original_deploy_id: ${original_deploy_id}, seq_id: ${new_seq_id}.`)
+            throw new Error('unreachable')
+          }
+          this.mergeSelectorSizes(oldRow.output_sizes, newRow.output_sizes)
         } else {
-          oldTraces.set(seq_id, traceRow)
+          oldTraces.set(new_seq_id, newRow)
         }
       })
     })
 
 
-    new_inputs_traces.forEach((traceRow, seq_id) => {
-      if(oldTraceData.inputs_trace.has(seq_id)) {
+    new_inputs_traces.forEach((newRow, seq_id) => {
+      const oldRow = oldTraceData.inputs_trace.get(seq_id)
+
+      if(oldRow != undefined) {
+        this.mergeSelectorSizes(oldRow, newRow)
         console.log(`WARNING: duplicate input trace data for original_deploy_id: ${original_deploy_id}, seq_id: ${seq_id}. Discarding new data`)
       } else {
-        oldTraceData.inputs_trace.set(seq_id, traceRow)
+        oldTraceData.inputs_trace.set(seq_id, newRow)
       }
     })
   }

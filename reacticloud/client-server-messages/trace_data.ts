@@ -11,7 +11,7 @@ type FunctionTraceRow = {
 }
 
 type InputTraceRow = {
-  selector: Selector[],
+  out_selector: Selector[],
   bytes: number
 }[]
 

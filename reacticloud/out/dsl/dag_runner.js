@@ -49,7 +49,7 @@ function updateArity(arity, path, x) {
 class RunnableDag {
     constructor(dag, here) {
         this.dag = dag;
-        this.fresh_seq_id = 0;
+        this.input_count = 0;
         this.inputStates = new Map();
         this.inputTraceData = new Map();
         this.functionTraceData = dag.map((_f_id, p) => {
@@ -59,8 +59,8 @@ class RunnableDag {
         });
         this.here = here;
     }
-    acceptInitialInput(input) {
-        const seq_id = this.fresh_seq_id++;
+    acceptInitialInput(input, seq_id) {
+        this.input_count++;
         const initialState = this.dag.map((fn_id, f_data_part) => {
             const node = this.dag.getNode(fn_id);
             const shape = node.param_shape;
@@ -98,7 +98,7 @@ class RunnableDag {
                 throw new Error('unreachable');
             }
             row.push({
-                selector: from,
+                out_selector: from,
                 bytes: JSON.stringify(toSend).length
             });
         }
@@ -172,7 +172,7 @@ class RunnableDag {
         }
     }
     getInputCount() {
-        return this.fresh_seq_id;
+        return this.input_count;
     }
     extractPartialTraceData() {
         // TODO: note: this should drain from self to save mem!

@@ -99,7 +99,7 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
 
       let current_dep_id = original_deploy_id
       const deployments: Map<number, RunnableDag<(arg: any, cont: (r: any) => void) => void>> = new Map()
-      const original_runnableDag = new RunnableDag(clientDag)
+      const original_runnableDag = new RunnableDag(clientDag, 'client')
 
       let last_trace_send_time_ms = Date.now()
 
@@ -125,7 +125,7 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
           return mapPartitionedFn(part_sf, sf => sf.fn)
         })
 
-        const new_runnableDag = new RunnableDag(newClientDag)
+        const new_runnableDag = new RunnableDag(newClientDag, 'client')
 
         const addressPortDeployIdNew = `${addressPort}:${new_deploy_id}`
 

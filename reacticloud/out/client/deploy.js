@@ -71,7 +71,7 @@ function deploy(address, port, sf) {
             });
             let current_dep_id = original_deploy_id;
             const deployments = new Map();
-            const original_runnableDag = new dag_runner_1.RunnableDag(clientDag);
+            const original_runnableDag = new dag_runner_1.RunnableDag(clientDag, 'client');
             let last_trace_send_time_ms = Date.now();
             original_runnableDag.runFnHere = (fn, seq_id, arg, done) => {
                 fn(arg, done);
@@ -89,7 +89,7 @@ function deploy(address, port, sf) {
                 const newClientDag = newClientDagTmp.map((fn_id, part_sf) => {
                     return (0, dag_runner_1.mapPartitionedFn)(part_sf, sf => sf.fn);
                 });
-                const new_runnableDag = new dag_runner_1.RunnableDag(newClientDag);
+                const new_runnableDag = new dag_runner_1.RunnableDag(newClientDag, 'client');
                 const addressPortDeployIdNew = `${addressPort}:${new_deploy_id}`;
                 new_runnableDag.runFnHere = (fn, seq_id, arg, done) => {
                     fn(arg, done);

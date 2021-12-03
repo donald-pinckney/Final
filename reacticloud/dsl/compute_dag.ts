@@ -1,5 +1,5 @@
 import { SF, SF_fn, SF_input, SF_app, SF_lambda, SF_core, SF_p1, SF_p2, SF_pair, SF_var } from './sf'
-import { Dag, DagFunction, Selector, SymbolicValue, Arity } from './dag'
+import { Dag, DagFunction, Selector, SymbolicValue, Arity, mapArity } from './dag'
 
 function buildDAG<A, B>(sf: SF<A, B>): Dag<SF_fn> {
   const n = normalize(sf)
@@ -83,15 +83,6 @@ function computePathArcs<A>(e_tmp: Arity<A>): {from: A, to: Selector[]}[] {
   return computePathArcs_rec(e_tmp, [])
 }
 
-
-function mapArity<A, B>(e: Arity<A>, f: (x: A) => B): Arity<B> {
-  switch (e.type) {
-    case 'singleton':
-      return { type: 'singleton', data: f(e.data) }
-    case 'pair':
-      return { type: 'pair', fst: mapArity(e.fst, f), snd: mapArity(e.snd, f) }
-  }
-}
 
 
 

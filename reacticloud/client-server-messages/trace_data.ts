@@ -1,7 +1,9 @@
 import { Selector } from "../dsl/dag"
+import { Location } from "../dsl/sf"
 
 type FunctionTraceRow = {
-  exec_time_us: number,
+  exec_time_ms: number,
+  exec_location: Location,
   output_sizes: {
     out_selector: Selector[],
     bytes: number

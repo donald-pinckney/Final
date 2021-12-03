@@ -71,7 +71,26 @@ type Arity<D> =
   | { type: 'singleton', data: D }
   | { type: 'pair', fst: Arity<D>, snd: Arity<D> }
 
+function mapArity<A, B>(e: Arity<A>, f: (x: A) => B): Arity<B> {
+  switch (e.type) {
+    case 'singleton':
+      return { type: 'singleton', data: f(e.data) }
+    case 'pair':
+      return { type: 'pair', fst: mapArity(e.fst, f), snd: mapArity(e.snd, f) }
+  }
+}
 
+type NestedTuple<T> = [NestedTuple<T>, NestedTuple<T>] | T
+
+function arityToTuple<T>(arity: Arity<T>): NestedTuple<T> {
+  if(arity.type == 'singleton') {
+    return arity.data
+  } else if(arity.type == 'pair') {
+    return [arityToTuple(arity.fst), arityToTuple(arity.snd)]
+  } else {
+    throw new Error('unreachable')
+  }
+}
 
 type SerializedDag<F> = {
   nodes: Map<number, SerializedDagFunction<F>>
@@ -95,6 +114,8 @@ export {
   Selector,
   SymbolicValue,
   Arity,
+  mapArity,
+  arityToTuple,
   SerializedDag,
   SerializedDagFunction
 }

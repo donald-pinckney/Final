@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DagFunction = exports.Dag = exports.buildDAG = void 0;
+exports.arityToTuple = exports.mapArity = exports.DagFunction = exports.Dag = exports.buildDAG = void 0;
 class Dag {
     constructor(nodes, initial_wires) {
         this.nodes = nodes;
@@ -50,6 +50,27 @@ class DagFunction {
     }
 }
 exports.DagFunction = DagFunction;
+function mapArity(e, f) {
+    switch (e.type) {
+        case 'singleton':
+            return { type: 'singleton', data: f(e.data) };
+        case 'pair':
+            return { type: 'pair', fst: mapArity(e.fst, f), snd: mapArity(e.snd, f) };
+    }
+}
+exports.mapArity = mapArity;
+function arityToTuple(arity) {
+    if (arity.type == 'singleton') {
+        return arity.data;
+    }
+    else if (arity.type == 'pair') {
+        return [arityToTuple(arity.fst), arityToTuple(arity.snd)];
+    }
+    else {
+        throw new Error('unreachable');
+    }
+}
+exports.arityToTuple = arityToTuple;
 const compute_dag_1 = require("./compute_dag");
 Object.defineProperty(exports, "buildDAG", { enumerable: true, get: function () { return compute_dag_1.buildDAG; } });
 //# sourceMappingURL=dag.js.map

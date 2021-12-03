@@ -243,7 +243,7 @@ class Orchestrator {
       })
     })
 
-    const runnableDag: RunnableCloudDag = new RunnableDag(cloudDag)
+    const runnableDag: RunnableCloudDag = new RunnableDag(cloudDag, 'cloud')
     runnableDag.runFnHere = (run_fn, run_seq_id, run_arg, run_done) => {
       const task: ExecTask = { 
         deploy_id: run_fn.deploy_id, 

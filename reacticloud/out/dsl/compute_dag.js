@@ -75,14 +75,6 @@ function computePathArcs(e_tmp) {
     }
     return computePathArcs_rec(e_tmp, []);
 }
-function mapArity(e, f) {
-    switch (e.type) {
-        case 'singleton':
-            return { type: 'singleton', data: f(e.data) };
-        case 'pair':
-            return { type: 'pair', fst: mapArity(e.fst, f), snd: mapArity(e.snd, f) };
-    }
-}
 function evaluateToDAG(e_tmp) {
     const argDatas = new Map();
     const outputDatas = new Map();
@@ -166,7 +158,7 @@ function evaluateToDAG(e_tmp) {
         });
     });
     const paramShapes = new Map(Array.from(argDatas.entries()).map(([f_id, a]) => {
-        return [f_id, mapArity(a, (s) => null)];
+        return [f_id, (0, dag_1.mapArity)(a, (s) => null)];
     }));
     const nodes = new Map(Array.from(functions.entries()).map(([f_id, def]) => {
         const param_shape = paramShapes.get(f_id);

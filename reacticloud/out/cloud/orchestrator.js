@@ -182,7 +182,7 @@ class Orchestrator {
                 }
             });
         });
-        const runnableDag = new dag_runner_1.RunnableDag(cloudDag);
+        const runnableDag = new dag_runner_1.RunnableDag(cloudDag, 'cloud');
         runnableDag.runFnHere = (run_fn, run_seq_id, run_arg, run_done) => {
             const task = {
                 deploy_id: run_fn.deploy_id,

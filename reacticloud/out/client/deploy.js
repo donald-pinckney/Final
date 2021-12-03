@@ -2,10 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deploy = void 0;
 const dag_1 = require("../dsl/dag");
-// import { deploymentRequestForSF } from "../dsl/deployment_request"
-// import { Location } from "../dsl/sf"
-const socket_io_client_1 = require("socket.io-client");
 const dag_runner_1 = require("../dsl/dag_runner");
+const socket_io_client_1 = require("socket.io-client");
 const SEND_NUM_THRESHOLD = 10;
 const SEND_MS_THRESHOLD = 1000;
 const socketsMap = new Map();

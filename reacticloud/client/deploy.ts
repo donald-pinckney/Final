@@ -1,15 +1,12 @@
-import { SF, SF_fn, Location, LocationConstraint } from "../dsl/sf"
+import { SF, SF_fn } from "../dsl/sf"
 import { buildDAG, Dag, Selector } from "../dsl/dag"
 import { ClientToServerEvents, ServerToClientEvents, FunctionDeployData, RelativeLocation } from "../client-server-messages/lib"
-import { placementListToMap, PlacementMap, SF_core_deployed } from "../client-server-messages/deployed_sf"
-
-// import { deploymentRequestForSF } from "../dsl/deployment_request"
-// import { Location } from "../dsl/sf"
-
-import { io, Socket } from "socket.io-client";
-import * as util from "util"
 import { mapPartitionedFn, PartitionedFn, RunnableDag, partitionDag } from "../dsl/dag_runner";
 import { FunctionTraceDataSerialized, InputTraceData, InputTraceDataSerialized } from "../client-server-messages/trace_data";
+
+import { io, Socket } from "socket.io-client";
+
+import * as util from "util"
 
 
 const SEND_NUM_THRESHOLD = 10

@@ -1,13 +1,7 @@
 "use strict";
-// import { Server, Socket } from "socket.io"
-// import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData, FunctionDeployData, RelativeLocation, Role } from "../client-server-messages/lib"
-// import { PlacementMap, placementMapToList, SF_core_deployed, SF_arr_deployed, SF_then_deployed, SF_first_deployed, Arr_Deployment } from "../client-server-messages/deployed_sf"
-// import { Location } from "../dsl/sf"
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Worker = void 0;
 const node_worker_threads_pool_1 = require("node-worker-threads-pool");
-// import * as util from "util"
-// import { Selector, SerializedDag } from "../dsl/dag"
 const socket_io_client_1 = require("socket.io-client");
 class Worker {
     constructor(address, port) {

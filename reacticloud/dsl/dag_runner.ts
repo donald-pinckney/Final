@@ -1,4 +1,4 @@
-import { Arity, arityToTuple, Dag, mapArity, Selector, SerializedDag, SymbolicValue } from "./dag"
+import { Arity, arityToTuple, Dag, mapArity, Selector, SymbolicValue } from "./dag"
 import { RelativeLocation } from "../client-server-messages/lib"
 import { InputTraceData, FunctionTraceData, FunctionTraceRow } from "../client-server-messages/trace_data"
 import { Location, LocationConstraint } from "../dsl/sf"

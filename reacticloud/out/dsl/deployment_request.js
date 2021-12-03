@@ -1,7 +1,6 @@
 "use strict";
 // import { normalized } from "./sf"
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deserialize = void 0;
 // function deploymentRequestForSF(e: normalized): request<string> {
 //   throw new Error("TODO")
 //   // const req_fn: request_fn<string> = 
@@ -45,5 +44,4 @@ function deserialize(serialized) {
     //   throw new Error(`Error: unknown serialized type: ${serialized}`)
     // }
 }
-exports.deserialize = deserialize;
 //# sourceMappingURL=deployment_request.js.map

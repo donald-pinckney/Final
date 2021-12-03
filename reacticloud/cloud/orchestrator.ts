@@ -1,14 +1,12 @@
-import { Server, Socket } from "socket.io"
 import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData, FunctionDeployData, RelativeLocation, Role } from "../client-server-messages/lib"
-import { PlacementMap, placementMapToList, SF_core_deployed, SF_arr_deployed, SF_then_deployed, SF_first_deployed, Arr_Deployment } from "../client-server-messages/deployed_sf"
-import { Location } from "../dsl/sf"
-
-import * as util from "util"
 import { Dag, Selector, SerializedDag } from "../dsl/dag"
 import { FunctionTraceData, InputTraceData, FunctionTraceDataSerialized, InputTraceDataSerialized } from "../client-server-messages/trace_data"
-
 import { mapPartitionedFn, PartitionedFn, RunnableDag, partitionDag } from "../dsl/dag_runner";
 import { computeLocations, partitionComplement, relativizeLocations } from "./compute_partition"
+
+import { Server, Socket } from "socket.io"
+
+import * as util from "util"
 
 
 type OrchestratorSocket = Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>

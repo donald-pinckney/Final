@@ -1,6 +1,3 @@
-// import { SF_deployment_request_serialized } from "../dsl/deployment_request"
-import { Location } from "../dsl/sf"
-
 import { Selector, SerializedDag } from "../dsl/dag"
 import { FunctionTraceDataSerialized, InputTraceDataSerialized } from "./trace_data"
 

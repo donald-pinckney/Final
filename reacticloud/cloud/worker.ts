@@ -1,21 +1,9 @@
-// import { Server, Socket } from "socket.io"
-// import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData, FunctionDeployData, RelativeLocation, Role } from "../client-server-messages/lib"
-// import { PlacementMap, placementMapToList, SF_core_deployed, SF_arr_deployed, SF_then_deployed, SF_first_deployed, Arr_Deployment } from "../client-server-messages/deployed_sf"
-// import { Location } from "../dsl/sf"
+import { ClientToServerEvents, ServerToClientEvents } from "../client-server-messages/lib"
 
 import { DynamicPool } from "node-worker-threads-pool" 
-
-// import * as util from "util"
-// import { Selector, SerializedDag } from "../dsl/dag"
-
-
-
-
 import { io, Socket } from "socket.io-client";
-import * as util from "util"
-import { PartitionedFn, RunnableDag } from "../dsl/dag_runner";
-import { ClientToServerEvents, ServerToClientEvents, FunctionDeployData, RelativeLocation } from "../client-server-messages/lib"
 
+import * as util from "util"
 
 
 type WorkerSocket = Socket<ServerToClientEvents, ClientToServerEvents>

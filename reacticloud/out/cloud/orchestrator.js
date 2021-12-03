@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Orchestrator = void 0;
-const socket_io_1 = require("socket.io");
 const dag_1 = require("../dsl/dag");
 const dag_runner_1 = require("../dsl/dag_runner");
 const compute_partition_1 = require("./compute_partition");
+const socket_io_1 = require("socket.io");
 class Orchestrator {
     constructor() {
         this.io = new socket_io_1.Server();

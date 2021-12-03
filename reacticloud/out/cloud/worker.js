@@ -14,23 +14,22 @@ class Worker {
     }
     receiveWorkerRunFn(x, dep_id, fn_id, done) {
         const fnKey = `fn-${dep_id}-${fn_id}`;
-        const maybeFn = this.preparedFunctions.get(fnKey);
-        if (maybeFn == undefined) {
+        const maybeFnSrc = this.preparedFunctions.get(fnKey);
+        if (maybeFnSrc == undefined) {
             console.log(`Requesting source code for function (dep_id=${dep_id}, fn_id=${fn_id}) from orchestrator`);
             this.requestFn(dep_id, fn_id, src => {
                 console.log(`Received src (dep_id=${dep_id}, fn_id=${fn_id}) = ${src}`);
-                const newFn = eval(src);
-                this.preparedFunctions.set(fnKey, newFn);
-                // newFn(x, done)
+                this.preparedFunctions.set(fnKey, src);
                 this.threadPool.exec({
-                    task: ([threadFuncArg, threadFunc]) => {
+                    task: ([threadFuncArg, threadFuncSrc]) => {
+                        const threadFunc = eval(threadFuncSrc);
                         return new Promise((resolve, reject) => {
                             threadFunc(threadFuncArg, (r) => {
                                 resolve(r);
                             });
                         });
                     },
-                    param: [x, newFn]
+                    param: [x, src]
                 }).then(result => {
                     done(result);
                 });
@@ -39,14 +38,15 @@ class Worker {
         else {
             // maybeFn(x, done)
             this.threadPool.exec({
-                task: ([threadFuncArg, threadFunc]) => {
+                task: ([threadFuncArg, threadFuncSrc]) => {
+                    const threadFunc = eval(threadFuncSrc);
                     return new Promise((resolve, reject) => {
                         threadFunc(threadFuncArg, (r) => {
                             resolve(r);
                         });
                     });
                 },
-                param: [x, maybeFn]
+                param: [x, maybeFnSrc]
             }).then(result => {
                 done(result);
             });

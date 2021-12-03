@@ -83,24 +83,6 @@ class RunnableDag<F> {
   acceptInitialInput(input: any, seq_id: number) {
     this.input_count++
 
-    const initialState = this.dag.map((fn_id, f_data_part) => {
-      const node = this.dag.getNode(fn_id)
-      const shape = node.param_shape
-      const card = arityCardinality(shape)
-      return mapPartitionedFn(f_data_part, _f_data => {
-        const initialFnState: InputState = {
-          arity_cardinality: card,
-          received_input_count: 0,
-          input_values: mapArity(shape, _null => {
-            return { type: 'unavailable' }
-          })
-        }
-        return initialFnState
-      })
-    })
-
-    this.inputStates.set(seq_id, initialState)
-
     this.sendOutputs(seq_id, input, this.dag.initial_wires, 'initial')
   }
 
@@ -173,8 +155,35 @@ class RunnableDag<F> {
     }
   }
 
+  getLazySeqInputStates(seq_id: number): Dag<PartitionedFn<InputState>> {
+    const maybeState = this.inputStates.get(seq_id)
+
+    if(maybeState != undefined) {
+      return maybeState
+    } else {
+      const initialState = this.dag.map((fn_id, f_data_part) => {
+        const node = this.dag.getNode(fn_id)
+        const shape = node.param_shape
+        const card = arityCardinality(shape)
+        return mapPartitionedFn(f_data_part, _f_data => {
+          const initialFnState: InputState = {
+            arity_cardinality: card,
+            received_input_count: 0,
+            input_values: mapArity(shape, _null => {
+              return { type: 'unavailable' }
+            })
+          }
+          return initialFnState
+        })
+      })
+
+      this.inputStates.set(seq_id, initialState)
+      return initialState
+    }
+  }
+
   localInputAvailable(x: any, for_fn: number, input_seq_id: number, selector: Selector[]) {
-    const seq_state = this.inputStates.get(input_seq_id)
+    const seq_state = this.getLazySeqInputStates(input_seq_id)
     if(seq_state === undefined) {
       throw new Error('unreachable')
     }

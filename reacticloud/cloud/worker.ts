@@ -10,7 +10,7 @@ type WorkerSocket = Socket<ServerToClientEvents, ClientToServerEvents>
 
 class Worker {
   socket: WorkerSocket
-  preparedFunctions: Map<string, (arg: any, cont: (r: any) => void) => void>
+  preparedFunctions: Map<string, string>
   threadPool: DynamicPool
 
   constructor(address: string, port: number) {
@@ -25,27 +25,27 @@ class Worker {
 
   receiveWorkerRunFn(x: any, dep_id: number, fn_id: number, done: (r: any) => void) {
     const fnKey = `fn-${dep_id}-${fn_id}`
-    const maybeFn = this.preparedFunctions.get(fnKey)
+    const maybeFnSrc = this.preparedFunctions.get(fnKey)
 
-    if(maybeFn == undefined) {
+    if(maybeFnSrc == undefined) {
       console.log(`Requesting source code for function (dep_id=${dep_id}, fn_id=${fn_id}) from orchestrator`)
       this.requestFn(dep_id, fn_id, src => {
         console.log(`Received src (dep_id=${dep_id}, fn_id=${fn_id}) = ${src}`)
 
-        const newFn = eval(src) as (arg: any, cont: (r: any) => void) => void
-        this.preparedFunctions.set(fnKey, newFn)
+        this.preparedFunctions.set(fnKey, src)
 
-        // newFn(x, done)
 
         this.threadPool.exec({
-          task: ([threadFuncArg, threadFunc]) => { 
+          task: ([threadFuncArg, threadFuncSrc]) => {
+            const threadFunc = eval(threadFuncSrc) as (arg: any, cont: (r: any) => void) => void
+
             return new Promise((resolve, reject) => {
               threadFunc(threadFuncArg, (r: any) => {
                 resolve(r)
               })
             })
           },
-          param: [x, newFn]
+          param: [x, src]
         }).then(result => {
           done(result)
         })
@@ -55,14 +55,16 @@ class Worker {
       // maybeFn(x, done)
 
       this.threadPool.exec({
-        task: ([threadFuncArg, threadFunc]) => { 
+        task: ([threadFuncArg, threadFuncSrc]) => { 
+          const threadFunc = eval(threadFuncSrc) as (arg: any, cont: (r: any) => void) => void
+
           return new Promise((resolve, reject) => {
             threadFunc(threadFuncArg, (r: any) => {
               resolve(r)
             })
           })
         },
-        param: [x, maybeFn]
+        param: [x, maybeFnSrc]
       }).then(result => {
         done(result)
       })

@@ -61,22 +61,6 @@ class RunnableDag {
     }
     acceptInitialInput(input, seq_id) {
         this.input_count++;
-        const initialState = this.dag.map((fn_id, f_data_part) => {
-            const node = this.dag.getNode(fn_id);
-            const shape = node.param_shape;
-            const card = arityCardinality(shape);
-            return mapPartitionedFn(f_data_part, _f_data => {
-                const initialFnState = {
-                    arity_cardinality: card,
-                    received_input_count: 0,
-                    input_values: (0, dag_1.mapArity)(shape, _null => {
-                        return { type: 'unavailable' };
-                    })
-                };
-                return initialFnState;
-            });
-        });
-        this.inputStates.set(seq_id, initialState);
         this.sendOutputs(seq_id, input, this.dag.initial_wires, 'initial');
     }
     sendOutputs(seq_id, x, wires, initialOrSrcFnTime) {
@@ -141,8 +125,33 @@ class RunnableDag {
             this.sendInputThere(toSendJSON, dstFn, seq_id, to.path);
         }
     }
+    getLazySeqInputStates(seq_id) {
+        const maybeState = this.inputStates.get(seq_id);
+        if (maybeState != undefined) {
+            return maybeState;
+        }
+        else {
+            const initialState = this.dag.map((fn_id, f_data_part) => {
+                const node = this.dag.getNode(fn_id);
+                const shape = node.param_shape;
+                const card = arityCardinality(shape);
+                return mapPartitionedFn(f_data_part, _f_data => {
+                    const initialFnState = {
+                        arity_cardinality: card,
+                        received_input_count: 0,
+                        input_values: (0, dag_1.mapArity)(shape, _null => {
+                            return { type: 'unavailable' };
+                        })
+                    };
+                    return initialFnState;
+                });
+            });
+            this.inputStates.set(seq_id, initialState);
+            return initialState;
+        }
+    }
     localInputAvailable(x, for_fn, input_seq_id, selector) {
-        const seq_state = this.inputStates.get(input_seq_id);
+        const seq_state = this.getLazySeqInputStates(input_seq_id);
         if (seq_state === undefined) {
             throw new Error('unreachable');
         }

@@ -41,7 +41,7 @@ class SF<A, B> {
       const fAsync = (x: A, cont: (r: B) => void) => cont(f(x))
       return SF.arrAsync(fAsync, constraint)
     } else {
-      const fAsyncStr = `(_arg, cont) => cont((${f.toString()})(_arg))`
+      const fAsyncStr = `(_arg, cont) => { return cont((${f.toString()})(_arg)) }`
       const fAsync = eval(fAsyncStr)
       return SF.arrAsync(fAsync, constraint)
     }

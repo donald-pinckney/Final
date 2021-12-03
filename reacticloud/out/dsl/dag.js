@@ -11,7 +11,7 @@ class Dag {
     }
     serialize() {
         return {
-            nodes: new Map(Array.from(this.nodes).map(([id, fn]) => [id, fn.serialize()])),
+            nodes: Array.from(this.nodes).map(([id, fn]) => [id, fn.serialize()]),
             initial_wires: this.initial_wires
         };
     }
@@ -23,7 +23,7 @@ class Dag {
         return mNode;
     }
     static deserialize(s) {
-        return new Dag(new Map(Array.from(s.nodes).map(([id, fn]) => [id, DagFunction.deserialize(fn)])), s.initial_wires);
+        return new Dag(new Map(s.nodes.map(([id, fn]) => [id, DagFunction.deserialize(fn)])), s.initial_wires);
     }
 }
 exports.Dag = Dag;

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sf_1 = require("../dsl/sf");
-const deploy_1 = require("../client/deploy");
+const sf_1 = require("../../dsl/sf");
+const deploy_1 = require("../../client/deploy");
 const f0 = sf_1.SF.arr((x) => x + 100);
 const f1 = sf_1.SF.arr((x) => x + 5);
 const f2 = sf_1.SF.arr((x) => x * 2);

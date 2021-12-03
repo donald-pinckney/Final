@@ -65,7 +65,7 @@ class RunnableDag<F> {
   private here: Location
 
   runFnHere?: (fn: F, seq_id: number, arg: any, done: (r: any) => void) => void
-  sendInputThere?: (x: any, fn_id: number, input_seq_id: number, selector: Selector[]) => void
+  sendInputThere?: (x: string, fn_id: number, input_seq_id: number, selector: Selector[]) => void
 
   constructor(dag: Dag<PartitionedFn<F>>, here: Location) {
     this.dag = dag
@@ -110,6 +110,8 @@ class RunnableDag<F> {
 
   sendOutput(seq_id: number, x: any, from: Selector[], to: SymbolicValue, initialOrSrcFnTime: 'initial' | [number, number]) {
     const toSend = extractSelector(x, from)
+    const toSendJSON = JSON.stringify(toSend)
+
     const dstFn = to.fn_id_or_input
     if(dstFn == 'input') {
       throw new Error('BUG: cant send back to the input')
@@ -127,7 +129,7 @@ class RunnableDag<F> {
       }
       row.push({ 
         out_selector: from, 
-        bytes: JSON.stringify(toSend).length
+        bytes: toSendJSON.length
       })
     } else {
       const srcFn = initialOrSrcFnTime[0]
@@ -153,7 +155,7 @@ class RunnableDag<F> {
       }
       row.output_sizes.push({
         out_selector: from,
-        bytes: JSON.stringify(toSend).length
+        bytes: toSendJSON.length
       })
     }
 
@@ -167,7 +169,7 @@ class RunnableDag<F> {
       if(this.sendInputThere === undefined) {
         throw new Error('unreachable')
       }
-      this.sendInputThere(toSend, dstFn, seq_id, to.path)
+      this.sendInputThere(toSendJSON, dstFn, seq_id, to.path)
     }
   }
 
@@ -198,11 +200,17 @@ class RunnableDag<F> {
         throw new Error('unreachable')
       }
 
-      const fn_arg = arityToTuple(state_data.input_values)
+      const preparedInputValues = mapArity(state_data.input_values, iv => {
+        if(iv.type == 'unavailable') {
+          throw new Error('unreachble')
+        }
+        return iv.data
+      })
+      const fn_arg = arityToTuple(preparedInputValues)
       
-      const startTime = performance.now()
+      const startTime = Date.now()
       this.runFnHere(fn, input_seq_id, fn_arg, fn_return => {
-        const dt = performance.now() - startTime
+        const dt = Date.now() - startTime
         const out_wires = fn_node.output_wires
         this.sendOutputs(input_seq_id, fn_return, out_wires, [for_fn, dt])
       })
@@ -223,7 +231,7 @@ class RunnableDag<F> {
         return drainMap(traceData)
       }
     })
-    // TODO: note: this should drain from self to save mem!
+
     return {
       inputs: retInputs,
       fns: retFns

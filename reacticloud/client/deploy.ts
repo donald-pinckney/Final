@@ -104,8 +104,8 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
       original_runnableDag.runFnHere = (fn, seq_id, arg, done) => {
         fn(arg, done)
       }
-      original_runnableDag.sendInputThere = (x, fn_id, input_seq_id, selector) => {
-        socket.emit('input_available', x, original_deploy_id, fn_id, input_seq_id, selector)
+      original_runnableDag.sendInputThere = (xJSON, fn_id, input_seq_id, selector) => {
+        socket.emit('input_available', xJSON, original_deploy_id, fn_id, input_seq_id, selector)
       }
 
       deployments.set(current_dep_id, original_runnableDag)
@@ -130,8 +130,8 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
         new_runnableDag.runFnHere = (fn, seq_id, arg, done) => {
           fn(arg, done)
         }
-        new_runnableDag.sendInputThere = (x, fn_id, input_seq_id, selector) => {
-          socket.emit('input_available', x, new_deploy_id, fn_id, input_seq_id, selector)
+        new_runnableDag.sendInputThere = (xJSON, fn_id, input_seq_id, selector) => {
+          socket.emit('input_available', xJSON, new_deploy_id, fn_id, input_seq_id, selector)
         }
 
         input_available_callbacks.set(addressPortDeployIdNew, (x, fn_id, input_seq_id, selector) => {

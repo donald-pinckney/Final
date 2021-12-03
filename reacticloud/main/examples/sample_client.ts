@@ -1,5 +1,5 @@
-import { SF, SF_core } from "../dsl/sf"
-import { deploy } from "../client/deploy"
+import { SF, SF_core } from "../../dsl/sf"
+import { deploy } from "../../client/deploy"
 
 import * as util from "util"
 

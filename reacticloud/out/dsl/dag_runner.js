@@ -84,6 +84,7 @@ class RunnableDag {
     }
     sendOutput(seq_id, x, from, to, initialOrSrcFnTime) {
         const toSend = extractSelector(x, from);
+        const toSendJSON = JSON.stringify(toSend);
         const dstFn = to.fn_id_or_input;
         if (dstFn == 'input') {
             throw new Error('BUG: cant send back to the input');
@@ -99,7 +100,7 @@ class RunnableDag {
             }
             row.push({
                 out_selector: from,
-                bytes: JSON.stringify(toSend).length
+                bytes: toSendJSON.length
             });
         }
         else {
@@ -124,7 +125,7 @@ class RunnableDag {
             }
             row.output_sizes.push({
                 out_selector: from,
-                bytes: JSON.stringify(toSend).length
+                bytes: toSendJSON.length
             });
         }
         const destPartData = this.dag.getNode(dstFn);
@@ -137,7 +138,7 @@ class RunnableDag {
             if (this.sendInputThere === undefined) {
                 throw new Error('unreachable');
             }
-            this.sendInputThere(toSend, dstFn, seq_id, to.path);
+            this.sendInputThere(toSendJSON, dstFn, seq_id, to.path);
         }
     }
     localInputAvailable(x, for_fn, input_seq_id, selector) {
@@ -162,10 +163,16 @@ class RunnableDag {
             if (this.runFnHere === undefined) {
                 throw new Error('unreachable');
             }
-            const fn_arg = (0, dag_1.arityToTuple)(state_data.input_values);
-            const startTime = performance.now();
+            const preparedInputValues = (0, dag_1.mapArity)(state_data.input_values, iv => {
+                if (iv.type == 'unavailable') {
+                    throw new Error('unreachble');
+                }
+                return iv.data;
+            });
+            const fn_arg = (0, dag_1.arityToTuple)(preparedInputValues);
+            const startTime = Date.now();
             this.runFnHere(fn, input_seq_id, fn_arg, fn_return => {
-                const dt = performance.now() - startTime;
+                const dt = Date.now() - startTime;
                 const out_wires = fn_node.output_wires;
                 this.sendOutputs(input_seq_id, fn_return, out_wires, [for_fn, dt]);
             });
@@ -185,7 +192,6 @@ class RunnableDag {
                 return drainMap(traceData);
             }
         });
-        // TODO: note: this should drain from self to save mem!
         return {
             inputs: retInputs,
             fns: retFns

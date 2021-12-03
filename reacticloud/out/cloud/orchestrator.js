@@ -22,7 +22,7 @@ class Orchestrator {
             socket.on('client_orch_deploy', (dag, callback) => this.receiveDeployRequest(socket, dag, callback));
             socket.on('client_orch_send_traces', (original_deploy_id, fns_data, inputs_data) => this.receiveTraces(socket, original_deploy_id, fns_data, inputs_data));
             socket.on('iam', (role) => this.receiveIam(socket, role));
-            socket.on('input_available', (x, dep_id, fn_id, input_seq_id, selector) => this.receiveInputAvailable(socket, x, dep_id, fn_id, input_seq_id, selector));
+            socket.on('input_available', (xJSON, dep_id, fn_id, input_seq_id, selector) => this.receiveInputAvailable(socket, xJSON, dep_id, fn_id, input_seq_id, selector));
             socket.on('worker_request_fn', (dep_id, fn_id, callback) => this.receiveWorkerRequestFn(socket, dep_id, fn_id, callback));
         });
     }
@@ -162,12 +162,13 @@ class Orchestrator {
             socket.emit('updated_deployment', original_deploy_id, new_deploy_id, partitionResponse);
         }
     }
-    receiveInputAvailable(socket, x, dep_id, fn_id, input_seq_id, selector) {
+    receiveInputAvailable(socket, xJSON, dep_id, fn_id, input_seq_id, selector) {
         console.log("Received input available from socket: " + socket.id);
         const runningDag = this.deployments.get(dep_id);
         if (runningDag === undefined) {
             throw new Error('deployment not found: ' + dep_id);
         }
+        const x = JSON.parse(xJSON);
         runningDag.localInputAvailable(x, fn_id, input_seq_id, selector);
     }
     receiveWorkerRequestFn(socket, dep_id, fn_id, callback) {

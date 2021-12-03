@@ -13,7 +13,7 @@ class Dag<F> {
 
   serialize(): SerializedDag<F> {
     return { 
-      nodes: new Map(Array.from(this.nodes).map(([id, fn]) => [id, fn.serialize()])), 
+      nodes: Array.from(this.nodes).map(([id, fn]) => [id, fn.serialize()]), 
       initial_wires: this.initial_wires 
     }
   }
@@ -28,7 +28,7 @@ class Dag<F> {
 
   static deserialize<G>(s: SerializedDag<G>): Dag<G> {
     return new Dag(
-      new Map(Array.from(s.nodes).map(([id, fn]) => [id, DagFunction.deserialize(fn)])), 
+      new Map(s.nodes.map(([id, fn]) => [id, DagFunction.deserialize(fn)])), 
       s.initial_wires)
   }
 }
@@ -93,7 +93,7 @@ function arityToTuple<T>(arity: Arity<T>): NestedTuple<T> {
 }
 
 type SerializedDag<F> = {
-  nodes: Map<number, SerializedDagFunction<F>>
+  nodes: [number, SerializedDagFunction<F>][]
   initial_wires: { from: Selector[], to: SymbolicValue }[]
 }
 

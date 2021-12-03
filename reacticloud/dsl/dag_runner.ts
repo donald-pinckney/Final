@@ -1,6 +1,6 @@
 import { Arity, arityToTuple, Dag, mapArity, Selector, SerializedDag, SymbolicValue } from "./dag"
 import { RelativeLocation } from "../client-server-messages/lib"
-import { InputTraceData, FunctionTraceData } from "../client-server-messages/trace_data"
+import { InputTraceData, FunctionTraceData, FunctionTraceRow } from "../client-server-messages/trace_data"
 import { Location, LocationConstraint } from "../dsl/sf"
 
 
@@ -214,8 +214,20 @@ class RunnableDag<F> {
   }
 
   extractPartialTraceData(): { inputs: InputTraceData, fns: Dag<FunctionTraceData> } {
+    const retInputs = drainMap(this.inputTraceData)
+    const retFns = this.functionTraceData.map((_fn_id, part_data) => {
+      if(part_data.location == 'there') {
+        return new Map<number, FunctionTraceRow>()
+      } else {
+        const traceData = part_data.fn
+        return drainMap(traceData)
+      }
+    })
     // TODO: note: this should drain from self to save mem!
-    throw new Error("TODO")
+    return {
+      inputs: retInputs,
+      fns: retFns
+    }
   }
 }
 
@@ -250,6 +262,13 @@ function partitionDag<F extends { constraint: LocationConstraint }>(dag: Dag<F>,
       throw new Error(`BUG: unreachable`)
     }
   })
+}
+
+
+function drainMap<K, V>(m: Map<K, V>): Map<K, V> {
+  const mCopy = new Map(Array.from(m.entries()))
+  m.clear()
+  return mCopy
 }
 
 export {

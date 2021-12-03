@@ -12,6 +12,11 @@ import { mapPartitionedFn, PartitionedFn, RunnableDag, partitionDag } from "../d
 import { FunctionTraceDataSerialized, InputTraceData, InputTraceDataSerialized } from "../client-server-messages/trace_data";
 
 
+const SEND_NUM_THRESHOLD = 10
+const SEND_MS_THRESHOLD = 1000
+
+
+
 const socketsMap: Map<string, Socket<ServerToClientEvents, ClientToServerEvents>> = new Map()
 
 const input_available_callbacks: Map<string, (x: any, fn_id: number, input_seq_id: number, selector: Selector[]) => void> = new Map()
@@ -73,10 +78,6 @@ function stripClientFunction(id: number, f: SF_fn): FunctionDeployData {
 
 type ClientDag = Dag<PartitionedFn<(arg: any, cont: (r: any) => void) => void>>
 
-
-
-const SEND_NUM_THRESHOLD = 10
-const SEND_MS_THRESHOLD = 1000
 
 function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<RunnableSF<A, B>> {
   const addressPort = `${address}:${port}`

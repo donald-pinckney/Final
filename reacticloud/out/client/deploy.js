@@ -6,6 +6,8 @@ const dag_1 = require("../dsl/dag");
 // import { Location } from "../dsl/sf"
 const socket_io_client_1 = require("socket.io-client");
 const dag_runner_1 = require("../dsl/dag_runner");
+const SEND_NUM_THRESHOLD = 10;
+const SEND_MS_THRESHOLD = 1000;
 const socketsMap = new Map();
 const input_available_callbacks = new Map();
 const updated_deployment_callbacks = new Map();
@@ -53,8 +55,6 @@ function stripClientFunction(id, f) {
         return { constraint: f.constraint, fnSrc: f.fn.toString() };
     }
 }
-const SEND_NUM_THRESHOLD = 10;
-const SEND_MS_THRESHOLD = 1000;
 function deploy(address, port, sf) {
     const addressPort = `${address}:${port}`;
     const socket = getSocket(address, port);

@@ -175,8 +175,21 @@ class RunnableDag {
         return this.input_count;
     }
     extractPartialTraceData() {
+        const retInputs = drainMap(this.inputTraceData);
+        const retFns = this.functionTraceData.map((_fn_id, part_data) => {
+            if (part_data.location == 'there') {
+                return new Map();
+            }
+            else {
+                const traceData = part_data.fn;
+                return drainMap(traceData);
+            }
+        });
         // TODO: note: this should drain from self to save mem!
-        throw new Error("TODO");
+        return {
+            inputs: retInputs,
+            fns: retFns
+        };
     }
 }
 exports.RunnableDag = RunnableDag;
@@ -218,4 +231,9 @@ function partitionDag(dag, partition, herePlace) {
     });
 }
 exports.partitionDag = partitionDag;
+function drainMap(m) {
+    const mCopy = new Map(Array.from(m.entries()));
+    m.clear();
+    return mCopy;
+}
 //# sourceMappingURL=dag_runner.js.map

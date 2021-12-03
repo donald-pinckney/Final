@@ -7,7 +7,7 @@ class Dag<F> {
     this.initial_wires = initial_wires
   }
 
-  map<G>(f: (x: F) => G): Dag<G> {
+  map<G>(f: (fn_id: number, x: F) => G): Dag<G> {
     return new Dag(new Map(Array.from(this.nodes.entries()).map(([id, fn]) => [id, fn.map(f)])), this.initial_wires)
   }
 
@@ -16,6 +16,14 @@ class Dag<F> {
       nodes: new Map(Array.from(this.nodes).map(([id, fn]) => [id, fn.serialize()])), 
       initial_wires: this.initial_wires 
     }
+  }
+
+  getNode(fn_id: number): DagFunction<F> {
+    const mNode = this.nodes.get(fn_id)
+    if(mNode === undefined) {
+      throw new Error("BUG: unknown node: " + fn_id)
+    }
+    return mNode
   }
 
   static deserialize<G>(s: SerializedDag<G>): Dag<G> {
@@ -38,8 +46,8 @@ class DagFunction<F> {
     this.output_wires = output_wires
   }
 
-  map<G>(f: (x: F) => G): DagFunction<G> {
-    return new DagFunction(f(this.data), this.id, this.param_shape, this.output_wires)
+  map<G>(f: (fn_id: number, x: F) => G): DagFunction<G> {
+    return new DagFunction(f(this.id, this.data), this.id, this.param_shape, this.output_wires)
   }
 
   serialize(): SerializedDagFunction<F> {

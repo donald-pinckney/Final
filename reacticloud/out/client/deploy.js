@@ -8,6 +8,7 @@ const socket_io_client_1 = require("socket.io-client");
 const dag_runner_1 = require("../dsl/dag_runner");
 const socketsMap = new Map();
 const input_available_callbacks = new Map();
+const updated_deployment_callbacks = new Map();
 function getSocket(address, port) {
     const addressPort = `${address}:${port}`;
     let sock = socketsMap.get(addressPort);
@@ -26,6 +27,17 @@ function getSocket(address, port) {
                 callback(x, fn_id, input_seq_id, selector);
             }
         });
+        sock.on("updated_deployment", (original_deploy_id, new_deploy_id, new_partition) => {
+            const addressPortDeployId = `${addressPort}:${original_deploy_id}`;
+            const callback = updated_deployment_callbacks.get(addressPortDeployId);
+            if (callback == undefined) {
+                console.log("BUG: received updated deployment for which no callback is registered!");
+                console.log(`Received updated deployment for (original_deploy_id: ${original_deploy_id}, new_deploy_id: ${new_deploy_id})`);
+            }
+            else {
+                callback(new_deploy_id, new_partition);
+            }
+        });
         socketsMap.set(addressPort, sock);
         return sock;
     }
@@ -33,7 +45,7 @@ function getSocket(address, port) {
         return sock;
     }
 }
-function stripClientFunction(f) {
+function stripClientFunction(id, f) {
     if (f.constraint == 'client') {
         return { constraint: 'client' };
     }
@@ -41,30 +53,8 @@ function stripClientFunction(f) {
         return { constraint: f.constraint, fnSrc: f.fn.toString() };
     }
 }
-function partitionClientDag(dag, partition) {
-    return dag.map(sf => {
-        const id = sf.uniqueId;
-        const loc = partition.get(id);
-        if (loc == undefined) {
-            throw new Error(`BUG: Could not find placement for ${id}`);
-        }
-        else if (loc == 'here' && sf.constraint == 'cloud') {
-            throw new Error(`BUG: Invalid partition from orchestrator`);
-        }
-        else if (loc == 'there' && sf.constraint == 'client') {
-            throw new Error(`BUG: Invalid partition from orchestrator`);
-        }
-        else if (loc == 'here') {
-            return { location: 'here', fn: sf.fn };
-        }
-        else if (loc == 'there') {
-            return { location: 'there' };
-        }
-        else {
-            throw new Error(`BUG: unreachable`);
-        }
-    });
-}
+const SEND_NUM_THRESHOLD = 10;
+const SEND_MS_THRESHOLD = 1000;
 function deploy(address, port, sf) {
     const addressPort = `${address}:${port}`;
     const socket = getSocket(address, port);
@@ -72,20 +62,64 @@ function deploy(address, port, sf) {
     const dagStripped = dag.map(stripClientFunction);
     const request = dagStripped.serialize();
     return new Promise((resolve, reject) => {
-        socket.emit('client_orch_deploy', request, (dep_id, partitionList) => {
-            const addressPortDeployId = `${addressPort}:${dep_id}`;
+        socket.emit('client_orch_deploy', request, (original_deploy_id, partitionList) => {
+            const addressPortDeployId = `${addressPort}:${original_deploy_id}`;
             const partition = new Map(partitionList);
-            const clientDag = partitionClientDag(dag, partition);
-            const runnableDag = new dag_runner_1.RunnableDag(clientDag, (fn, arg, done) => {
-                fn(arg, done);
-            }, (x, fn_id, input_seq_id, selector) => {
-                socket.emit('input_available', x, dep_id, fn_id, input_seq_id, selector);
+            const clientDagTmp = (0, dag_runner_1.partitionDag)(dag, partition, 'client');
+            const clientDag = clientDagTmp.map((fn_id, part_sf) => {
+                return (0, dag_runner_1.mapPartitionedFn)(part_sf, sf => sf.fn);
             });
+            let current_dep_id = original_deploy_id;
+            const deployments = new Map();
+            const original_runnableDag = new dag_runner_1.RunnableDag(clientDag);
+            let last_trace_send_time_ms = Date.now();
+            original_runnableDag.runFnHere = (fn, seq_id, arg, done) => {
+                fn(arg, done);
+            };
+            original_runnableDag.sendInputThere = (x, fn_id, input_seq_id, selector) => {
+                socket.emit('input_available', x, original_deploy_id, fn_id, input_seq_id, selector);
+            };
+            deployments.set(current_dep_id, original_runnableDag);
             input_available_callbacks.set(addressPortDeployId, (x, fn_id, input_seq_id, selector) => {
-                runnableDag.localInputAvailable(x, fn_id, input_seq_id, selector);
+                original_runnableDag.localInputAvailable(x, fn_id, input_seq_id, selector);
+            });
+            updated_deployment_callbacks.set(addressPortDeployId, (new_deploy_id, newPartitionList) => {
+                const newPartition = new Map(newPartitionList);
+                const newClientDagTmp = (0, dag_runner_1.partitionDag)(dag, newPartition, 'client');
+                const newClientDag = newClientDagTmp.map((fn_id, part_sf) => {
+                    return (0, dag_runner_1.mapPartitionedFn)(part_sf, sf => sf.fn);
+                });
+                const new_runnableDag = new dag_runner_1.RunnableDag(newClientDag);
+                const addressPortDeployIdNew = `${addressPort}:${new_deploy_id}`;
+                new_runnableDag.runFnHere = (fn, seq_id, arg, done) => {
+                    fn(arg, done);
+                };
+                new_runnableDag.sendInputThere = (x, fn_id, input_seq_id, selector) => {
+                    socket.emit('input_available', x, new_deploy_id, fn_id, input_seq_id, selector);
+                };
+                input_available_callbacks.set(addressPortDeployIdNew, (x, fn_id, input_seq_id, selector) => {
+                    new_runnableDag.localInputAvailable(x, fn_id, input_seq_id, selector);
+                });
+                deployments.set(new_deploy_id, new_runnableDag);
+                current_dep_id = new_deploy_id;
             });
             resolve(initial_input => {
-                runnableDag.acceptInitialInput(initial_input);
+                const currentDag = deployments.get(current_dep_id);
+                const now = Date.now();
+                if (currentDag.getInputCount() > SEND_NUM_THRESHOLD && (now - last_trace_send_time_ms) > SEND_MS_THRESHOLD) {
+                    last_trace_send_time_ms = now;
+                    const traceData = currentDag.extractPartialTraceData();
+                    const traceDataFn = traceData.fns.map((fn_id, traces) => {
+                        return Array.from(traces.entries()).map(([seq_id, row]) => {
+                            return { seq_id: seq_id, exec_data: row };
+                        });
+                    });
+                    const traceDataInput = Array.from(traceData.inputs.entries()).map(([seq_id, row]) => {
+                        return { seq_id: seq_id, sizes: row };
+                    });
+                    socket.emit('client_orch_send_traces', original_deploy_id, traceDataFn.serialize(), traceDataInput);
+                }
+                currentDag.acceptInitialInput(initial_input);
             });
         });
     });

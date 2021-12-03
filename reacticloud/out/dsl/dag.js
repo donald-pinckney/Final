@@ -15,6 +15,13 @@ class Dag {
             initial_wires: this.initial_wires
         };
     }
+    getNode(fn_id) {
+        const mNode = this.nodes.get(fn_id);
+        if (mNode === undefined) {
+            throw new Error("BUG: unknown node: " + fn_id);
+        }
+        return mNode;
+    }
     static deserialize(s) {
         return new Dag(new Map(Array.from(s.nodes).map(([id, fn]) => [id, DagFunction.deserialize(fn)])), s.initial_wires);
     }
@@ -28,7 +35,7 @@ class DagFunction {
         this.output_wires = output_wires;
     }
     map(f) {
-        return new DagFunction(f(this.data), this.id, this.param_shape, this.output_wires);
+        return new DagFunction(f(this.id, this.data), this.id, this.param_shape, this.output_wires);
     }
     serialize() {
         return {

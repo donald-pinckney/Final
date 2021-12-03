@@ -1,4 +1,4 @@
-import { SF, SF_fn } from "../dsl/sf"
+import { SF, SF_fn, Location, LocationConstraint } from "../dsl/sf"
 import { buildDAG, Dag, Selector } from "../dsl/dag"
 import { ClientToServerEvents, ServerToClientEvents, FunctionDeployData, RelativeLocation } from "../client-server-messages/lib"
 import { placementListToMap, PlacementMap, SF_core_deployed } from "../client-server-messages/deployed_sf"
@@ -8,7 +8,8 @@ import { placementListToMap, PlacementMap, SF_core_deployed } from "../client-se
 
 import { io, Socket } from "socket.io-client";
 import * as util from "util"
-import { PartitionedFn, RunnableDag } from "../dsl/dag_runner";
+import { mapPartitionedFn, PartitionedFn, RunnableDag, partitionDag } from "../dsl/dag_runner";
+import { FunctionTraceDataSerialized, InputTraceData, InputTraceDataSerialized } from "../client-server-messages/trace_data";
 
 
 const socketsMap: Map<string, Socket<ServerToClientEvents, ClientToServerEvents>> = new Map()
@@ -62,7 +63,7 @@ type RunnableSF<A, B> = (x: A) => void
 
 
 
-function stripClientFunction(f: SF_fn): FunctionDeployData {
+function stripClientFunction(id: number, f: SF_fn): FunctionDeployData {
   if(f.constraint == 'client') {
     return { constraint: 'client' }
   } else {
@@ -72,25 +73,7 @@ function stripClientFunction(f: SF_fn): FunctionDeployData {
 
 type ClientDag = Dag<PartitionedFn<(arg: any, cont: (r: any) => void) => void>>
 
-function partitionClientDag(dag: Dag<SF_fn>, partition: Map<number, RelativeLocation>): ClientDag {
-  return dag.map(sf => {
-    const id = sf.uniqueId
-    const loc = partition.get(id)
-    if(loc == undefined) {
-      throw new Error(`BUG: Could not find placement for ${id}`)
-    } else if(loc == 'here' && sf.constraint == 'cloud') {
-      throw new Error(`BUG: Invalid partition from orchestrator`)
-    } else if(loc == 'there' && sf.constraint == 'client') {
-      throw new Error(`BUG: Invalid partition from orchestrator`)
-    } else if(loc == 'here') {
-      return { location: 'here', fn: sf.fn }
-    } else if(loc == 'there') {
-      return { location: 'there' }
-    } else {
-      throw new Error(`BUG: unreachable`)
-    }
-  })
-}
+
 
 const SEND_NUM_THRESHOLD = 10
 const SEND_MS_THRESHOLD = 1000
@@ -109,7 +92,10 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
       const addressPortDeployId = `${addressPort}:${original_deploy_id}`
 
       const partition = new Map(partitionList)
-      const clientDag = partitionClientDag(dag, partition)
+      const clientDagTmp = partitionDag(dag, partition, 'client')
+      const clientDag: ClientDag = clientDagTmp.map((fn_id, part_sf) => {
+        return mapPartitionedFn(part_sf, sf => sf.fn)
+      })
 
       let current_dep_id = original_deploy_id
       const deployments: Map<number, RunnableDag<(arg: any, cont: (r: any) => void) => void>> = new Map()
@@ -117,7 +103,7 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
 
       let last_trace_send_time_ms = Date.now()
 
-      original_runnableDag.runFnHere = (fn, arg, done) => {
+      original_runnableDag.runFnHere = (fn, seq_id, arg, done) => {
         fn(arg, done)
       }
       original_runnableDag.sendInputThere = (x, fn_id, input_seq_id, selector) => {
@@ -133,12 +119,17 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
 
       updated_deployment_callbacks.set(addressPortDeployId, (new_deploy_id, newPartitionList) => {
         const newPartition = new Map(newPartitionList)
-        const newClientDag = partitionClientDag(dag, newPartition)
+        
+        const newClientDagTmp = partitionDag(dag, newPartition, 'client')
+        const newClientDag: ClientDag = newClientDagTmp.map((fn_id, part_sf) => {
+          return mapPartitionedFn(part_sf, sf => sf.fn)
+        })
+
         const new_runnableDag = new RunnableDag(newClientDag)
 
         const addressPortDeployIdNew = `${addressPort}:${new_deploy_id}`
 
-        new_runnableDag.runFnHere = (fn, arg, done) => {
+        new_runnableDag.runFnHere = (fn, seq_id, arg, done) => {
           fn(arg, done)
         }
         new_runnableDag.sendInputThere = (x, fn_id, input_seq_id, selector) => {
@@ -159,8 +150,16 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
         const now = Date.now()
         if(currentDag.getInputCount() > SEND_NUM_THRESHOLD && (now - last_trace_send_time_ms) > SEND_MS_THRESHOLD) {
           last_trace_send_time_ms = now
-          const traceData = currentDag.getPartialTraceData()
-          socket.emit('client_orch_send_traces', original_deploy_id, traceData.fns, traceData.inputs)
+          const traceData = currentDag.extractPartialTraceData()
+          const traceDataFn: Dag<FunctionTraceDataSerialized> = traceData.fns.map((fn_id, traces) => {
+            return Array.from(traces.entries()).map(([seq_id, row]) => {
+              return {seq_id: seq_id, exec_data: row}
+            })
+          })
+          const traceDataInput: InputTraceDataSerialized = Array.from(traceData.inputs.entries()).map(([seq_id, row]) => {
+            return {seq_id: seq_id, sizes: row}
+          })
+          socket.emit('client_orch_send_traces', original_deploy_id, traceDataFn.serialize(), traceDataInput)
         }
 
         currentDag.acceptInitialInput(initial_input)

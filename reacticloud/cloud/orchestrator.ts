@@ -38,7 +38,8 @@ class Orchestrator {
       cors: {
         origin: "*",
         methods: ["GET", "POST", "PUT"]
-      }
+      },
+      maxHttpBufferSize: 1e8    // 100 MB
     })
     this.unique_deployment_id = 0
     this.original_deploy_requests = new Map()
@@ -57,6 +58,7 @@ class Orchestrator {
       socket.on('iam', (role) => this.receiveIam(socket, role))
       socket.on('input_available', (xJSON, dep_id, fn_id, input_seq_id, selector) => this.receiveInputAvailable(socket, xJSON, dep_id, fn_id, input_seq_id, selector))
       socket.on('worker_request_fn', (dep_id, fn_id, callback) => this.receiveWorkerRequestFn(socket, dep_id, fn_id, callback))
+      socket.on('worker_result', (task_deploy_id, task_fn_id, task_seq_id, result) => this.receivedWorkerResult(socket, task_deploy_id, task_fn_id, task_seq_id, result))
     })
 
     
@@ -87,18 +89,20 @@ class Orchestrator {
       console.log("Client disconnected: " + socket.id)
     } else if(this.workers.has(socket.id)) {
       console.log("Worker disconnected: " + socket.id)
+      console.log("IGNORING")
+      return
 
-      const workerData = this.workers.get(socket.id)
-      if(workerData === undefined) {
-        throw new Error("unreachable")
-      }
-      const toReschedule = workerData[1]
+      // const workerData = this.workers.get(socket.id)
+      // if(workerData === undefined) {
+      //   throw new Error("unreachable")
+      // }
+      // const toReschedule = workerData[1]
 
-      this.workers.delete(socket.id)
+      // this.workers.delete(socket.id)
 
-      toReschedule.forEach(task => {
-        this.scheduleExecTask(task)
-      })
+      // toReschedule.forEach(task => {
+      //   this.scheduleExecTask(task)
+      // })
     } else {
       console.log("Unknown socket disconnected: " + socket.id)
     }
@@ -224,7 +228,7 @@ class Orchestrator {
   }
 
   receiveInputAvailable(socket: OrchestratorSocket, xJSON: string, dep_id: number, fn_id: number, input_seq_id: number, selector: Selector[]) {
-    // console.log("Received input available from socket: " + socket.id)
+    console.log("Received input available from socket: " + socket.id)
     const runningDag = this.deployments.get(dep_id)
     if(runningDag === undefined) {
       throw new Error('deployment not found: ' + dep_id)
@@ -344,23 +348,33 @@ class Orchestrator {
     }
 
     destWorkerData[1].push(task)
-    destWorkerData[0].emit('worker_run_fn', task.arg, task.deploy_id, task.fn_id, (result) => {
-      let foundIndex = -1
-      for (let index = 0; index < destWorkerData[1].length; index++) {
-        const scheduledTask = destWorkerData[1][index];
-        if(scheduledTask.deploy_id == task.deploy_id && scheduledTask.fn_id == task.fn_id && scheduledTask.seq_id == task.seq_id) {
-          foundIndex = index
-          break
-        }
+    destWorkerData[0].emit('worker_run_fn', task.arg, task.deploy_id, task.fn_id, task.seq_id)
+  }
+
+  receivedWorkerResult(socket: OrchestratorSocket, task_deploy_id: number, task_fn_id: number, task_seq_id: number, result: any) {
+    const destWorkerData = this.workers.get(socket.id)
+    if(destWorkerData === undefined) {
+      throw new Error("unreachable")
+    }
+
+    console.log("GOT RESULT FROM WORKER!")
+    let foundIndex = -1
+    for (let index = 0; index < destWorkerData[1].length; index++) {
+      const scheduledTask = destWorkerData[1][index];
+      if(scheduledTask.deploy_id == task_deploy_id && scheduledTask.fn_id == task_fn_id && scheduledTask.seq_id == task_seq_id) {
+        foundIndex = index
+        break
       }
-    
-      if(foundIndex != -1) {
-        destWorkerData[1].splice(foundIndex, 1)
-        task.done(result)
-      } else {
-        throw new Error("BUG: couldn't find worker node for task")
-      }
-    })
+    }
+
+  
+    if(foundIndex != -1) {
+      const foundTask = destWorkerData[1][foundIndex]
+      destWorkerData[1].splice(foundIndex, 1)
+      foundTask.done(result)
+    } else {
+      throw new Error("BUG: couldn't find worker node for task")
+    }
   }
 }
 

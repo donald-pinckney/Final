@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && node_modules/.bin/browserify index.js -s reacticloud > examples/web/reacticloud.js && node_modules/.bin/browserify plotjs_index.js -s plotjs > examples/web/plot.js && node_modules/.bin/browserify examples/plot_helper.js -s plot > examples/web/plothelper_compiled.js"
+    "build": "tsc && cp examples/plot_helper.js out/examples/plot_helper.js  && node_modules/.bin/browserify index.js -s reacticloud > examples/web/reacticloud.js && node_modules/.bin/browserify plotjs_index.js -s plotjs > examples/web/plot.js && node_modules/.bin/browserify examples/plot_helper.js -s plot > examples/web/plothelper_compiled.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +15,7 @@
     "browserify": "^17.0.0",
     "chart.js": "^3.6.1",
     "chartjs-node-canvas": "^4.1.5",
+    "csv-parse": "^5.0.3",
     "node-fetch": "^2.6.6",
     "node-worker-threads-pool": "^1.5.1",
     "socket.io": "^4.4.0",

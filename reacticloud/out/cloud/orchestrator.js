@@ -11,7 +11,8 @@ class Orchestrator {
             cors: {
                 origin: "*",
                 methods: ["GET", "POST", "PUT"]
-            }
+            },
+            maxHttpBufferSize: 1e8 // 100 MB
         });
         this.unique_deployment_id = 0;
         this.original_deploy_requests = new Map();
@@ -29,6 +30,7 @@ class Orchestrator {
             socket.on('iam', (role) => this.receiveIam(socket, role));
             socket.on('input_available', (xJSON, dep_id, fn_id, input_seq_id, selector) => this.receiveInputAvailable(socket, xJSON, dep_id, fn_id, input_seq_id, selector));
             socket.on('worker_request_fn', (dep_id, fn_id, callback) => this.receiveWorkerRequestFn(socket, dep_id, fn_id, callback));
+            socket.on('worker_result', (task_deploy_id, task_fn_id, task_seq_id, result) => this.receivedWorkerResult(socket, task_deploy_id, task_fn_id, task_seq_id, result));
         });
     }
     // -------- Events received by orchestrator ---------
@@ -54,15 +56,17 @@ class Orchestrator {
         }
         else if (this.workers.has(socket.id)) {
             console.log("Worker disconnected: " + socket.id);
-            const workerData = this.workers.get(socket.id);
-            if (workerData === undefined) {
-                throw new Error("unreachable");
-            }
-            const toReschedule = workerData[1];
-            this.workers.delete(socket.id);
-            toReschedule.forEach(task => {
-                this.scheduleExecTask(task);
-            });
+            console.log("IGNORING");
+            return;
+            // const workerData = this.workers.get(socket.id)
+            // if(workerData === undefined) {
+            //   throw new Error("unreachable")
+            // }
+            // const toReschedule = workerData[1]
+            // this.workers.delete(socket.id)
+            // toReschedule.forEach(task => {
+            //   this.scheduleExecTask(task)
+            // })
         }
         else {
             console.log("Unknown socket disconnected: " + socket.id);
@@ -266,23 +270,30 @@ class Orchestrator {
             throw new Error("unreachable");
         }
         destWorkerData[1].push(task);
-        destWorkerData[0].emit('worker_run_fn', task.arg, task.deploy_id, task.fn_id, (result) => {
-            let foundIndex = -1;
-            for (let index = 0; index < destWorkerData[1].length; index++) {
-                const scheduledTask = destWorkerData[1][index];
-                if (scheduledTask.deploy_id == task.deploy_id && scheduledTask.fn_id == task.fn_id && scheduledTask.seq_id == task.seq_id) {
-                    foundIndex = index;
-                    break;
-                }
+        destWorkerData[0].emit('worker_run_fn', task.arg, task.deploy_id, task.fn_id, task.seq_id);
+    }
+    receivedWorkerResult(socket, task_deploy_id, task_fn_id, task_seq_id, result) {
+        const destWorkerData = this.workers.get(socket.id);
+        if (destWorkerData === undefined) {
+            throw new Error("unreachable");
+        }
+        console.log("GOT RESULT FROM WORKER!");
+        let foundIndex = -1;
+        for (let index = 0; index < destWorkerData[1].length; index++) {
+            const scheduledTask = destWorkerData[1][index];
+            if (scheduledTask.deploy_id == task_deploy_id && scheduledTask.fn_id == task_fn_id && scheduledTask.seq_id == task_seq_id) {
+                foundIndex = index;
+                break;
             }
-            if (foundIndex != -1) {
-                destWorkerData[1].splice(foundIndex, 1);
-                task.done(result);
-            }
-            else {
-                throw new Error("BUG: couldn't find worker node for task");
-            }
-        });
+        }
+        if (foundIndex != -1) {
+            const foundTask = destWorkerData[1][foundIndex];
+            destWorkerData[1].splice(foundIndex, 1);
+            foundTask.done(result);
+        }
+        else {
+            throw new Error("BUG: couldn't find worker node for task");
+        }
     }
 }
 exports.Orchestrator = Orchestrator;

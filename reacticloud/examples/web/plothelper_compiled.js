@@ -89,7 +89,7 @@ function makePlotCloud(data_x, data_y, x_name, y_name, plotWidth, plotHeight, do
 		ChartJS.defaults.responsive = true;
 		ChartJS.defaults.maintainAspectRatio = false;
 	};
-	const chartJSNodeCanvas = new ChartJSNodeCanvas({ plotWidth, plotHeight, chartCallback });
+	const chartJSNodeCanvas = new ChartJSNodeCanvas({ width: plotWidth, height: plotHeight, chartCallback: chartCallback });
 
 	chartJSNodeCanvas.renderToDataURL(configuration).then(buffer => done(buffer))
 }

@@ -4,6 +4,8 @@ import { DynamicPool } from "node-worker-threads-pool"
 import { io, Socket } from "socket.io-client";
 
 const fetch = require('node-fetch')
+const parse_csv = require('csv-parse/sync').parse
+const plot = require('../examples/plot_helper.js')
 
 import * as util from "util"
 

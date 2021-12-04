@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Worker = void 0;
 const socket_io_client_1 = require("socket.io-client");
 const fetch = require('node-fetch');
+const parse_csv = require('csv-parse/sync').parse;
+const plot = require('../examples/plot_helper.js');
 class Worker {
     // threadPool: DynamicPool
     constructor(address, port) {

@@ -89,20 +89,20 @@ class Orchestrator {
       console.log("Client disconnected: " + socket.id)
     } else if(this.workers.has(socket.id)) {
       console.log("Worker disconnected: " + socket.id)
-      console.log("IGNORING")
-      return
+      // console.log("IGNORING")
+      // return
 
-      // const workerData = this.workers.get(socket.id)
-      // if(workerData === undefined) {
-      //   throw new Error("unreachable")
-      // }
-      // const toReschedule = workerData[1]
+      const workerData = this.workers.get(socket.id)
+      if(workerData === undefined) {
+        throw new Error("unreachable")
+      }
+      const toReschedule = workerData[1]
 
-      // this.workers.delete(socket.id)
+      this.workers.delete(socket.id)
 
-      // toReschedule.forEach(task => {
-      //   this.scheduleExecTask(task)
-      // })
+      toReschedule.forEach(task => {
+        this.scheduleExecTask(task)
+      })
     } else {
       console.log("Unknown socket disconnected: " + socket.id)
     }

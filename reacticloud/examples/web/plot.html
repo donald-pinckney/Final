@@ -11,6 +11,24 @@
   <script type="text/javascript" src="./parse_csv.js"></script>
 
   <script type="text/javascript">
+    function example1() {
+      const csvUrlElem = document.getElementById('csv_url')
+      const xColumnElem = document.getElementById('x_column')
+      const yColumnElem = document.getElementById('y_column')
+      csvUrlElem.value = 'https://gist.githubusercontent.com/donald-pinckney/6bf75b5ec7ac8a24cfd1dd9f2ac839af/raw/7efc3ada1fea6395b79b580f544c916421af11a3/cali.csv'
+      xColumnElem.value = 'Latitude'
+      yColumnElem.value = 'MedInc'
+    }
+
+    function example2() {
+      const csvUrlElem = document.getElementById('csv_url')
+      const xColumnElem = document.getElementById('x_column')
+      const yColumnElem = document.getElementById('y_column')
+      csvUrlElem.value = 'https://gist.githubusercontent.com/donald-pinckney/21366b33a124006f73750066df0aad88/raw/d408deb4d94e652e9d18b0568181a806ad317a5b/iris.csv'
+      xColumnElem.value = 'sepal length (cm)'
+      yColumnElem.value = 'sepal width (cm)'
+    }
+
     function setupSF() {
       const plotBtn = document.getElementById('plotBtn')
       const plotElem = document.getElementById('plot')
@@ -18,10 +36,6 @@
       const xColumnElem = document.getElementById('x_column')
       const yColumnElem = document.getElementById('y_column')
       const plotTimeElem = document.getElementById('plot_time')
-
-      csvUrlElem.value = 'https://gist.githubusercontent.com/donald-pinckney/6bf75b5ec7ac8a24cfd1dd9f2ac839af/raw/7efc3ada1fea6395b79b580f544c916421af11a3/cali.csv'
-      xColumnElem.value = 'Latitude'
-      yColumnElem.value = 'MedInc'
 
       const SF = reacticloud.SF
 
@@ -35,7 +49,7 @@
         return parse_csv(csv, {columns: true, skip_empty_lines: true}, (err, records) => {
           done(records)
         })
-      }, 'client')
+      })
 
       const extractColumns = SF.arr(([data, [x_col, y_col]]) => {
         const xs = data.map((record) => {
@@ -46,13 +60,13 @@
         })
         const pair = [xs, ys]
         return pair
-      }, 'client')
+      })
 
       const makePlot = SF.arrAsync(([[xs, ys], [x_name, y_name]], done) => {
         plot(xs, ys, x_name, y_name, 1000, 1000, (buffer) => {
           done(buffer)
         })
-      }, 'cloud')
+      })
 
       let clickTime = null
 
@@ -89,9 +103,13 @@
   </script>
 </head>
 <body onload="setupSF()">
+
+  <button onclick="example1()">Example Plot 1</button>
+  <button onclick="example2()">Example Plot 2</button>
+  <br />
   
   URL of a CSV file:
-  <input type="text" id="csv_url" />
+  <textarea cols="100" id="csv_url"></textarea>
   <br />
   X Column:
   <input type="text" id="x_column" />

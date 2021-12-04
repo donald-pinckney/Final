@@ -7,7 +7,12 @@ const compute_partition_1 = require("./compute_partition");
 const socket_io_1 = require("socket.io");
 class Orchestrator {
     constructor() {
-        this.io = new socket_io_1.Server();
+        this.io = new socket_io_1.Server({
+            cors: {
+                origin: "*",
+                methods: ["GET", "POST", "PUT"]
+            }
+        });
         this.unique_deployment_id = 0;
         this.original_deploy_requests = new Map();
         this.deployments = new Map();
@@ -218,8 +223,8 @@ class Orchestrator {
             };
             this.scheduleExecTask(task);
         };
-        runnableDag.sendInputThere = (x, fn_id, input_seq_id, selector) => {
-            socket.emit('input_available', x, fresh_deploy_id, fn_id, input_seq_id, selector);
+        runnableDag.sendInputThere = (xJSON, fn_id, input_seq_id, selector) => {
+            socket.emit('input_available', xJSON, fresh_deploy_id, fn_id, input_seq_id, selector);
         };
         if (this.deployments.has(fresh_deploy_id)) {
             throw new Error("BUG: duplicate deployment");

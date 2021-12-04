@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script type="text/javascript" src="./reacticloud.js"></script>
+  <script type="text/javascript" src="./plot.js"></script>
+  <script type="text/javascript" src="./plothelper_compiled.js"></script>
+
+  <script type="text/javascript">
+    function setupSF() {
+      const plotBtn = document.getElementById('plotBtn')
+      const plotElem = document.getElementById('plot')
+      const csvUrlElem = document.getElementById('csv_url')
+      const xColumnElem = document.getElementById('x_column')
+      const yColumnElem = document.getElementById('y_column')
+      const plotTimeElem = document.getElementById('plot_time')
+
+      const int1 = reacticloud.SF.arr(x => parseInt(x))
+      const int2 = reacticloud.SF.arr(x => parseInt(x))
+      const adder = reacticloud.SF.arr(([x, y]) => x + y)
+      const stringOut = reacticloud.SF.arr(x => x.toString())
+
+      let clickTime = null
+
+      const final_sf = int1.parallel(int2)
+        .then(adder)
+        .then(stringOut)
+        .subscribe(answer => {
+          const dt = Date.now() - clickTime
+          plotTimeElem.innerText = `Plotted in ${dt} ms`
+          
+          console.log(answer)
+          // answerElem.innerText = answer
+        })
+
+      reacticloud.deploy("localhost", 3000, final_sf).then(runnable => {
+        plotBtn.onclick = () => {
+          const csvUrl = csvUrlElem.value
+          const xName = xColumnElem.value
+          const yName = yColumnElem.value
+          clickTime = Date.now()
+          runnable([4, 5])
+        }
+      })
+
+      plot([2, 3, 4], [3, 5, 2], 'X axis', 'Y axis', 400, 400, (buffer) => {
+        // console.log(buffer)
+        document.getElementById('plot').src = buffer
+      })
+
+    }
+  </script>
+</head>
+<body onload="setupSF()">
+  
+  URL of a CSV file:
+  <input type="text" id="csv_url" />
+  <br />
+  X Column:
+  <input type="text" id="x_column" />
+  <br />
+  Y Column:
+  <input type="text" id="y_column" />
+  <br />
+  <button id="plotBtn">Plot!</button>
+  <br />
+  <p id='plot_time'>
+
+  </p>
+  <br />
+  <img id="plot" src="">
+  <br />
+  <!-- <canvas id="canvas" height="400" width="400"></canvas> -->
+</body>
+</html>

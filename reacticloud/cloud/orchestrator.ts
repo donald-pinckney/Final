@@ -34,7 +34,12 @@ class Orchestrator {
   derivedDeploymentIds: Map<number, number[]>
 
   constructor() {
-    this.io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>()
+    this.io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>({
+      cors: {
+        origin: "*",
+        methods: ["GET", "POST", "PUT"]
+      }
+    })
     this.unique_deployment_id = 0
     this.original_deploy_requests = new Map()
     this.deployments = new Map()
@@ -219,7 +224,7 @@ class Orchestrator {
   }
 
   receiveInputAvailable(socket: OrchestratorSocket, xJSON: string, dep_id: number, fn_id: number, input_seq_id: number, selector: Selector[]) {
-    console.log("Received input available from socket: " + socket.id)
+    // console.log("Received input available from socket: " + socket.id)
     const runningDag = this.deployments.get(dep_id)
     if(runningDag === undefined) {
       throw new Error('deployment not found: ' + dep_id)
@@ -284,8 +289,8 @@ class Orchestrator {
 
       this.scheduleExecTask(task)
     }
-    runnableDag.sendInputThere = (x, fn_id, input_seq_id, selector) => {
-      socket.emit('input_available', x, fresh_deploy_id, fn_id, input_seq_id, selector)
+    runnableDag.sendInputThere = (xJSON, fn_id, input_seq_id, selector) => {
+      socket.emit('input_available', xJSON, fresh_deploy_id, fn_id, input_seq_id, selector)
     }
 
 

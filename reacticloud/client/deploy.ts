@@ -16,7 +16,7 @@ const SEND_MS_THRESHOLD = 1000
 
 const socketsMap: Map<string, Socket<ServerToClientEvents, ClientToServerEvents>> = new Map()
 
-const input_available_callbacks: Map<string, (x: any, fn_id: number, input_seq_id: number, selector: Selector[]) => void> = new Map()
+const input_available_callbacks: Map<string, (xJSON: string, fn_id: number, input_seq_id: number, selector: Selector[]) => void> = new Map()
 const updated_deployment_callbacks: Map<string, (new_deploy_id: number, new_partition: [number, RelativeLocation][]) => void> = new Map()
 
 function getSocket(address: string, port: number): Socket<ServerToClientEvents, ClientToServerEvents> {
@@ -111,8 +111,8 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
       deployments.set(current_dep_id, original_runnableDag)
 
 
-      input_available_callbacks.set(addressPortDeployId, (x, fn_id, input_seq_id, selector) => {
-        original_runnableDag.localInputAvailable(x, fn_id, input_seq_id, selector)
+      input_available_callbacks.set(addressPortDeployId, (xJSON, fn_id, input_seq_id, selector) => {
+        original_runnableDag.localInputAvailable(JSON.parse(xJSON), fn_id, input_seq_id, selector)
       })
 
       updated_deployment_callbacks.set(addressPortDeployId, (new_deploy_id, newPartitionList) => {
@@ -134,8 +134,8 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
           socket.emit('input_available', xJSON, new_deploy_id, fn_id, input_seq_id, selector)
         }
 
-        input_available_callbacks.set(addressPortDeployIdNew, (x, fn_id, input_seq_id, selector) => {
-          new_runnableDag.localInputAvailable(x, fn_id, input_seq_id, selector)
+        input_available_callbacks.set(addressPortDeployIdNew, (xJSON, fn_id, input_seq_id, selector) => {
+          new_runnableDag.localInputAvailable(JSON.parse(xJSON), fn_id, input_seq_id, selector)
         })
 
         deployments.set(new_deploy_id, new_runnableDag)

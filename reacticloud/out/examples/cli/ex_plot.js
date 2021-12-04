@@ -6,7 +6,7 @@ const deploy_1 = require("../../client/deploy");
 // import fetch from 'node-fetch'
 const fetch = require('node-fetch');
 const plot = require('../plot_helper.js');
-const parse_csv = require('csv-parse/sync').parse;
+const parse_csv = require('csv-parse').parse;
 const cliArgs = process.argv.slice(2);
 if (cliArgs.length != 2) {
     console.log(`Usage: node out/[this path].js [orchestrator address] [orchestrator port]`);
@@ -17,7 +17,11 @@ const port = parseInt(cliArgs[1]);
 const getCSVStr = sf_1.SF.arrAsync((url, done) => {
     fetch(url).then((response) => response.text()).then((textBody) => done(textBody));
 }, 'cloud');
-const csvParse = sf_1.SF.arr((csv) => parse_csv(csv, { columns: true, skip_empty_lines: true }), 'cloud');
+const csvParse = sf_1.SF.arrAsync((csv, done) => {
+    return parse_csv(csv, { columns: true, skip_empty_lines: true }, (err, records) => {
+        done(records);
+    });
+}, 'cloud');
 const extractColumns = sf_1.SF.arr(([data, [x_col, y_col]]) => {
     const xs = data.map((record) => {
         return record[x_col];
@@ -29,7 +33,7 @@ const extractColumns = sf_1.SF.arr(([data, [x_col, y_col]]) => {
     return pair;
 }, 'cloud');
 const makePlot = sf_1.SF.arrAsync(([[xs, ys], [x_name, y_name]], done) => {
-    plot([2, 3, 4], [3, 5, 2], 'X axis', 'Y axis', 400, 400, (buffer) => {
+    plot(xs, ys, x_name, y_name, 1000, 1000, (buffer) => {
         done(buffer);
     });
 }, 'cloud');

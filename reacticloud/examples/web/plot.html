@@ -8,6 +8,7 @@
   <script type="text/javascript" src="./reacticloud.js"></script>
   <script type="text/javascript" src="./plot.js"></script>
   <script type="text/javascript" src="./plothelper_compiled.js"></script>
+  <script type="text/javascript" src="./parse_csv.js"></script>
 
   <script type="text/javascript">
     function setupSF() {
@@ -18,38 +19,71 @@
       const yColumnElem = document.getElementById('y_column')
       const plotTimeElem = document.getElementById('plot_time')
 
-      const int1 = reacticloud.SF.arr(x => parseInt(x))
-      const int2 = reacticloud.SF.arr(x => parseInt(x))
-      const adder = reacticloud.SF.arr(([x, y]) => x + y)
-      const stringOut = reacticloud.SF.arr(x => x.toString())
+      csvUrlElem.value = 'https://gist.githubusercontent.com/donald-pinckney/6bf75b5ec7ac8a24cfd1dd9f2ac839af/raw/7efc3ada1fea6395b79b580f544c916421af11a3/cali.csv'
+      xColumnElem.value = 'Latitude'
+      yColumnElem.value = 'MedInc'
+
+      const SF = reacticloud.SF
+
+      
+
+      const getCSVStr = SF.arrAsync((url, done) => {
+        fetch(url).then((response) => response.text()).then((textBody) => done(textBody))
+      }, 'cloud')
+
+      const csvParse = SF.arrAsync((csv, done) => {
+        return parse_csv(csv, {columns: true, skip_empty_lines: true}, (err, records) => {
+          done(records)
+        })
+      }, 'client')
+
+      const extractColumns = SF.arr(([data, [x_col, y_col]]) => {
+        const xs = data.map((record) => {
+          return record[x_col]
+        })
+        const ys = data.map((record) => {
+          return record[y_col]
+        })
+        const pair = [xs, ys]
+        return pair
+      }, 'client')
+
+      const makePlot = SF.arrAsync(([[xs, ys], [x_name, y_name]], done) => {
+        plot(xs, ys, x_name, y_name, 1000, 1000, (buffer) => {
+          done(buffer)
+        })
+      }, 'cloud')
 
       let clickTime = null
 
-      const final_sf = int1.parallel(int2)
-        .then(adder)
-        .then(stringOut)
-        .subscribe(answer => {
+      const final_sf = getCSVStr
+        .then(csvParse)
+        .first()
+        .then(extractColumns.and(SF.p2()))
+        .then(makePlot)
+        .subscribe(imageData => {
           const dt = Date.now() - clickTime
           plotTimeElem.innerText = `Plotted in ${dt} ms`
-          
-          console.log(answer)
-          // answerElem.innerText = answer
+          plotElem.src = imageData
+          console.log(imageData)
         })
+        
 
       reacticloud.deploy("localhost", 3000, final_sf).then(runnable => {
         plotBtn.onclick = () => {
+          plotTimeElem.innerText = 'Fetching data and plotting...'
           const csvUrl = csvUrlElem.value
           const xName = xColumnElem.value
           const yName = yColumnElem.value
           clickTime = Date.now()
-          runnable([4, 5])
+          runnable([csvUrl, [xName, yName]])
         }
       })
 
-      plot([2, 3, 4], [3, 5, 2], 'X axis', 'Y axis', 400, 400, (buffer) => {
-        // console.log(buffer)
-        document.getElementById('plot').src = buffer
-      })
+      // plot([2, 3, 4], [3, 5, 2], 'X axis', 'Y axis', 400, 400, (buffer) => {
+      //   // console.log(buffer)
+      //   document.getElementById('plot').src = buffer
+      // })
 
     }
   </script>

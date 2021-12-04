@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && cp examples/plot_helper.js out/examples/plot_helper.js  && node_modules/.bin/browserify index.js -s reacticloud > examples/web/reacticloud.js && node_modules/.bin/browserify plotjs_index.js -s plotjs > examples/web/plot.js && node_modules/.bin/browserify examples/plot_helper.js -s plot > examples/web/plothelper_compiled.js"
+    "build": "tsc && cp examples/plot_helper.js out/examples/plot_helper.js && node_modules/.bin/browserify index.js -s reacticloud > examples/web/reacticloud.js && node_modules/.bin/browserify plotjs_index.js -s plotjs > examples/web/plot.js && node_modules/.bin/browserify examples/plot_helper.js -s plot > examples/web/plothelper_compiled.js && node_modules/.bin/browserify parse_csv_index.js -s parse_csv > examples/web/parse_csv.js"
   },
   "author": "",
   "license": "ISC",

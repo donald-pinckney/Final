@@ -39,7 +39,7 @@ class Orchestrator {
         origin: "*",
         methods: ["GET", "POST", "PUT"]
       },
-      maxHttpBufferSize: 8e8    // 800 MB
+      maxHttpBufferSize: 8e9    // 8 GB
     })
     this.unique_deployment_id = 0
     this.original_deploy_requests = new Map()

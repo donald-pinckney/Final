@@ -42,7 +42,7 @@
       
 
       const getCSVStr = SF.arrAsync((url, done) => {
-        fetch(url, {redirect: 'follow'}).then((response) => response.text()).then((textBody) => done(textBody))
+        fetch(url).then((response) => response.text()).then((textBody) => done(textBody))
       }, 'cloud')
 
       const csvParse = SF.arrAsync((csv, done) => {
@@ -66,7 +66,7 @@
         plot(xs, ys, x_name, y_name, 1000, 1000, (buffer) => {
           done(buffer)
         })
-      }, 'cloud')
+      }, 'client')
 
       let clickTime = null
 

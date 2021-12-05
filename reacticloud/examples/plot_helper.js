@@ -43,17 +43,7 @@ function makePlotCloud(data_x, data_y, x_name, y_name, plotWidth, plotHeight, do
 					display: false,
 				}
 			}
-		},
-		plugins: [{
-			id: 'background-colour',
-			beforeDraw: (chart) => {
-				const ctx = chart.ctx;
-				ctx.save();
-				ctx.fillStyle = 'white';
-				ctx.fillRect(0, 0, 2000, 2000);
-				ctx.restore();
-			}
-		}]
+		}
 	}
 
 	const chartCallback = (ChartJS) => {
@@ -62,7 +52,7 @@ function makePlotCloud(data_x, data_y, x_name, y_name, plotWidth, plotHeight, do
 	};
 	const chartJSNodeCanvas = new ChartJSNodeCanvas({ width: plotWidth, height: plotHeight, chartCallback: chartCallback });
 
-	chartJSNodeCanvas.renderToDataURL(configuration, 'image/jpeg').then(buffer => done(buffer))
+	chartJSNodeCanvas.renderToDataURL(configuration).then(buffer => done(buffer))
 }
 
 
@@ -101,7 +91,7 @@ function makePlotBrowser(data_x, data_y, x_name, y_name, plotWidth, plotHeight, 
 				onComplete: function() {
 					if(finished_draw == false) { // this.width == plotWidth && 
 						finished_draw = true
-						const url = this.toBase64Image('image/jpeg');
+						const url = this.toBase64Image();
 						// const url = this.toBase64Image();
 						document.body.removeChild(canvas)
 						done(url)
@@ -127,17 +117,7 @@ function makePlotBrowser(data_x, data_y, x_name, y_name, plotWidth, plotHeight, 
 					display: false,
 				}
 			}
-		},
-		plugins: [{
-			id: 'background-colour',
-			beforeDraw: (chart) => {
-				const ctx = chart.ctx;
-				ctx.save();
-				ctx.fillStyle = 'white';
-				ctx.fillRect(0, 0, plotWidth, plotHeight);
-				ctx.restore();
-			}
-		}]
+		}
 	});
 
 	myLine.resize(plotWidth, plotHeight)

@@ -24,3 +24,17 @@ EOF
 echo "$PROFILE_CODE" >> ~/.profile
 
 nvm install 17.2.0
+
+
+curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh > ~/Miniconda.sh
+bash ~/Miniconda.sh -b -p ~/conda
+
+read -r -d '' PROFILE_CONDA_CODE <<'EOF'
+export PATH="$HOME/conda/bin:$PATH"
+EOF
+
+echo "$PROFILE_CONDA_CODE" >> ~/.profile
+
+source ~/.profile
+
+conda install gcc_linux-64 gxx_linux-64 -y

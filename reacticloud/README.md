@@ -26,7 +26,7 @@ cd ~/Final/reacticloud
 
 ### 4. Check that the version of node is now correct:
 ```
-# This should print: v15.2.1
+# This should print: v17.2.0
 # VERY IMPORTANT: the code will not run with old versions of node,
 # so check that the right version is printed!!!!
 node --version

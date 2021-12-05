@@ -23,4 +23,4 @@ EOF
 
 echo "$PROFILE_CODE" >> ~/.profile
 
-nvm install 15.2.1
+nvm install 17.2.0

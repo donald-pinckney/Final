@@ -38,3 +38,24 @@ echo "$PROFILE_CONDA_CODE" >> ~/.profile
 source ~/.profile
 
 conda install gcc_linux-64 gxx_linux-64 -y
+
+conda install cairo -y
+conda install -c conda-forge libjpeg-turbo -y
+conda install -c anaconda cairo-devel-cos6-x86_64
+conda install -c conda-forge libjpeg-turbo-cos6-x86_64
+conda install -c conda-forge giflib
+conda install -c conda-forge pango
+
+ln -s ~/conda/lib/libpng.so ~/conda/lib/libpng15.so
+# x86_64-conda_cos6-linux-gnu-g++
+
+# export CC=$HOME/conda/bin/x86_64-conda_cos6-linux-gnu-gcc
+# export CXX=$HOME/conda/bin/x86_64-conda_cos6-linux-gnu-g++
+
+
+export CPATH="$HOME/conda/include"
+export LD_LIBRARY_PATH="$HOME/conda/lib"
+export LDFLAGS=-L$HOME/conda/lib
+
+npm install
+npx node-pre-gyp rebuild -C ./node_modules/canvas

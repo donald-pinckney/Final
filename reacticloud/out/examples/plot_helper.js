@@ -52,7 +52,7 @@ function makePlotCloud(data_x, data_y, x_name, y_name, plotWidth, plotHeight, do
 	};
 	const chartJSNodeCanvas = new ChartJSNodeCanvas({ width: plotWidth, height: plotHeight, chartCallback: chartCallback });
 
-	chartJSNodeCanvas.renderToDataURL(configuration).then(buffer => done(buffer))
+	chartJSNodeCanvas.renderToDataURL(configuration, 'image/jpeg').then(buffer => done(buffer))
 }
 
 

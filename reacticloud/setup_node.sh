@@ -56,6 +56,7 @@ export CPATH="$HOME/conda/include"
 export LD_LIBRARY_PATH="$HOME/conda/lib"
 export LDFLAGS="-L`pwd`/libs/lib -L$HOME/conda/lib"
 
-nvm use node
+nvm use 17.2.0
+nvm alias default 17.2.0
 npm install
 npx node-pre-gyp rebuild -C ./node_modules/canvas

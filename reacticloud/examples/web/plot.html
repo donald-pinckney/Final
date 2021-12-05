@@ -11,7 +11,17 @@
   <script type="text/javascript" src="./parse_csv.js"></script>
 
   <script type="text/javascript">
-    function example1() {
+
+    function exampleTiny() {
+      const csvUrlElem = document.getElementById('csv_url')
+      const xColumnElem = document.getElementById('x_column')
+      const yColumnElem = document.getElementById('y_column')
+      csvUrlElem.value = 'https://gist.githubusercontent.com/donald-pinckney/21366b33a124006f73750066df0aad88/raw/d408deb4d94e652e9d18b0568181a806ad317a5b/iris.csv'
+      xColumnElem.value = 'sepal length (cm)'
+      yColumnElem.value = 'sepal width (cm)'
+    }
+
+    function exampleSmall() {
       const csvUrlElem = document.getElementById('csv_url')
       const xColumnElem = document.getElementById('x_column')
       const yColumnElem = document.getElementById('y_column')
@@ -20,14 +30,25 @@
       yColumnElem.value = 'MedInc'
     }
 
-    function example2() {
+    function exampleMed() {
       const csvUrlElem = document.getElementById('csv_url')
       const xColumnElem = document.getElementById('x_column')
       const yColumnElem = document.getElementById('y_column')
-      csvUrlElem.value = 'https://gist.githubusercontent.com/donald-pinckney/21366b33a124006f73750066df0aad88/raw/d408deb4d94e652e9d18b0568181a806ad317a5b/iris.csv'
-      xColumnElem.value = 'sepal length (cm)'
-      yColumnElem.value = 'sepal width (cm)'
+      csvUrlElem.value = 'https://gist.githubusercontent.com/donald-pinckney/5b3a8de078c97fb5841736d53b3e2d3d/raw/d84f3f10d331f418da60b443658ccae627980eed/med_cali.csv'
+      xColumnElem.value = 'Latitude'
+      yColumnElem.value = 'MedInc'
     }
+
+    function exampleBig() {
+      const csvUrlElem = document.getElementById('csv_url')
+      const xColumnElem = document.getElementById('x_column')
+      const yColumnElem = document.getElementById('y_column')
+      csvUrlElem.value = 'https://drive.google.com/u/0/uc?id=1FIBWwUnPGGPRSQyvL2qRsxDtPkIZUZDZ&export=download'
+      xColumnElem.value = 'Latitude'
+      yColumnElem.value = 'MedInc'
+    }
+
+    
 
     function setupSF() {
       const plotBtn = document.getElementById('plotBtn')
@@ -42,7 +63,7 @@
       
 
       const getCSVStr = SF.arrAsync((url, done) => {
-        fetch(url).then((response) => response.text()).then((textBody) => done(textBody))
+        fetch(url, {redirect: 'follow'}).then((response) => response.text()).then((textBody) => done(textBody))
       }, 'cloud')
 
       const csvParse = SF.arrAsync((csv, done) => {
@@ -63,10 +84,46 @@
       })
 
       const makePlot = SF.arrAsync(([[xs, ys], [x_name, y_name]], done) => {
-        plot(xs, ys, x_name, y_name, 1000, 1000, (buffer) => {
+
+        function shuffle(array) {
+          let currentIndex = array.length,  randomIndex;
+
+          // While there remain elements to shuffle...
+          while (currentIndex != 0) {
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+
+            // And swap it with the current element.
+            [array[currentIndex], array[randomIndex]] = [
+              array[randomIndex], array[currentIndex]];
+          }
+
+          return array;
+        }
+
+        const indexingArray = xs.map((_x, idx) => idx)
+        shuffle(indexingArray)
+        const numData = Math.min(1000, xs.length)
+        const indices = []
+
+        const real_xs = []
+        const real_ys = []
+        for (let index = 0; index < numData; index++) {
+          const the_idx = indexingArray[index];
+          real_xs.push(xs[the_idx])
+          real_ys.push(ys[the_idx]) 
+        }
+
+
+
+        
+
+        plot(real_xs, real_ys, x_name, y_name, 1000, 1000, (buffer) => {
           done(buffer)
         })
-      }, 'client')
+      }, 'cloud')
 
       let clickTime = null
 
@@ -105,8 +162,10 @@
 </head>
 <body onload="setupSF()">
 
-  <button onclick="example1()">Example Plot 1</button>
-  <button onclick="example2()">Example Plot 2</button>
+  <button onclick="exampleTiny()">Tiny Dataset</button>
+  <button onclick="exampleSmall()">Small Dataset</button>
+  <button onclick="exampleMed()">Medium Dataset</button>
+  <button onclick="exampleBig()">Big Dataset</button>
   <br />
   
   URL of a CSV file:

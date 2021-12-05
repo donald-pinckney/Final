@@ -84,6 +84,7 @@
         
 
       reacticloud.deploy("localhost", 3000, final_sf).then(runnable => {
+      // reacticloud.deploy("vdi-linux-045.ccs.neu.edu", 12000, final_sf).then(runnable => {
         plotBtn.onclick = () => {
           plotTimeElem.innerText = 'Fetching data and plotting...'
           const csvUrl = csvUrlElem.value

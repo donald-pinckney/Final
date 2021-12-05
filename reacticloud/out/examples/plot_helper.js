@@ -124,10 +124,10 @@ function makePlotBrowser(data_x, data_y, x_name, y_name, plotWidth, plotHeight, 
 
 
 function makePlot(data_x, data_y, x_name, y_name, plotWidth, plotHeight, done) {
-	try {
+	if(typeof window === 'undefined') {
 		const chartjs_node = require('chartjs-node-canvas')
 		makePlotCloud(data_x, data_y, x_name, y_name, plotWidth, plotHeight, done, chartjs_node)
-	} catch (err) {
+	} else {
 		makePlotBrowser(data_x, data_y, x_name, y_name, plotWidth, plotHeight, done)
 	}
 }

@@ -24,13 +24,13 @@ cd ~/Final/reacticloud
 ```
 # This MUST be run on VDI machine 45
 cd ~/Final/reacticloud
-./run_orchestrator.js 12000
+./run_orchestrator.sh 12000
 ```
 
 > Note: By default the orchestrator will NOT use worker nodes to run functions, since the performance is quite poor due to
 > the intra-VDI networking.
-> However, *if you really want*, you can enable worker nodes as so: `./run_orchestrator.js 12000 --use-workers`,
-> and then start worker nodes on other VDI machines with: `./run_worker.js vdi-linux-045.ccs.neu.edu 12000`.
+> However, *if you really want*, you can enable worker nodes as so: `./run_orchestrator.sh 12000 --use-workers`,
+> and then start worker nodes on other VDI machines with: `./run_worker.sh vdi-linux-045.ccs.neu.edu 12000`.
 
 
 
@@ -38,6 +38,8 @@ cd ~/Final/reacticloud
 There are 3 examples that can be run from the command line.
 These are meant to check that the orchestrator is working correctly,
 and demonstrate the basics of the reacticloud system.
+
+You can run each of these from other VDI machines via SSH.
 
 - `node out/examples/cli/ex_serial.js vdi-linux-045.ccs.neu.edu 12000`
   + You can see the source code of this example in `examples/cli/ex_serial.ts`.

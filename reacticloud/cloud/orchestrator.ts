@@ -38,7 +38,10 @@ class Orchestrator {
 
   derivedDeploymentIds: Map<number, number[]>
 
-  constructor() {
+  useWorkers: boolean
+
+  constructor(withWorkers: boolean) {
+    this.useWorkers = withWorkers
     this.io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>({
       cors: {
         origin: "*",
@@ -289,28 +292,27 @@ class Orchestrator {
     const runnableDag: RunnableCloudDag = new RunnableDag(cloudDag, 'cloud')
     runnableDag.runFnHere = (run_fn, run_seq_id, run_arg, run_done) => {
 
-      // We do not use workers to run code anymore
-      // because it turns out that network speed between VDI machines is not
-      // very good actually
-      const globalId = `${run_fn.deploy_id}-${run_fn.fn_id}`
-      const src = this.function_sources.get(globalId)
-      if(src === undefined) {
-        throw new Error(`Source code requested for undefined function: (dep_id = ${run_fn.deploy_id}, fn_id = ${run_fn.fn_id})`)
+      
+
+      if(this.useWorkers) {
+        const task: ExecTask = { 
+          deploy_id: run_fn.deploy_id, 
+          fn_id: run_fn.fn_id, 
+          seq_id: run_seq_id, 
+          arg: run_arg, 
+          done: run_done 
+        }
+        this.scheduleExecTask(task)
+      } else {
+        const globalId = `${run_fn.deploy_id}-${run_fn.fn_id}`
+        const src = this.function_sources.get(globalId)
+        if(src === undefined) {
+          throw new Error(`Source code requested for undefined function: (dep_id = ${run_fn.deploy_id}, fn_id = ${run_fn.fn_id})`)
+        }
+  
+        const fn_evaled = eval(src)
+        fn_evaled(run_arg, run_done)
       }
-
-      const fn_evaled = eval(src)
-      fn_evaled(run_arg, run_done)
-
-
-      // const task: ExecTask = { 
-      //   deploy_id: run_fn.deploy_id, 
-      //   fn_id: run_fn.fn_id, 
-      //   seq_id: run_seq_id, 
-      //   arg: run_arg, 
-      //   done: run_done 
-      // }
-
-      // this.scheduleExecTask(task)
     }
     runnableDag.sendInputThere = (xJSON, fn_id, input_seq_id, selector) => {
       socket.emit('input_available', xJSON, fresh_deploy_id, fn_id, input_seq_id, selector)

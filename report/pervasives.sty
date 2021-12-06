@@ -1,0 +1,205 @@
+\usepackage{listings}
+\usepackage{ebproof}
+\usepackage{cleveref}
+\usepackage{xifthen}
+\usepackage{bm}
+\usepackage{tikz}
+\usepackage{enumitem}
+\setlistdepth{9}
+\newlist{myEnumerate}{enumerate}{9}
+
+\usetikzlibrary{positioning}
+\usetikzlibrary{patterns}
+\usetikzlibrary{fit}
+\usetikzlibrary{arrows}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+
+%\usepackage{subcaption}
+%\usepackage{mathtools}
+%\usepackage{mathpartir}
+\usepackage{xspace}
+%\usepackage{harpoon}
+%\usepackage{tikz}
+%\usepackage{balance}
+%\usepackage{outline}
+
+% see https://pointpubs.wordpress.com/category/bluebook/ for why we do not italicise i.e. and e.g.
+% \newcommand{\eg}{e.g., }
+% \newcommand{\ie}{i.e., }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Temporary editing stuff					                                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\ag}[1]{\ifdraft{\color{red}[#1 -- Arjun]}\fi}
+\newcommand{\yb}[1]{\ifdraft{\color{blue}[#1 -- Yuriy]}\fi}
+\newcommand{\djp}[1]{\ifdraft{\color{orange}[#1 -- Donald]}\fi}
+
+\newcommand{\term}[1]{\emph{#1}}
+\newcommand{\name}{\texttt{Wasm/k}\xspace}
+\newcommand{\cname}{\texttt{C/k}\xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Language listing definitions				                                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstdefinelanguage{MyC}{
+keywords={if,else,void,new,return,while,for,Generator,uint64_t,int,k_id,control,restore,continuation_copy,struct,ContinuationThunk,auto,continuation_delete,define},
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  comment=[l]{//},
+  keepspaces=true,
+  mathescape=true,
+  escapechar=|
+}
+
+\lstdefinelanguage{MyGo}{
+keywords={if,else,return,while,for,func},
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  comment=[l]{//},
+  keepspaces=true,
+  mathescape=true,
+  escapechar=|
+}
+
+\lstdefinelanguage{Wasm}{
+keywords={module,func,param,result,control,restore,continuation_copy},
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+%  comment=[l]{;;},
+%  keepspaces=true,
+%  mathescape=false,
+  escapechar=|
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Automatically use smaller fonts in figures.                                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstdefinestyle{figurestyle}{
+  basicstyle=\fontsize{8}{8}\ttfamily,
+  numbers=left,
+  numberstyle=\fontsize{5}{5}\rmfamily,
+  numbersep=0.4em,
+  stepnumber=1,
+  firstnumber=1,
+  xleftmargin=1em}
+
+\lstdefinestyle{normalstyle}{
+  basicstyle=\small\ttfamily\fontsize{7}{7},
+  numbers=none}
+
+\newtoggle{infig}
+\togglefalse{infig}
+\AtBeginEnvironment{figure}{\toggletrue{infig}}
+\AtEndEnvironment{figure}{\togglefalse{infig}}
+\AtBeginEnvironment{figure*}{\toggletrue{infig}}
+\AtEndEnvironment{figure*}{\togglefalse{infig}}
+\AtBeginEnvironment{wrapfigure}{\toggletrue{infig}}
+\AtEndEnvironment{wrapfigure}{\togglefalse{infig}}
+
+\AtBeginEnvironment{lstlisting}{
+  \iftoggle{infig}{
+    \lstset{style=figurestyle}
+  }{
+    \lstset{style=normalstyle}}}
+
+\pretocmd{\lstinputlisting}{%
+  \iftoggle{infig}{%
+    \lstset{style=figurestyle}%
+  }{%
+    \lstset{style=normalstyle}}}{}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% cleverref settings                                                           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Display "Figure" instead of "fig".
+\crefname{figure}{Figure}{Figures}
+\crefname{lemma}{Lemma}{Lemmas}
+\crefname{theorem}{Theorem}{Theorems}
+\crefname{definition}{Definition}{Definitions}
+
+% Display the funny S instead of spelling out "section".
+% \crefformat{section}{\S#2#1#3}
+% \crefformat{subsection}{\S#2#1#3}
+% \crefformat{subsubsection}{\S#2#1#3}
+% Display Section instead of whatever.
+\crefformat{section}{Section~#2#1#3}
+\crefformat{subsection}{Section~#2#1#3}
+\crefformat{subsubsection}{Section~#2#1#3}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Basic Notation                                                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Definition of a grammer rule (::=)
+\newcommand{\defined}{\ensuremath{\coloneqq}}
+% Wasm operators
+\newcommand{\op}[2][]{
+	\ifthenelse{\equal{#1}{}}{
+    % cat
+		\ensuremath{\mathbf{#2}}
+	}{
+  % dog
+		\ensuremath{(\mathbf{#2} \; #1)}
+	}
+}
+\newcommand{\wasmcomment}[1]{~\textrm{\itshape;; #1}}
+\newcommand{\control}[1]{\op[#1]{control}}
+\newcommand{\restore}{\op{restore}}
+\newcommand{\restoreArg}[1]{\op[#1]{i64.const}\;\op{restore}}
+\newcommand{\continuationcopy}{\op{continuation\_copy}}
+\newcommand{\continuationdelete}{\op{continuation\_delete}}
+\newcommand{\Lmax}{L^\mathrm{max}}
+\newcommand{\prompt}[2]{\op{prompt}\;#1\;#2\;\op{end}}
+\newcommand{\promptend}{\op{prompt\_end}}
+
+
+\newcommand{\kid}{\bm{\kappa\_id}}
+
+\newcommand{\proofcase}[1]{\vspace{1em} \noindent \textit{#1}}
+
+% Copied from: https://www.latex4technics.com/?note=1vks
+\newcommand{\highlight}[2][yellow]{
+\mathchoice%
+  {\colorbox{#1}{$\displaystyle#2$}}%
+  {\colorbox{#1}{$\textstyle#2$}}%
+  {\colorbox{#1}{$\scriptstyle#2$}}%
+  {\colorbox{#1}{$\scriptscriptstyle#2$}}
+ }%
+ 
+ 
+%\DeclareMathOperator{\controlok}{control\_ok}
+\DeclareMathOperator{\restoreok}{ok_{rest}}
+\DeclareMathOperator{\copyok}{ok_{copy}}
+\DeclareMathOperator{\deleteok}{ok_{delete}}
+
+\DeclareMathOperator{\controltrans}{\delta_{ctrl}}
+\DeclareMathOperator{\restoretrans}{\delta_{rest}}
+\DeclareMathOperator{\copytrans}{\delta_{copy}}
+\DeclareMathOperator{\deletetrans}{\delta_{delete}}
+\DeclareMathOperator{\prompttrans}{\delta_{p}}
+\DeclareMathOperator{\promptendtrans}{\delta_{p-end}}
+
+\DeclareMathOperator{\fcont}{cont}
+\DeclareMathOperator{\froot}{root}
+
+\DeclareMathOperator{\fgetCont}{getCont}
+\DeclareMathOperator{\fgetRoot}{getRoot}
+\DeclareMathOperator{\fsetCont}{setCont}
+\DeclareMathOperator{\fsetRoot}{setRoot}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Various other settings                                                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \bibliographystyle{ACM-Reference-Format}
+%\citestyle{acmauthoryear}   %% For author/year citations
+

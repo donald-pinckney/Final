@@ -9,8 +9,8 @@ import { io, Socket } from "socket.io-client";
 import * as util from "util"
 
 
-const SEND_NUM_THRESHOLD = 10
-const SEND_MS_THRESHOLD = 1000
+const SEND_NUM_THRESHOLD = 3
+const SEND_MS_THRESHOLD = 500
 
 
 
@@ -76,7 +76,7 @@ function stripClientFunction(id: number, f: SF_fn): FunctionDeployData {
 type ClientDag = Dag<PartitionedFn<(arg: any, cont: (r: any) => void) => void>>
 
 
-function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<RunnableSF<A, B>> {
+function deploy<A, B>(address: string, port: number, sf: SF<A, B>, partitionInfo?: (p: Map<number, RelativeLocation>) => void): Promise<RunnableSF<A, B>> {
   const addressPort = `${address}:${port}`
 
   const socket = getSocket(address, port)
@@ -90,6 +90,10 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
       const addressPortDeployId = `${addressPort}:${original_deploy_id}`
 
       const partition = new Map(partitionList)
+      if(partitionInfo != undefined) {
+        partitionInfo(partition)
+      }
+
       const clientDagTmp = partitionDag(dag, partition, 'client')
       const clientDag: ClientDag = clientDagTmp.map((fn_id, part_sf) => {
         return mapPartitionedFn(part_sf, sf => sf.fn)
@@ -117,6 +121,9 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
 
       updated_deployment_callbacks.set(addressPortDeployId, (new_deploy_id, newPartitionList) => {
         const newPartition = new Map(newPartitionList)
+        if(partitionInfo != undefined) {
+          partitionInfo(newPartition)
+        }
         
         const newClientDagTmp = partitionDag(dag, newPartition, 'client')
         const newClientDag: ClientDag = newClientDagTmp.map((fn_id, part_sf) => {
@@ -148,7 +155,7 @@ function deploy<A, B>(address: string, port: number, sf: SF<A, B>): Promise<Runn
         const currentDag = deployments.get(current_dep_id) as RunnableDag<(arg: any, cont: (r: any) => void) => void>
 
         const now = Date.now()
-        if(currentDag.getInputCount() > SEND_NUM_THRESHOLD && (now - last_trace_send_time_ms) > SEND_MS_THRESHOLD) {
+        if(currentDag.getInputCount() >= (SEND_NUM_THRESHOLD - 1) && (now - last_trace_send_time_ms) > SEND_MS_THRESHOLD) {
           last_trace_send_time_ms = now
           const traceData = currentDag.extractPartialTraceData()
           const traceDataFn: Dag<FunctionTraceDataSerialized> = traceData.fns.map((fn_id, traces) => {

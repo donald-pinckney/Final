@@ -51,6 +51,7 @@
     
 
     function setupSF() {
+      const deployInfoElem = document.getElementById('deploy_info')
       const plotBtn = document.getElementById('plotBtn')
       const plotElem = document.getElementById('plot')
       const csvUrlElem = document.getElementById('csv_url')
@@ -85,6 +86,7 @@
 
       const makePlot = SF.arrAsync(([[xs, ys], [x_name, y_name]], done) => {
 
+        // From stack overflow...
         function shuffle(array) {
           let currentIndex = array.length,  randomIndex;
 
@@ -123,7 +125,7 @@
         plot(real_xs, real_ys, x_name, y_name, 1000, 1000, (buffer) => {
           done(buffer)
         })
-      }, 'cloud')
+      })
 
       let clickTime = null
 
@@ -138,10 +140,28 @@
           plotElem.src = imageData
           // console.log(imageData)
         })
+
+      const functionNames = {
+        0: 'fetchCSV',
+        1: 'parseCSV->JSON',
+        2: 'extract2Columns',
+        3: 'subsampleAndRenderPlot',
+        4: 'displayPlotInBrowser'
+      }
         
 
-      // reacticloud.deploy("localhost", 3000, final_sf).then(runnable => {
-      reacticloud.deploy("vdi-linux-045.ccs.neu.edu", 12000, final_sf).then(runnable => {
+      reacticloud.deploy("localhost", 3000, final_sf, partition => {
+        const partitionDesc = new Map(Array.from(partition.entries()).map(([f_id, loc]) => {
+          return [functionNames[f_id], loc == 'here' ? 'browser' : 'cloud']
+        }))
+
+        const partitionDescStr = Array.from(partitionDesc.entries()).reverse().map(([f_name, f_place]) => `<li>${f_name} => ${f_place}</li>`).join('\n')
+
+        deployInfoElem.innerHTML = 'Code deployed! Cloud / Client Function partitioning received:<br /><ul>' + partitionDescStr + '</ul>'
+
+
+      }).then(runnable => {
+      // reacticloud.deploy("vdi-linux-045.ccs.neu.edu", 12000, final_sf).then(runnable => {
         plotBtn.onclick = () => {
           plotTimeElem.innerText = 'Fetching data and plotting...'
           const csvUrl = csvUrlElem.value
@@ -161,6 +181,10 @@
   </script>
 </head>
 <body onload="setupSF()">
+
+  <p id='deploy_info'>
+    Waiting for code to deploy to cloud...
+  </p>
 
   <button onclick="exampleTiny()">Tiny Dataset</button>
   <button onclick="exampleSmall()">Small Dataset</button>

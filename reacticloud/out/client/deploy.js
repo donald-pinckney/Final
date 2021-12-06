@@ -4,8 +4,8 @@ exports.deploy = void 0;
 const dag_1 = require("../dsl/dag");
 const dag_runner_1 = require("../dsl/dag_runner");
 const socket_io_client_1 = require("socket.io-client");
-const SEND_NUM_THRESHOLD = 10;
-const SEND_MS_THRESHOLD = 1000;
+const SEND_NUM_THRESHOLD = 3;
+const SEND_MS_THRESHOLD = 500;
 const socketsMap = new Map();
 const input_available_callbacks = new Map();
 const updated_deployment_callbacks = new Map();
@@ -53,7 +53,7 @@ function stripClientFunction(id, f) {
         return { constraint: f.constraint, fnSrc: f.fn.toString() };
     }
 }
-function deploy(address, port, sf) {
+function deploy(address, port, sf, partitionInfo) {
     const addressPort = `${address}:${port}`;
     const socket = getSocket(address, port);
     const dag = (0, dag_1.buildDAG)(sf);
@@ -63,6 +63,9 @@ function deploy(address, port, sf) {
         socket.emit('client_orch_deploy', request, (original_deploy_id, partitionList) => {
             const addressPortDeployId = `${addressPort}:${original_deploy_id}`;
             const partition = new Map(partitionList);
+            if (partitionInfo != undefined) {
+                partitionInfo(partition);
+            }
             const clientDagTmp = (0, dag_runner_1.partitionDag)(dag, partition, 'client');
             const clientDag = clientDagTmp.map((fn_id, part_sf) => {
                 return (0, dag_runner_1.mapPartitionedFn)(part_sf, sf => sf.fn);
@@ -83,6 +86,9 @@ function deploy(address, port, sf) {
             });
             updated_deployment_callbacks.set(addressPortDeployId, (new_deploy_id, newPartitionList) => {
                 const newPartition = new Map(newPartitionList);
+                if (partitionInfo != undefined) {
+                    partitionInfo(newPartition);
+                }
                 const newClientDagTmp = (0, dag_runner_1.partitionDag)(dag, newPartition, 'client');
                 const newClientDag = newClientDagTmp.map((fn_id, part_sf) => {
                     return (0, dag_runner_1.mapPartitionedFn)(part_sf, sf => sf.fn);
@@ -105,7 +111,7 @@ function deploy(address, port, sf) {
             resolve(initial_input => {
                 const currentDag = deployments.get(current_dep_id);
                 const now = Date.now();
-                if (currentDag.getInputCount() > SEND_NUM_THRESHOLD && (now - last_trace_send_time_ms) > SEND_MS_THRESHOLD) {
+                if (currentDag.getInputCount() >= (SEND_NUM_THRESHOLD - 1) && (now - last_trace_send_time_ms) > SEND_MS_THRESHOLD) {
                     last_trace_send_time_ms = now;
                     const traceData = currentDag.extractPartialTraceData();
                     const traceDataFn = traceData.fns.map((fn_id, traces) => {

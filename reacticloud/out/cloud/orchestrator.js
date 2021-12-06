@@ -193,7 +193,7 @@ class Orchestrator {
     }
     // -------------- Helpers ---------------
     shouldTriggerReSolve(original_deploy_id) {
-        return false;
+        return true;
     }
     deployARequest(request, original_deploy_id, fresh_deploy_id, socket) {
         const traceData = this.allTraceData.get(original_deploy_id);
@@ -221,6 +221,9 @@ class Orchestrator {
         });
         const runnableDag = new dag_runner_1.RunnableDag(cloudDag, 'cloud');
         runnableDag.runFnHere = (run_fn, run_seq_id, run_arg, run_done) => {
+            // We do not use workers to run code anymore
+            // because it turns out that network speed between VDI machines is not
+            // very good actually
             const globalId = `${run_fn.deploy_id}-${run_fn.fn_id}`;
             const src = this.function_sources.get(globalId);
             if (src === undefined) {

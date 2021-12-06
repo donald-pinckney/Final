@@ -256,7 +256,7 @@ class Orchestrator {
   // -------------- Helpers ---------------
 
   shouldTriggerReSolve(original_deploy_id: number): boolean {
-    return false
+    return true
   }
 
   deployARequest(request: Dag<FunctionDeployData>, original_deploy_id: number, fresh_deploy_id: number, socket: OrchestratorSocket): [number, RelativeLocation][] {
@@ -289,6 +289,9 @@ class Orchestrator {
     const runnableDag: RunnableCloudDag = new RunnableDag(cloudDag, 'cloud')
     runnableDag.runFnHere = (run_fn, run_seq_id, run_arg, run_done) => {
 
+      // We do not use workers to run code anymore
+      // because it turns out that network speed between VDI machines is not
+      // very good actually
       const globalId = `${run_fn.deploy_id}-${run_fn.fn_id}`
       const src = this.function_sources.get(globalId)
       if(src === undefined) {
@@ -296,7 +299,6 @@ class Orchestrator {
       }
 
       const fn_evaled = eval(src)
-
       fn_evaled(run_arg, run_done)
 
 

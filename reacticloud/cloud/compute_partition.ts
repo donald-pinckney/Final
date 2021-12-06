@@ -65,7 +65,7 @@ function computeTransfer(input: InputTraceRow, fns: Dag<FunctionTraceRow | 'term
     if(node.data == 'terminal') {
       return
     }
-    
+
     const outSizes = node.data.output_sizes
 
     node.output_wires.forEach(wire => {
@@ -179,6 +179,9 @@ function computeLocations(dag: Dag<{ constraint: LocationConstraint }>, traceDat
     })
     complete_seq_ids = setIntersect(complete_seq_ids, new Set(fullKeys))
   })
+
+  const biggest_seq_ids = Array.from(complete_seq_ids).sort((a, b) => b - a)
+  complete_seq_ids = new Set(biggest_seq_ids.slice(0, Math.min(biggest_seq_ids.length, 5)))
   
   
   const variables: Map<number, Location[]> = new Map()

@@ -150,18 +150,16 @@
       }
         
 
-      reacticloud.deploy("localhost", 3000, final_sf, partition => {
-        const partitionDesc = new Map(Array.from(partition.entries()).map(([f_id, loc]) => {
+      reacticloud.deploy("vdi-linux-045.ccs.neu.edu", 12000, final_sf, partition => {
+      // reacticloud.deploy("localhost", 3000, final_sf, partition => {
+        const partitionEntries = Array.from(partition.entries()).sort(([f_id1, _l1], [f_id2, _l2]) => f_id1 - f_id2)
+        const partitionDesc = partitionEntries.map(([f_id, loc]) => {
           return [functionNames[f_id], loc == 'here' ? 'browser' : 'cloud']
-        }))
-
-        const partitionDescStr = Array.from(partitionDesc.entries()).reverse().map(([f_name, f_place]) => `<li>${f_name} => ${f_place}</li>`).join('\n')
-
+        })
+        const partitionDescStr = partitionDesc.map(([f_name, f_place]) => `<li>${f_name} => ${f_place}</li>`).join('\n')
         deployInfoElem.innerHTML = 'Code deployed! Cloud / Client Function partitioning received:<br /><ul>' + partitionDescStr + '</ul>'
 
-
       }).then(runnable => {
-      // reacticloud.deploy("vdi-linux-045.ccs.neu.edu", 12000, final_sf).then(runnable => {
         plotBtn.onclick = () => {
           plotTimeElem.innerText = 'Fetching data and plotting...'
           const csvUrl = csvUrlElem.value

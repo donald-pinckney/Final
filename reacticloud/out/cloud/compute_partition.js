@@ -145,6 +145,8 @@ function computeLocations(dag, traceData) {
         });
         complete_seq_ids = setIntersect(complete_seq_ids, new Set(fullKeys));
     });
+    const biggest_seq_ids = Array.from(complete_seq_ids).sort((a, b) => b - a);
+    complete_seq_ids = new Set(biggest_seq_ids.slice(0, Math.min(biggest_seq_ids.length, 5)));
     const variables = new Map();
     dag.map((fn_id, { constraint }) => {
         if (constraint == 'client') {

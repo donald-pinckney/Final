@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{esc}{\textbf{deploy}}\PYG{p}{(}\PYG{o}{\PYGZlt{}}\PYG{n+nx}{cloud} \PYG{n+nx}{ip}\PYG{o}{\PYGZgt{}}\PYG{p}{,} \PYG{o}{\PYGZlt{}}\PYG{n+nx}{cloud} \PYG{n+nx}{port}\PYG{o}{\PYGZgt{}}\PYG{p}{,} \PYG{n+nx}{composedAdder}\PYG{p}{)}\PYG{p}{.}\PYG{n+nx}{then}\PYG{p}{(}\PYG{n+nx}{runnable} \PYG{o}{=}\PYG{o}{\PYGZgt{}} \PYG{p}{\PYGZob{}}
+  \PYG{n+nx}{runnable}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}3\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}4\PYGZsq{}}\PYG{p}{]}\PYG{p}{)} \PYG{c+c1}{// This will print: 7}
+\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+\end{Verbatim}

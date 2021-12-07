@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kd}{const} \PYG{n+nx}{f0}: \PYG{k+kt}{SF}\PYG{o}{\PYGZlt{}}\PYG{k+kt}{number}\PYG{p}{,} \PYG{k+kt}{number}\PYG{o}{\PYGZgt{}} \PYG{o}{=} \PYG{n+nx}{SF}\PYG{p}{.}\PYG{n+nx}{arr}\PYG{p}{((}\PYG{n+nx}{x}: \PYG{k+kt}{number}\PYG{p}{)} \PYG{o}{=\PYGZgt{}} \PYG{n+nx}{x} \PYG{o}{+} \PYG{l+m+mf}{100}\PYG{p}{)}
+\PYG{k+kd}{const} \PYG{n+nx}{f1}: \PYG{k+kt}{SF}\PYG{o}{\PYGZlt{}}\PYG{k+kt}{number}\PYG{p}{,} \PYG{k+kt}{number}\PYG{o}{\PYGZgt{}} \PYG{o}{=} \PYG{n+nx}{SF}\PYG{p}{.}\PYG{n+nx}{arr}\PYG{p}{((}\PYG{n+nx}{x}: \PYG{k+kt}{number}\PYG{p}{)} \PYG{o}{=\PYGZgt{}} \PYG{n+nx}{x} \PYG{o}{*} \PYG{l+m+mf}{5}\PYG{p}{)}
+\PYG{k+kd}{const} \PYG{n+nx}{printer}: \PYG{k+kt}{SF}\PYG{o}{\PYGZlt{}}\PYG{k+kt}{number}\PYG{p}{,} \PYG{k}{void}\PYG{o}{\PYGZgt{}} \PYG{o}{=} \PYG{n+nx}{SF}\PYG{p}{.}\PYG{n+nx}{arr}\PYG{p}{(}\PYG{n+nx}{console}\PYG{p}{.}\PYG{n+nx}{log}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}client\PYGZsq{}}\PYG{p}{)}
+\end{Verbatim}

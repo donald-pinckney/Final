@@ -1,0 +1,13 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kd}{const} \PYG{n+nx}{parse1}: \PYG{k+kt}{SF}\PYG{o}{\PYGZlt{}}\PYG{p}{[}\PYG{k+kt}{string}\PYG{p}{,} \PYG{k+kt}{string}\PYG{p}{]}\PYG{p}{,} \PYG{k+kt}{number}\PYG{o}{\PYGZgt{}} \PYG{o}{=} \PYG{esc}{\textbf{SF.p1}()}
+  \PYG{p}{.}\PYG{n+nx}{then}\PYG{p}{(}\PYG{n+nx}{SF}\PYG{p}{.}\PYG{n+nx}{arr}\PYG{p}{(}\PYG{p}{(}\PYG{n+nx}{x}: \PYG{k+kt}{string}\PYG{p}{)} \PYG{o}{=}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{parseInt}\PYG{p}{(}\PYG{n+nx}{x}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}
+\PYG{k+kd}{const} \PYG{n+nx}{parse2}: \PYG{k+kt}{SF}\PYG{o}{\PYGZlt{}}\PYG{p}{[}\PYG{k+kt}{string}\PYG{p}{,} \PYG{k+kt}{string}\PYG{p}{]}\PYG{p}{,} \PYG{k+kt}{number}\PYG{o}{\PYGZgt{}} \PYG{o}{=} \PYG{esc}{\textbf{SF.p2}()}
+  \PYG{p}{.}\PYG{n+nx}{then}\PYG{p}{(}\PYG{n+nx}{SF}\PYG{p}{.}\PYG{n+nx}{arr}\PYG{p}{(}\PYG{p}{(}\PYG{n+nx}{x}: \PYG{k+kt}{string}\PYG{p}{)} \PYG{o}{=}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{parseInt}\PYG{p}{(}\PYG{n+nx}{x}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}
+\PYG{k+kd}{const} \PYG{n+nx}{parseBoth}: \PYG{k+kt}{SF}\PYG{o}{\PYGZlt{}}\PYG{p}{[}\PYG{k+kt}{string}\PYG{p}{,} \PYG{k+kt}{string}\PYG{p}{]}\PYG{p}{,} \PYG{p}{[}\PYG{k+kt}{number}\PYG{p}{,} \PYG{k+kt}{number}\PYG{p}{]}\PYG{o}{\PYGZgt{}} \PYG{o}{=}
+  \PYG{n+nx}{parse1}\PYG{p}{.}\PYG{esc}{\textbf{and}}\PYG{p}{(}\PYG{n+nx}{parse2}\PYG{p}{)}
+
+\PYG{k+kd}{const} \PYG{n+nx}{adder}: \PYG{k+kt}{SF}\PYG{o}{\PYGZlt{}}\PYG{p}{[}\PYG{k+kt}{number}\PYG{p}{,} \PYG{k+kt}{number}\PYG{p}{]}\PYG{p}{,} \PYG{k+kt}{number}\PYG{o}{\PYGZgt{}} \PYG{o}{=}
+  \PYG{n+nx}{SF}\PYG{p}{.}\PYG{n+nx}{arr}\PYG{p}{(}\PYG{p}{(}\PYG{p}{[}\PYG{n+nx}{x}\PYG{p}{,} \PYG{n+nx}{y}\PYG{p}{]}\PYG{o}{:} \PYG{p}{[}\PYG{k+kt}{number}\PYG{p}{,} \PYG{k+kt}{number}\PYG{p}{]}\PYG{p}{)} \PYG{o}{=}\PYG{o}{\PYGZgt{}} \PYG{n+nx}{x} \PYG{o}{+} \PYG{n+nx}{y}\PYG{p}{)}
+\PYG{k+kd}{const} \PYG{n+nx}{composedAdder} \PYG{o}{=} \PYG{n+nx}{parseBoth}\PYG{p}{.}\PYG{n+nx}{then}\PYG{p}{(}\PYG{n+nx}{adder}\PYG{p}{)}
+  \PYG{p}{.}\PYG{n+nx}{then}\PYG{p}{(}\PYG{n+nx}{SF}\PYG{p}{.}\PYG{n+nx}{arr}\PYG{p}{(}\PYG{n+nx}{console}\PYG{p}{.}\PYG{n+nx}{log}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}client\PYGZsq{}}\PYG{p}{)}\PYG{p}{)}
+\end{Verbatim}

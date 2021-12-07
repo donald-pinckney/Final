@@ -162,6 +162,7 @@
       }).then(runnable => {
         plotBtn.onclick = () => {
           plotTimeElem.innerText = 'Fetching data and plotting...'
+          plotElem.src = ""
           const csvUrl = csvUrlElem.value
           const xName = xColumnElem.value
           const yName = yColumnElem.value

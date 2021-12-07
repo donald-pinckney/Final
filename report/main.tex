@@ -6,6 +6,9 @@
 \usepackage{adjustbox}
 \pagenumbering{gobble}
 
+% \usepackage{inconsolata}
+\usepackage{minted}
+
 % \keywords{virtual machines, first-class continuations, formal language semantics}
 
 \setcopyright{acmlicensed}
@@ -19,7 +22,7 @@
 \acmBooktitle{Proceedings of the 16th ACM SIGPLAN International Symposium on Dynamic Languages (DLS '20), November 17, 2020, Virtual, USA}
 \hyphenation{Web-As-sem-bly Ja-va-Script}
 
-\usepackage{hyperref}
+% \usepackage{hyperref}
 
 
 
@@ -51,25 +54,499 @@
 % Demo in video.
 
 
-\section{Introduction and Goals}
+\section{Introduction}
+
+Serverdless functions are a recently introduced cloud
+computing abstraction which allows developers to
+upload functions to a serverless platform (e.g., AWS Lambda),
+and later invoke them on-demand.
+The platform handles all work of dynamically allocating server resources 
+for running the function. A potential application is writing 
+\emph{serverless Web applications}, in which programmers implement
+backend logic code in serverless functions, and frontend code invokes these
+serverless functions as needed via HTTP requests. 
+Such an architecture can free
+programmers from managing server resources, increasing availability, and lowering
+costs.
+
+Unfortunately, programming solely using serverless 
+functions is currently difficult, because function 
+composition is not well-supported for vanilla serverless functions.
+Baldini et al.~\cite{baldini:trilemma} discuss that unless
+serverless platforms provide special support for composition,
+composition of functions is inherently flawed. 
+The main platform that supports serverless function composition
+via additional primitives is AWS Lambda Step Functions which
+which allows programmers to specify a sequence of 
+serverless functions. Unfortunately, the specification format is
+a difficult to read ad-hoc language, 
+and it is unclear if it provides sufficiently flexibility.
+
+In addition, the commonly accepted view of serverless computing
+does not include the client (e.g. a Web app) in the picture.
+Current serverless abstractions view the serverless platform
+as the main product to interface with, rather than a
+resource which is abstracted away from the programmer.
+
+\paragraph{The Reacticloud Approach}
+With Reacticloud, we aim to design a serverless abstraction
+with two key principles: 
+1)~takes serverless \emph{compositions} to be the key abstraction,
+rather than serverless functions, and 
+2)~includes the client in the execution model
+by abstracting away function execution from necessarily
+occurring in the cloud.
+
+These key principles allow the client and
+serverless platform to have richer information
+about the dataflow structure of the program,
+and use this information to perform whole-composition
+analysis to optimally choose
+where each function should be executed
+(in the cloud vs. client)
+so as to minimize total network traffic size.
+This is possible because the entire composition is
+programmed in a \emph{declarative} fashion that
+abstracts away specific location of execution unlike
+in current serverless offerings.
+
+\paragraph{Our contributions}
+\begin{itemize}
+  \item A programming model which is convenient and expressive
+    for programmers to write serverless compositions in,
+		while abstracting away direct invocation of cloud
+		computations.
+  \item An implementation of this programming model which allows
+		for execution of serverless compositions, where the execution
+		is distributed and concurrent between the client and the cloud.
+  \item An optimization algorithm which allows the serverless
+    platform to dynamically optimize physical execution locations
+		so as to minimize total data transmitted between client and cloud.
+		In our example, this successfully minimizes total latency.
+\end{itemize}
+
 
 \section{Design and Implementation}
-\subsection{The Programming Model: Serverless Compositions using Arrows}
 
-\subsection{Compiling Arrows to a DAG}
+The design and implementation of Reacticloud is split into
+two parts:
+\begin{enumerate}
+	\item An embedded domain specific langauge (EDSL) for writing serverless
+computations that is then compiled to a dataflow graph. 
+\textbf{This occurs entirely on the client.} This is explained
+in \cref{section:model} and \cref{section:dag-compile}
 
-\subsection{Distribution and Optimization of the DAG}
+	\item Distributed execution and dynamic optimization
+	of the dataflow graph. \textbf{This is distributed between the client and cloud.}
+	This is explained
+in \cref{section:dag-distribution}, \cref{section:dag-execution} and \cref{section:dag-optimization}.
+\end{enumerate}
 
-\subsection{Distributed Runtime Execution of the DAG}
+
+\subsection{The Reacticloud Programming Model}
+\label{section:model}
+
+
+
+\begin{figure}
+  \footnotesize
+  \[
+    \begin{array}{r@{\;}c@{\;}ll}
+			\multicolumn{3}{l}{\textbf{Serverless Compositions}} \\
+			\texttt{SF} &:& \texttt{Type} \to \texttt{Type} \to \texttt{Type} & \\
+      \multicolumn{3}{l}{\textbf{Core Serverless Composition Combinators}} \\
+			\texttt{arr} &:& (a \to b) \to \{ \texttt{'client'}, \texttt{'cloud'}, \texttt{'*'} \} \to \texttt{SF}~a~b & \text{Function lifting} \\
+			\texttt{then} &:& \texttt{SF}~a~b \to \texttt{SF}~b~c \to \texttt{SF}~a~c & \text{Composition} \\
+			% \texttt{first} &:& \texttt{SF}~a~b \to \texttt{SF}~(a, c)~(b, c) & \text{Passthrough} \\
+			\texttt{and} &:& \texttt{SF}~a~b \to \texttt{SF}~a~c \to \texttt{SF}~a~(b, c) & \text{Parallel execution} \\
+			\pi_1 &:& \texttt{SF}~(a, b)~a & \text{Projection} \\
+			\pi_2 &:& \texttt{SF}~(a, b)~b & \\
+			\multicolumn{3}{l}{\textbf{Serverless Composition Deployment}} \\
+			\texttt{deploy} &:& \multicolumn{2}{l}{\texttt{string} \to \texttt{int} \to \texttt{SF}~a~b \to \texttt{Promise}~(a \to \texttt{Promise}~b)}
+    \end{array}
+  \]
+
+	\caption{Syntax of the Reacticloud Programming Model}
+  \label{fig:model}
+\end{figure}
+
+
+A natural programming model for writing restricted forms of
+functional composition is Hughes's 
+Arrow model~\cite{hughes:arrows}. The Reacticloud programming
+model is a variant of this model.
+
+\cref{fig:model} shows the core combinators in Reacticloud.
+The datatype a programmer interacts with is the \texttt{SF} (serverless function)
+datatype, which represents an abstracted serverless function or composition,
+and cannot be directly executed. The core combinators allow the programmer
+to create an SF from a standard function (\texttt{arr}), and combine SFs
+to form arbitrary DAGs. 
+Most of these combinators are standard 
+with arrowized programming~\cite{hughes:arrows}.
+
+\paragraph{Basic Composition and Constraints}
+Let's consider an example of defining a simple serverless composition
+in Reacticloud. Our composition will take as input a number, add 100 to it,
+then multiply by 5, and finally print out the result. Using the Reacticloud EDSL
+in JavaScript / TypeScript we can define the individual component
+functions as follows:
+
+\begin{minted}[
+	linenos,
+	numbersep=5pt,
+	fontsize=\footnotesize,
+	frame=lines,
+	framesep=2mm]{typescript}
+const f0: SF<number, number> = SF.arr((x: number) => x + 100)
+const f1: SF<number, number> = SF.arr((x: number) => x * 5)
+const printer: SF<number, void> = SF.arr(console.log, 'client')
+\end{minted}
+
+Each time we build a new SF using \texttt{arr}, we must provide
+a)~a JavaScript / TypeScript function, and 
+b)~an optional \emph{constraint} which forces the serverless function
+to be run on a particular compute resource, or left unconstrained by default.
+In the above example, \texttt{f0} and \texttt{f1} are allowed
+to be executed on either the client or the cloud, 
+but \texttt{printer} is constrained to
+execute on the client, so that we can actually see the result of the
+\texttt{console.log} on the client machine. 
+In general, side-effectful functions need consideration for potential constraints.
+
+We can then compose the above functions into a new SF via serial composition:
+
+\begin{minted}[
+	linenos,
+	numbersep=5pt,
+	fontsize=\footnotesize,
+	frame=lines,
+	framesep=2mm]{typescript}
+const composed: SF<number, void> = f0.then(f1).then(printer)
+\end{minted}
+
+
+\paragraph{Parallel Composition}
+In addition to serial composition, the \texttt{and} and \texttt{first}
+combinators allow for parallel execution semantics. Suppose we wish to define
+a serverless composition which takes as input two strings,
+parses each of them into integers, and then adds the results.
+In particular, we want to allow the string parsing to occurr
+\emph{in parallel}.
+We can achieve this using the \texttt{and} combinator and $\pi_1$ and $\pi_2$:
+
+\begin{minted}[
+	linenos,
+	numbersep=5pt,
+	fontsize=\footnotesize,
+	frame=lines,
+	escapeinside=||,
+	framesep=2mm]{typescript}
+const parse1: SF<[string, string], number> = |\textbf{SF.p1}()|
+  .then(SF.arr((x: string) => parseInt(x)))
+const parse2: SF<[string, string], number> = |\textbf{SF.p2}()|
+  .then(SF.arr((x: string) => parseInt(x)))
+const parseBoth: SF<[string, string], [number, number]> = 
+  parse1.|\textbf{and}|(parse2)
+
+const adder: SF<[number, number], number> = 
+  SF.arr(([x, y]: [number, number]) => x + y)
+const composedAdder = parseBoth.then(adder)
+  .then(SF.arr(console.log, 'client'))
+\end{minted}
+
+
+\paragraph{Deploying}
+An abstract SF can then be \emph{deployed} using the \texttt{deploy}
+function. From the programmer's perspective, deploying an $\texttt{SF}~a~b$ 
+results in an actual callable function which consumes an $a$ and produces a $b$:
+
+\begin{minted}[
+	linenos,
+	numbersep=5pt,
+	fontsize=\footnotesize,
+	frame=lines,
+	escapeinside=||,
+	framesep=2mm]{typescript}
+|\textbf{deploy}|(<cloud ip>, <cloud port>, composedAdder).then(runnable => {
+  runnable(['3', '4']) // This will print: 7
+})
+\end{minted}
+
+Under the hood, deploying communicates with the cloud to determine
+where each \texttt{arr} will be run, and initializes data structures
+to allow for distributed execution of the composition.
+
+
+\subsection{Compiling Arrows to a Dataflow Graph}
+\label{section:dag-compile}
+
+During deployment, the first step is to compute a
+\emph{dataflow graph} for the given SF. The vertices in the
+dataflow graph are each of the \texttt{arr} terms inside the SF as
+well as a distinguished input vertex, and
+edges represent dataflow and are computed from the use of composition combinators.
+Each vertex inherits an (optional) location constraint from its \texttt{arr} term,
+except the input vertex is always constrained to be located on the client.
+
+For example, the dataflow graph for \texttt{composedAdder} would consist of
+5 vertices (1 input vertex, 2 parsing functions, 1 addition function, 1 logging function),
+with an edges going from the input vertex to each of the parsing functions,
+edges going from each of the parsing functions to the addition function,
+and an edge going from the addition function to the logging function.
+In addition, the dataflow graph contains additional keeping track
+of the minimal dataflow necessary. In this example, only half of the input
+tuple data needs to be sent from the input vertex to each of the parsing functions.
+
+Computation of the dataflow graph is where the use of Arrows
+in Reacticloud differs from the prior work primarily in the Haskell
+community. Typically with Arrows, one does not take \texttt{and},
+$\pi_1$, $\pi_2$ to be primitives. Instead, there is a parallelization operator,
+and the dataflow is performed inside of the \texttt{arr} functions.
+Namely, the \texttt{and} combinator can be defined as a composition of
+\texttt{arr}~$\lambda x. (x, x)$ to perform splitting 
+and other terms~\cite{hughes:arrows}. However, this approach
+is fundamentally flawed for Reacticloud because we have an additional assumption:
+serverless functions (\texttt{arr} terms) must be treated as black boxes,
+since (in a real implementation) they may be defined via arbitrary code
+outside of JavaScript. 
+
+So instead, Reacticloud defines its primitives differently, and then
+performs \emph{normalization} to ``compile away'' cancellable combinators.
+For example, in the above example, \texttt{parseBoth} \emph{could} be executed
+by passing the tuple input over the network to \texttt{parse1}, which would
+then extract the first component via $\pi_1$. However, this is wasteful. Instead,
+our dataflow graph analysis determines that only the first component needs to be
+transmitted over the network, because the $\pi_1$ ``cancels out'' the tuple type.
+
+This intuition is formalized via a translation from Reacticloud SF terms
+to the $\lambda$-calculus extended with tuples and neutral terms.
+SF \texttt{arr} terms are translated to neutral terms, \texttt{then}
+is translated to standard function composition, and parallelization operators
+are tranlated to tupling and projection terms. After this translation,
+Reacticloud evaluates the $\lambda$-calculus term 
+(leaving neutral terms unevaluated) to find a normalized term which
+strips away cancellable projection and tupling operations.
+From the normalized term, Reacticloud can trivially read off
+a dataflow graph.
+
+\subsection{Distribution of the DAG}
+\label{section:dag-distribution}
+
+So far, the definition of the SF terms and the dataflow graph
+computation has all occurred on the client. The second
+step of deployment is for the client to send the dataflow graph to the
+cloud, and then for the cloud to compute a \emph{partition} of the dataflow
+graph: a mapping from graph vertices to physical locations (client or cloud).
+The cloud then informs the client of the dataflow graph partition.
+
+To send the dataflow graph to the cloud, the client performs a few steps.
+First the client strips out function definitions from any vertices 
+which the programmer had constrained to be run only on the client.
+Note that the vertices still exist in the graph, but do not contain
+the saved JavaScript function. Second, the client takes the stripped
+graph and serializes it, which in particular involves serializing
+real JavaScript functions. This serialization turns out to be simple,
+since \texttt{f.toString()} will return a string of the original source
+code of \texttt{f} in JavaScript, but may be more difficult in other languages.
+
+The client then sends this graph to the cloud. The cloud
+then takes the graph, and assigns an \emph{initial partitioning} to it.
+Formally, a paritioning is a map $V \to \{ \texttt{'here'}, \texttt{'there'} \}$
+which maps each graph vertex to either \texttt{'here'} (indicating the vertex)
+will be executed here at this location), or \texttt{'there'} (indicating the vertex)
+will be executed remotely at the other location. For the initial partitioning,
+every unconstrained vertex will be assigned to be run on the cloud (\texttt{'here'}).
+The graph will be re-partitioned dynamically during runtime later (see \cref{section:dag-optimization}).
+
+After computing the initial partitioning, the cloud complements the partitioning
+(flips \texttt{'here'} and \texttt{'there'}), and sends the complemented partitionning
+back to the client. At this point, both the client and cloud have a complementary
+pair of dataflow graphs.
+
+A concrete example may help to understand this distribution protocol.
+For the \texttt{composedAdder} example, the cloud will end up with a graph
+with 5 vertices and the following partition: 
+\begin{itemize}
+	\item input $\mapsto$ \texttt{'there'},
+	\item First parser $\mapsto (\texttt{'here'}, \texttt{<source code>})$,
+	\item Second parser $\mapsto (\texttt{'here'}, \texttt{<source code>})$,
+	\item Adder $\mapsto (\texttt{'here'}, \texttt{<source code>})$,
+	\item Logger $\mapsto (\texttt{'there'}, \cdot)$
+\end{itemize}
+
+The client will have a complementary graph:
+\begin{itemize}
+	\item input $\mapsto$ \texttt{'here'},
+	\item First parser $\mapsto (\texttt{'there'}, \cdot)$,
+	\item Second parser $\mapsto (\texttt{'there'}, \cdot)$,
+	\item Adder $\mapsto (\texttt{'there'}, \cdot)$,
+	\item Logger $\mapsto (\texttt{'here'}, \texttt{<source code>})$
+\end{itemize}
+
+
+\subsection{Distributed Runtime Execution of the Dataflow Graph}
+\label{section:dag-execution}
+
+Once the client and cloud have exchanged the partitioning of the dataflow graph,
+the serverless composition is successfully deployed, and can then be
+executed.
+
+Execution works as follows. Every invocation by the client of the deployed 
+composition is assigned a unique \emph{sequence id} by the client. For every
+sequence id, both the client and the cloud maintain a data structure
+mapping dataflow graph vertices to data received along incoming edges.
+Both the client and cloud only maintain this data for vertices located
+\texttt{'here'} (the graph duality allows the execution implementation to be reused).
+Once data has been received for all incoming edges at a vertex, the
+client / cloud ``fires'' the vertex by executing the corresponding function definition.
+
+On the client, function exection works as a standard JavaScript function call.
+But on the cloud, function execution may work in one of two modes:
+via a standard JavaScript function call, or by allowing a worker node
+(running on a separate VDI machine) to handle the execution. By default,
+worker nodes are disabled and execution will be performed on only one
+VDI machine via a standard function call.
+
+After the vertex function finishes executing, the client / cloud
+then ``sends'' extracted components of the output data along outgoing edges to
+other vertices. If the other vertex is in the same location (\texttt{'here'})
+then the data is not sent over the network, just via memory. But if the
+other vertex is elsewhere (\texttt{'there'}) the data is serialized
+and transmitted over the network. Note that to achieve this asynchronous
+communication between client (browser) and cloud, I use WebSockets via
+the Socket.IO library.
+
+One hidden detail is that both the client and cloud record trace information
+during dataflow graph execution. Specifically, every time a vertex function
+is executed, the client and cloud record the sizes (in bytes) of the function
+outputs, and well as the sequence id. Periodically, the client transmitts
+its recorded trace information to the cloud, which merges them together.
+
+\subsection{Optimizing the Dataflow Graph Partition}
+\label{section:dag-optimization}
+
+As discussed above, the cloud stores a running log of collected trace information
+from both the client and itself. Periodically, the cloud will choose to perform
+a re-partitioning of the dataflow graph, in which it computes a new
+partitioning which minimizes total network transfer size as determined empirically
+by collected trace information. 
+
+If we let $E$ be the edge set of the dataflow graph,
+$\mathit{traces}$ be the set of collected and merged traces,
+and $p$ be some partition (a map from vertices to locations), 
+the total network transfer size is computed as:
+\[
+	NT(E, \mathit{traces}, p) = \sum_{t \in~\text{traces}}
+	\sum_{
+		\substack{
+			(u, v) \in E\\
+			p(u) \neq p(v)}}
+	t(u, v)
+\]
+where $t(u, v)$ is the recorded transfer size along edge $(u, v)$ from
+trace $t$.
+
+For a given dataflow graph, we a have a space of valid 
+partitionings $\mathit{Part}$ to consider (restricted by constraints on vertices).
+Our minimization problem is thus formulated as:
+\[
+	\min_{p \in \mathit{Part}} NT(E, \mathit{traces}, p)
+\]
+
+In the current implementation, we compute the minimizing partition via
+a simple exhaustive search, but this certainly can be done more efficiently
+by making use of e.g. a MAX-SMT solver such as Z3. However, a polynomial
+time algorithm for solving this may exist as an instance of the min-cut problem,
+which prior work exploited for partitioning Web apps~\cite{chong:swift}.
+
+Once the cloud has computed an updated optimal partition, it will then send
+that to the client. The client and cloud will then use this new parition
+when executing future invocation of the serverless composition.
+As execution continues, more traces are collected, and the graph
+will be continually re-partitioned so that it adapts to a potentially
+changing workload.
+
+
+\section{Evaluation}
+As discussed in the plan report, the evaluation of this work
+consists primarily of examples demonstrating functionality,
+rather than performance evaluations.
+We split the examples into 2 pieces: micro-examples which demonstrate
+basic usage of Reacticloud, and an extended Web app
+example which shows a larger composition and demonstrates
+the effects of the graph partition optimization on latency.
+
+\subsection{Micro-Examples}
+Three runnable examples are provided demonstrating running
+basic serverless compositions:
+\begin{enumerate}
+	\item \texttt{examples/cli/ex\_serial.ts}: Demonstrates a simple serial composition.
+	\item \texttt{examples/cli/ex\_adder.ts}: A runnable version of the adder example from \cref{section:model}.
+	\item \texttt{examples/cli/ex\_parallel.ts}: Demonstrates parallel execution of two functions that each take 5 seconds. 
+		This can be used to check that execution is indeed actually parallelized.
+\end{enumerate}
+Please see the \texttt{README.md} for instructions on how to run these examples.
+
+
+\subsection{Web Plotter Application}
+For an extended example, we use Reacticloud to develop
+a Web app which allows users to type in a URL to a CSV file,
+click ``Plot'', and view a generated scatter plot of the data.
+
+There are 5 individual functions in this serverless composition:
+\begin{enumerate}
+	\item A function which takes as input a URL, and downloads the data at that URL. 
+		This is constrained to run on the cloud, since this cannot run in the browser
+		due to cross-origin request policies.
+	\item A function which parses CSV data.
+	\item A function which extracts 2 requested columns from the CSV data.
+	\item A function which randomly subsamples the data and renders a plot into PNG format.
+	\item A function which takes PNG data and displays it in the browser.
+		This is constrained to run in the client (browser).
+\end{enumerate}
+
+Now, by default, functions 2, 3, and 4 will be partitioned onto the cloud.
+In particular, the plot rendering will be done on the cloud.
+However, this may or may not be optimal depending on the data that is being plotted.
+If the CSV data is quite small, then the PNG data transferred from cloud to browser
+after rendering would be larger than the CSV data, so it would be optimal to
+perform the plot rendering in the browser instead. On the other hand,
+if the CSV data is large, then it would be more efficient to perform the
+rendering on the cloud.
+
+When running this example (see \texttt{README.md}), you can
+repeatedly plot tiny data, and Reaticloud will react by changing the
+partitioning appropriately. Or likewise for plotting large data. 
+
 
 \section{Differences from the Plan Report}
 
-\section{Evaluation}
+There are a few differences from the plan report.
+First, the graph partition optimization has actually been
+implemented and integrated into the complete system.
+Second, unlike in the plan report, I implemented execution
+of functions in the cloud across distributed worker nodes.
+However, because the performance was quite poor I disabled that
+by default.
+
 
 \section{Lessons learned}
+I learned a few lessons with this project. 
 
+First, I was surprised by the poor performance of 
+of running cloud functions on distributed worker nodes.
+It seems that the within-VDI networking throughput may be
+quite poor, though I did not have the time to investigate this more deeply.
+It may be that the networking throughput is poor because 
+my implementation used WebSockets which may add overhead.
+An alternate implementation may implement intra-cloud networking
+using e.g. standard TCP, but cloud-client networking via WebSockets.
 
-Junk: \cite{felleisen:1988:the}
+Seocond, the issues encountered with normalizing the arrowized model into
+a dataflow graph were quite surprising to me. But that is part of the fun
+of a project, and it helped me understand some deeper details of the
+work on Arrows that I had missed from only reading.
 
 
 

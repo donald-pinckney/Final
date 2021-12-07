@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kd}{const} \PYG{n+nx}{composed}: \PYG{k+kt}{SF}\PYG{o}{\PYGZlt{}}\PYG{k+kt}{number}\PYG{p}{,} \PYG{k}{void}\PYG{o}{\PYGZgt{}} \PYG{o}{=} \PYG{n+nx}{f0}\PYG{p}{.}\PYG{n+nx}{then}\PYG{p}{(}\PYG{n+nx}{f1}\PYG{p}{).}\PYG{n+nx}{then}\PYG{p}{(}\PYG{n+nx}{printer}\PYG{p}{)}
+\end{Verbatim}

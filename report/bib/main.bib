@@ -233,3 +233,187 @@
   url = "https://arxiv.org/abs/2010.01723",
   year = 2020
 }
+
+
+@inproceedings{baldini:trilemma,
+  author =        {Ioana Baldini and Perry Cheng and Stephen~J. Fink and
+                   Nick Mitchell and Vinod Muthusamy and Rodric Rabbah and
+                   Philippe Suter and Olivier Tardieu},
+  booktitle =     {ACM SIGPLAN International Symposium on New Ideas, New
+                   Paradigms, and Reflections on Programming and
+                   Software (Onward!)},
+  title =         {The Serverless Trilemma: Function Composition for
+                   Serverless Computing},
+  year =          {2017},
+}
+
+@article{hughes:arrows,
+  author =        {John Hughes},
+  journal =       {Science of Computer Programming},
+  month =         may,
+  number =        {1--3},
+  pages =         {67--111},
+  title =         {Generalising Monads to Arrows},
+  volume =        {37},
+  year =          {2000},
+}
+
+@inproceedings{nilsson:afrp,
+author = {Nilsson, Henrik and Courtney, Antony and Peterson, John},
+title = {Functional Reactive Programming, Continued},
+year = {2002},
+isbn = {1581136056},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/581690.581695},
+doi = {10.1145/581690.581695},
+abstract = {Functional Reactive Programming (FRP) extends a host programming language with a notion
+of time flow. Arrowized FRP (AFRP) is a version of FRP embedded in Haskell based on
+the arrow combinators. AFRP is a powerful synchronous dataflow programming language
+with hybrid modeling capabilities, combining advanced synchronous dataflow features
+with the higher-order lazy functional abstractions of Haskell. In this paper, we describe
+the AFRP programming style and our Haskell-based implementation. Of particular interest
+are the AFRP combinators that support dynamic collections and continuation-based switching.
+We show how these combinators can be used to express systems with an evolving structure
+that are difficult to model in more traditional dataflow languages.},
+booktitle = {Proceedings of the 2002 ACM SIGPLAN Workshop on Haskell},
+pages = {51–64},
+numpages = {14},
+keywords = {synchronous dataflow languages, Haskell, hybrid modeling, domain-specific languages, functional programming, FRP},
+location = {Pittsburgh, Pennsylvania},
+series = {Haskell '02}
+}
+
+@article{jangda:lambda-lambda,
+author = {Jangda, Abhinav and Pinckney, Donald and Brun, Yuriy and Guha, Arjun},
+title = {Formal Foundations of Serverless Computing},
+year = {2019},
+issue_date = {October 2019},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {3},
+number = {OOPSLA},
+url = {https://doi.org/10.1145/3360575},
+doi = {10.1145/3360575},
+abstract = {Serverless computing (also known as functions as a service) is a new cloud computing
+abstraction that makes it easier to write robust, large-scale web services. In serverless
+computing, programmers write what are called serverless functions, which are programs
+that respond to external events. When demand for the serverless function spikes, the
+platform automatically allocates additional hardware and manages load-balancing; when
+demand falls, the platform silently deallocates idle resources; and when the platform
+detects a failure, it transparently retries affected requests. In 2014, Amazon Web
+Services introduced the first serverless platform, AWS Lambda, and similar abstractions
+are now available on all major cloud computing platforms. Unfortunately, the serverless
+computing abstraction exposes several low-level operational details that make it hard
+for programmers to write and reason about their code. This paper sheds light on this
+problem by presenting λλ, an operational semantics of the essence of serverless computing.
+Despite being a small (half a page) core calculus, λλ models all the low-level details
+that serverless functions can observe. To show that λλ is useful, we present three
+applications. First, to ease reasoning about code, we present a simplified naive semantics
+of serverless execution and precisely characterize when the naive semantics and λλ
+coincide. Second, we augment λλ with a key-value store to allow reasoning about stateful
+serverless functions. Third, since a handful of serverless platforms support serverless
+function composition, we show how to extend λλ with a composition language and show
+that our implementation can outperform prior work.},
+journal = {Proc. ACM Program. Lang.},
+month = oct,
+articleno = {149},
+numpages = {26},
+keywords = {serverless computing, formal language semantics, distributed computing}
+}
+
+
+@inproceedings{chong:swift,
+author = {Chong, Stephen and Liu, Jed and Myers, Andrew C. and Qi, Xin and Vikram, K. and Zheng, Lantian and Zheng, Xin},
+title = {Secure Web Applications via Automatic Partitioning},
+year = {2007},
+isbn = {9781595935915},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1294261.1294265},
+doi = {10.1145/1294261.1294265},
+abstract = {Swift is a new, principled approach to building web applications that are secure by
+construction. In modern web applications, some application functionality is usually
+implemented as client-side code written in JavaScript. Moving code and data to the
+client can create security vulnerabilities, but currently there are no good methods
+for deciding when it is secure to do so. Swift automatically partitions application
+code while providing assurance that the resulting placement is secure and efficient.
+Application code is written as Java-like code annotated with information flow policies
+that specify the confidentiality and integrity of web application information. The
+compiler uses these policies to automatically partition the program into JavaScript
+code running in the browser, and Java code running on the server. To improve interactive
+performance, code and data are placed on the client side. However, security-critical
+code and data are always placed on the server. Code and data can also be replicated
+across the client and server, to obtain both security and performance. A max-flow
+algorithm is used to place code and data in a way that minimizes client-server communication.},
+booktitle = {Proceedings of Twenty-First ACM SIGOPS Symposium on Operating Systems Principles},
+pages = {31–44},
+numpages = {14},
+keywords = {security policies, compilers, information flow},
+location = {Stevenson, Washington, USA},
+series = {SOSP '07}
+}
+
+
+
+@article{10.1145/1639949.1640091,
+author = {Meyerovich, Leo A. and Guha, Arjun and Baskin, Jacob and Cooper, Gregory H. and Greenberg, Michael and Bromfield, Aleks and Krishnamurthi, Shriram},
+title = {Flapjax: A Programming Language for Ajax Applications},
+year = {2009},
+issue_date = {October 2009},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {44},
+number = {10},
+issn = {0362-1340},
+url = {https://doi.org/10.1145/1639949.1640091},
+doi = {10.1145/1639949.1640091},
+abstract = {This paper presents Flapjax, a language designed for contemporary Web applications.
+These applications communicate with servers and have rich, interactive interfaces.
+Flapjax provides two key features that simplify writing these applications. First,
+it provides event streams, a uniform abstraction for communication within a program
+as well as with external Web services. Second, the language itself is reactive: it
+automatically tracks data dependencies and propagates updates along those dataflows.
+This allows developers to write reactive interfaces in a declarative and compositional
+style.Flapjax is built on top of JavaScript. It runs on unmodified browsers and readily
+interoperates with existing JavaScript code. It is usable as either a programming
+language (that is compiled to JavaScript) or as a JavaScript library, and is designed
+for both uses. This paper presents the language, its design decisions, and illustrative
+examples drawn from several working Flapjax applications.},
+journal = {SIGPLAN Not.},
+month = oct,
+pages = {1–20},
+numpages = {20},
+keywords = {javascript, web programming, functional reactive programming}
+}
+
+@inproceedings{flapjax,
+author = {Meyerovich, Leo A. and Guha, Arjun and Baskin, Jacob and Cooper, Gregory H. and Greenberg, Michael and Bromfield, Aleks and Krishnamurthi, Shriram},
+title = {Flapjax: A Programming Language for Ajax Applications},
+year = {2009},
+isbn = {9781605587660},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1640089.1640091},
+doi = {10.1145/1640089.1640091},
+abstract = {This paper presents Flapjax, a language designed for contemporary Web applications.
+These applications communicate with servers and have rich, interactive interfaces.
+Flapjax provides two key features that simplify writing these applications. First,
+it provides event streams, a uniform abstraction for communication within a program
+as well as with external Web services. Second, the language itself is reactive: it
+automatically tracks data dependencies and propagates updates along those dataflows.
+This allows developers to write reactive interfaces in a declarative and compositional
+style.Flapjax is built on top of JavaScript. It runs on unmodified browsers and readily
+interoperates with existing JavaScript code. It is usable as either a programming
+language (that is compiled to JavaScript) or as a JavaScript library, and is designed
+for both uses. This paper presents the language, its design decisions, and illustrative
+examples drawn from several working Flapjax applications.},
+booktitle = {Proceedings of the 24th ACM SIGPLAN Conference on Object Oriented Programming Systems Languages and Applications},
+pages = {1–20},
+numpages = {20},
+keywords = {web programming, javascript, functional reactive programming},
+location = {Orlando, Florida, USA},
+series = {OOPSLA '09}
+}
+
+

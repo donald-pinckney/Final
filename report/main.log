@@ -1,6 +1,6 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  6 DEC 2021 11:43
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  6 DEC 2021 20:42
 entering extended mode
- restricted \write18 enabled.
+ \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
 **/Users/donaldpinckney/Personal/Distributed/Final/report/main.tex
@@ -597,36 +597,7 @@ File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
 File: listings.cfg 2020/03/24 1.8d listings configuration
 ))
 Package: listings 2020/03/24 1.8d (Carsten Heinz)
- (/usr/local/texlive/2020/texmf-dist/tex/latex/ebproof/ebproof.sty (/usr/local/texlive/2020/texmf-dist/tex/latex/l3kernel/expl3.sty
-Package: expl3 2020-03-06 L3 programming layer (loader) 
- (/usr/local/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
-File: l3backend-pdfmode.def 2020-03-12 L3 backend support: PDF mode
-\l__kernel_color_stack_int=\count305
-\l__pdf_internal_box=\box55
-)) (/usr/local/texlive/2020/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
-Package: xparse 2020-03-06 L3 Experimental document command parser
-\l__xparse_current_arg_int=\count306
-\g__xparse_grabber_int=\count307
-\l__xparse_m_args_int=\count308
-\l__xparse_v_nesting_int=\count309
-)
-Package: ebproof 2017/05/17 v2.0 EB's proof trees
-\l_ebproof_separation_dim=\dimen192
-\l_ebproof_rule_margin_dim=\dimen193
-\l_ebproof_rule_thickness_dim=\dimen194
-\l_ebproof_rule_separation_dim=\dimen195
-\l_ebproof_rule_dash_length_dim=\dimen196
-\l_ebproof_rule_dash_space_dim=\dimen197
-\l_ebproof_label_separation_dim=\dimen198
-\l_ebproof_label_axis_dim=\dimen256
-\l_ebproof_transit_dim=\dimen257
-\g_ebproof_level_int=\count310
-\g_ebproof_stack_box=\box56
-\l_ebproof_a_box=\box57
-\l_ebproof_b_box=\box58
-\l_ebproof_c_box=\box59
-\l_ebproof_d_box=\box60
-) (/usr/local/texlive/2020/texmf-dist/tex/latex/cleveref/cleveref.sty
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/cleveref/cleveref.sty
 Package: cleveref 2018/03/27 v0.21.4 Intelligent cross-referencing
 Package cleveref Info: `hyperref' support loaded on input line 2370.
 LaTeX Info: Redefining \cref on input line 2370.
@@ -641,246 +612,49 @@ LaTeX Info: Redefining \labelcref on input line 2370.
 LaTeX Info: Redefining \labelcpageref on input line 2370.
 Package cleveref Info: `amsthm' support loaded on input line 3026.
 Package cleveref Info: `listings' support loaded on input line 3131.
-) (/usr/local/texlive/2020/texmf-dist/tex/latex/xifthen/xifthen.sty
-Package: xifthen 2015/11/05 v1.4.0 Extended ifthen features
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/caption/subcaption.sty
+Package: subcaption 2020/01/22 v1.3d Sub-captions (AR)
+\c@subfigure=\count305
+\c@subtable=\count306
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/mathtools/mathtools.sty
+Package: mathtools 2020/03/24 v1.24 mathematical typesetting tools
  (/usr/local/texlive/2020/texmf-dist/tex/latex/tools/calc.sty
 Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
-\calc@Acount=\count311
-\calc@Bcount=\count312
-\calc@Adimen=\dimen258
-\calc@Bdimen=\dimen259
+\calc@Acount=\count307
+\calc@Bcount=\count308
+\calc@Adimen=\dimen192
+\calc@Bdimen=\dimen193
 \calc@Askip=\skip75
 \calc@Bskip=\skip76
 LaTeX Info: Redefining \setlength on input line 80.
 LaTeX Info: Redefining \addtolength on input line 81.
-\calc@Ccount=\count313
+\calc@Ccount=\count309
 \calc@Cskip=\skip77
-)) (/usr/local/texlive/2020/texmf-dist/tex/latex/tools/bm.sty
-Package: bm 2019/07/24 v1.2d Bold Symbol Support (DPC/FMi)
-\symboldoperators=\mathgroup10
-\symboldletters=\mathgroup11
-\symboldsymbols=\mathgroup12
-\symboldlargesymbols=\mathgroup13
-LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 141.
-LaTeX Info: Redefining \bm on input line 209.
-) (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
-\pgfutil@everybye=\toks37
-\pgfutil@tempdima=\dimen260
-\pgfutil@tempdimb=\dimen261
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-lists.tex)) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
-\pgfutil@abb=\box61
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/pgf.revision.tex)
-Package: pgfrcs 2020/01/08 v3.1.5b (3.1.5b)
-))
-Package: pgf 2020/01/08 v3.1.5b (3.1.5b)
- (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
-Package: pgfsys 2020/01/08 v3.1.5b (3.1.5b)
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
-\pgfkeys@pathtoks=\toks38
-\pgfkeys@temptoks=\toks39
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.tex
-\pgfkeys@tmptoks=\toks40
-))
-\pgf@x=\dimen262
-\pgf@y=\dimen263
-\pgf@xa=\dimen264
-\pgf@ya=\dimen265
-\pgf@xb=\dimen266
-\pgf@yb=\dimen267
-\pgf@xc=\dimen268
-\pgf@yc=\dimen269
-\pgf@xd=\dimen270
-\pgf@yd=\dimen271
-\w@pgf@writea=\write4
-\r@pgf@reada=\read3
-\c@pgf@counta=\count314
-\c@pgf@countb=\count315
-\c@pgf@countc=\count316
-\c@pgf@countd=\count317
-\t@pgf@toka=\toks41
-\t@pgf@tokb=\toks42
-\t@pgf@tokc=\toks43
-\pgf@sys@id@count=\count318
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
-File: pgf.cfg 2020/01/08 v3.1.5b (3.1.5b)
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/mathtools/mhsetup.sty
+Package: mhsetup 2017/03/31 v1.3 programming setup (MH)
 )
-Driver file for pgf: pgfsys-pdftex.def
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
-File: pgfsys-pdftex.def 2020/01/08 v3.1.5b (3.1.5b)
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.def
-File: pgfsys-common-pdf.def 2020/01/08 v3.1.5b (3.1.5b)
-))) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.tex
-File: pgfsyssoftpath.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\pgfsyssoftpath@smallbuffer@items=\count319
-\pgfsyssoftpath@bigbuffer@items=\count320
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.tex
-File: pgfsysprotocol.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-)) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
-Package: pgfcore 2020/01/08 v3.1.5b (3.1.5b)
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
-\pgfmath@dimen=\dimen272
-\pgfmath@count=\count321
-\pgfmath@box=\box62
-\pgfmath@toks=\toks44
-\pgfmath@stack@operand=\toks45
-\pgfmath@stack@operation=\toks46
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonometric.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerarithmetics.code.tex))) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex
-\c@pgfmathroundto@lastzeros=\count322
-)) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfint.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.tex
-File: pgfcorepoints.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\pgf@picminx=\dimen273
-\pgf@picmaxx=\dimen274
-\pgf@picminy=\dimen275
-\pgf@picmaxy=\dimen276
-\pgf@pathminx=\dimen277
-\pgf@pathmaxx=\dimen278
-\pgf@pathminy=\dimen279
-\pgf@pathmaxy=\dimen280
-\pgf@xx=\dimen281
-\pgf@xy=\dimen282
-\pgf@yx=\dimen283
-\pgf@yy=\dimen284
-\pgf@zx=\dimen285
-\pgf@zy=\dimen286
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.code.tex
-File: pgfcorepathconstruct.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\pgf@path@lastx=\dimen287
-\pgf@path@lasty=\dimen288
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code.tex
-File: pgfcorepathusage.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\pgf@shorten@end@additional=\dimen289
-\pgf@shorten@start@additional=\dimen290
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.tex
-File: pgfcorescopes.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\pgfpic=\box63
-\pgf@hbox=\box64
-\pgf@layerbox@main=\box65
-\pgf@picture@serial@count=\count323
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.code.tex
-File: pgfcoregraphicstate.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\pgflinewidth=\dimen291
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformations.code.tex
-File: pgfcoretransformations.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\pgf@pt@x=\dimen292
-\pgf@pt@y=\dimen293
-\pgf@pt@temp=\dimen294
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
-File: pgfcorequick.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.tex
-File: pgfcoreobjects.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-)
-(/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing.code.tex
-File: pgfcorepathprocessing.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.tex
-File: pgfcorearrows.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\pgfarrowsep=\dimen295
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
-File: pgfcoreshade.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\pgf@max=\dimen296
-\pgf@sys@shading@range@num=\count324
-\pgf@shadingcount=\count325
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
-File: pgfcoreimage.code.tex 2020/01/08 v3.1.5b (3.1.5b)
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.tex
-File: pgfcoreexternal.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\pgfexternal@startupbox=\box66
-)) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.tex
-File: pgfcorelayers.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.code.tex
-File: pgfcoretransparency.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.tex
-File: pgfcorepatterns.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex
-File: pgfcorerdf.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-))) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
-File: pgfmoduleshapes.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\pgfnodeparttextbox=\box67
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
-File: pgfmoduleplot.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-) (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65.sty
-Package: pgfcomp-version-0-65 2020/01/08 v3.1.5b (3.1.5b)
-\pgf@nodesepstart=\dimen297
-\pgf@nodesepend=\dimen298
-) (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18.sty
-Package: pgfcomp-version-1-18 2020/01/08 v3.1.5b (3.1.5b)
-)) (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/utilities/pgffor.sty (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex)) (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/math/pgfmath.sty (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
-Package: pgffor 2020/01/08 v3.1.5b (3.1.5b)
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)
-\pgffor@iter=\dimen299
-\pgffor@skip=\dimen300
-\pgffor@stack=\toks47
-\pgffor@toks=\toks48
-)) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
-Package: tikz 2020/01/08 v3.1.5b (3.1.5b)
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers.code.tex
-File: pgflibraryplothandlers.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\pgf@plot@mark@count=\count326
-\pgfplotmarksize=\dimen301
-)
-\tikz@lastx=\dimen302
-\tikz@lasty=\dimen303
-\tikz@lastxsaved=\dimen304
-\tikz@lastysaved=\dimen305
-\tikz@lastmovetox=\dimen306
-\tikz@lastmovetoy=\dimen307
-\tikzleveldistance=\dimen308
-\tikzsiblingdistance=\dimen309
-\tikz@figbox=\box68
-\tikz@figbox@bg=\box69
-\tikz@tempbox=\box70
-\tikz@tempbox@bg=\box71
-\tikztreelevel=\count327
-\tikznumberofchildren=\count328
-\tikznumberofcurrentchild=\count329
-\tikz@fig@count=\count330
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
-File: pgfmodulematrix.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\pgfmatrixcurrentrow=\count331
-\pgfmatrixcurrentcolumn=\count332
-\pgf@matrix@numberofcolumns=\count333
-)
-\tikz@expandcount=\count334
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopaths.code.tex
-File: tikzlibrarytopaths.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-))) (/usr/local/texlive/2020/texmf-dist/tex/latex/enumitem/enumitem.sty
-Package: enumitem 2019/06/20 v3.9 Customized lists
-\enitkv@toks@=\toks49
-\labelindent=\skip78
-\enit@outerparindent=\dimen310
-\enit@toks=\toks50
-\enit@inbox=\box72
-\enit@count@id=\count335
-\enitdp@description=\count336
-)
-\c@myEnumeratei=\count337
-\c@myEnumerateii=\count338
-\c@myEnumerateiii=\count339
-\c@myEnumerateiv=\count340
-\c@myEnumeratev=\count341
-\c@myEnumeratevi=\count342
-\c@myEnumeratevii=\count343
-\c@myEnumerateviii=\count344
-\c@myEnumerateix=\count345
-\enitdp@myEnumerate=\count346
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarypositioning.code.tex
-File: tikzlibrarypositioning.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarypatterns.code.tex
-File: tikzlibrarypatterns.code.tex 2020/01/08 v3.1.5b (3.1.5b)
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/libraries/pgflibrarypatterns.code.tex
-File: pgflibrarypatterns.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-)) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryfit.code.tex
-File: tikzlibraryfit.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryarrows.code.tex
-File: tikzlibraryarrows.code.tex 2020/01/08 v3.1.5b (3.1.5b)
- (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.code.tex
-File: pgflibraryarrows.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-\arrowsize=\dimen311
-)) (/usr/local/texlive/2020/texmf-dist/tex/latex/caption/subcaption.sty
-Package: subcaption 2020/01/22 v1.3d Sub-captions (AR)
-\c@subfigure=\count347
-\c@subtable=\count348
+LaTeX Info: Thecontrolsequence`\('isalreadyrobust on input line 130.
+LaTeX Info: Thecontrolsequence`\)'isalreadyrobust on input line 130.
+LaTeX Info: Thecontrolsequence`\['isalreadyrobust on input line 130.
+LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 130.
+\g_MT_multlinerow_int=\count310
+\l_MT_multwidth_dim=\dimen194
+\origjot=\skip78
+\l_MT_shortvdotswithinadjustabove_dim=\dimen195
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen196
+\l_MT_above_intertext_sep=\dimen197
+\l_MT_below_intertext_sep=\dimen198
+\l_MT_above_shortintertext_sep=\dimen256
+\l_MT_below_shortintertext_sep=\dimen257
+\xmathstrut@box=\box55
+\xmathstrut@dim=\dimen258
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/tools/xspace.sty
 Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/stmaryrd/stmaryrd.sty
+Package: stmaryrd 1994/03/03 St Mary's Road symbol package
+\symstmry=\mathgroup10
+LaTeX Font Info:    Overwriting symbol font `stmry' in version `bold'
+(Font)                  U/stmry/m/n --> U/stmry/b/n on input line 89.
 )) (/usr/local/texlive/2020/texmf-dist/tex/latex/adjustbox/adjustbox.sty
 Package: adjustbox 2019/01/04 v1.2 Adjusting TeX boxes (trim, clip, ...)
  (/usr/local/texlive/2020/texmf-dist/tex/latex/adjustbox/adjcalc.sty
@@ -889,129 +663,222 @@ Package: adjcalc 2012/05/16 v1.1 Provides advanced setlength with multiple back-
 Package: trimclip 2018/04/08 v1.1 Trim and clip general TeX material
  (/usr/local/texlive/2020/texmf-dist/tex/latex/collectbox/collectbox.sty
 Package: collectbox 2012/05/17 v0.4b Collect macro arguments as boxes
-\collectedbox=\box73
+\collectedbox=\box56
 )
-\tc@llx=\dimen312
-\tc@lly=\dimen313
-\tc@urx=\dimen314
-\tc@ury=\dimen315
+\tc@llx=\dimen259
+\tc@lly=\dimen260
+\tc@urx=\dimen261
+\tc@ury=\dimen262
 Package trimclip Info: Using driver 'tc-pdftex.def'.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/adjustbox/tc-pdftex.def
 File: tc-pdftex.def 2019/01/04 v2.2 Clipping driver for pdftex
 ))
-\adjbox@Width=\dimen316
-\adjbox@Height=\dimen317
-\adjbox@Depth=\dimen318
-\adjbox@Totalheight=\dimen319
-\adjbox@pwidth=\dimen320
-\adjbox@pheight=\dimen321
-\adjbox@pdepth=\dimen322
-\adjbox@ptotalheight=\dimen323
+\adjbox@Width=\dimen263
+\adjbox@Height=\dimen264
+\adjbox@Depth=\dimen265
+\adjbox@Totalheight=\dimen266
+\adjbox@pwidth=\dimen267
+\adjbox@pheight=\dimen268
+\adjbox@pdepth=\dimen269
+\adjbox@ptotalheight=\dimen270
  (/usr/local/texlive/2020/texmf-dist/tex/latex/ifoddpage/ifoddpage.sty
 Package: ifoddpage 2016/04/23 v1.1 Conditionals for odd/even page detection
-\c@checkoddpage=\count349
+\c@checkoddpage=\count311
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/varwidth/varwidth.sty
 Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
-\@vwid@box=\box74
-\sift@deathcycles=\count350
-\@vwid@loff=\dimen324
-\@vwid@roff=\dimen325
-))
-Package hyperref Info: Option `colorlinks' set `true' on input line 28.
-Package hyperref Info: Option `pdfdisplaydoctitle' set `true' on input line 28.
-\c@theorem=\count351
+\@vwid@box=\box57
+\sift@deathcycles=\count312
+\@vwid@loff=\dimen271
+\@vwid@roff=\dimen272
+)) (/usr/local/texlive/2020/texmf-dist/tex/latex/minted/minted.sty
+Package: minted 2017/07/19 v2.5 Yet another Pygments shim for LaTeX
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/fvextra/fvextra.sty
+Package: fvextra 2019/02/04 v1.4 fvextra - extensions and patches for fancyvrb
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/fancyvrb/fancyvrb.sty
+Package: fancyvrb 2020/01/13 v3.5 verbatim text (tvz,hv)
+\FV@CodeLineNo=\count313
+\FV@InFile=\read3
+\FV@TabBox=\box58
+\c@FancyVerbLine=\count314
+\FV@StepNumber=\count315
+\FV@OutFile=\write4
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/upquote/upquote.sty
+Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verbatim
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/lineno/lineno.sty
+Package: lineno 2005/11/02 line numbers on paragraphs v4.41
+\linenopenalty=\count316
+\output=\toks37
+\linenoprevgraf=\count317
+\linenumbersep=\dimen273
+\linenumberwidth=\dimen274
+\c@linenumber=\count318
+\c@pagewiselinenumber=\count319
+\c@LN@truepage=\count320
+\c@internallinenumber=\count321
+\c@internallinenumbers=\count322
+\quotelinenumbersep=\dimen275
+\bframerule=\dimen276
+\bframesep=\dimen277
+\bframebox=\box59
+LaTeX Info: Redefining \\ on input line 3056.
+)
+\c@FV@TrueTabGroupLevel=\count323
+\c@FV@TrueTabCounter=\count324
+\FV@TabBox@Group=\box60
+\FV@TmpLength=\skip79
+\c@FV@HighlightLinesStart=\count325
+\c@FV@HighlightLinesStop=\count326
+\FV@LoopCount=\count327
+\FV@NCharsBox=\box61
+\FV@BreakIndent=\dimen278
+\FV@BreakIndentNChars=\count328
+\FV@BreakSymbolSepLeft=\dimen279
+\FV@BreakSymbolSepLeftNChars=\count329
+\FV@BreakSymbolSepRight=\dimen280
+\FV@BreakSymbolSepRightNChars=\count330
+\FV@BreakSymbolIndentLeft=\dimen281
+\FV@BreakSymbolIndentLeftNChars=\count331
+\FV@BreakSymbolIndentRight=\dimen282
+\FV@BreakSymbolIndentRightNChars=\count332
+\c@FancyVerbLineBreakLast=\count333
+\FV@LineBox=\box62
+\FV@LineIndentBox=\box63
+\FV@LineWidth=\dimen283
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/tools/shellesc.sty
+Package: shellesc 2019/11/08 v1.0c unified shell escape interface for LaTeX
+Package shellesc Info: Unrestricted shell escape enabled on input line 75.
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/ifplatform/ifplatform.sty
+Package: ifplatform 2017/10/13 v0.4a Testing for the operating system
+ (/usr/local/texlive/2020/texmf-dist/tex/generic/catchfile/catchfile.sty
+Package: catchfile 2019/12/09 v1.8 Catch the contents of a file (HO)
+)
+runsystem(uname -s > "main.w18")...executed.
+
+ (/Users/donaldpinckney/Personal/Distributed/Final/report/main.w18)
+runsystem(rm -- "main.w18")...executed.
+
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/framed/framed.sty
+Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
+\OuterFrameSep=\skip80
+\fb@frw=\dimen284
+\fb@frh=\dimen285
+\FrameRule=\dimen286
+\FrameSep=\dimen287
+)
+\minted@appexistsfile=\read4
+\minted@bgbox=\box64
+\minted@code=\write5
+\c@minted@FancyVerbLineTemp=\count334
+\c@minted@pygmentizecounter=\count335
+\@float@every@listing=\toks38
+\c@listing=\count336
+)
+runsystem(mkdir -p _minted-main)...executed.
+
+Package hyperref Info: Option `colorlinks' set `true' on input line 31.
+Package hyperref Info: Option `pdfdisplaydoctitle' set `true' on input line 31.
+\c@theorem=\count337
  (/usr/local/texlive/2020/texmf-dist/tex/latex/preprint/balance.sty
 Package: balance 1999/02/23 4.3 (PWD)
-\oldvsize=\dimen326
-) Include comment 'screenonly' Excluding comment 'printonly' Include comment 'anonsuppress' (/Users/donaldpinckney/Personal/Distributed/Final/report/main.aux)
+\oldvsize=\dimen288
+) Include comment 'screenonly' Excluding comment 'printonly' Include comment 'anonsuppress'
+runsystem(which pygmentize && touch main.aex)...executed.
+
+runsystem(rm main.aex)...executed.
+
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
+File: l3backend-pdfmode.def 2020-03-12 L3 backend support: PDF mode
+\l__kernel_color_stack_int=\count338
+\l__pdf_internal_box=\box65
+) (/Users/donaldpinckney/Personal/Distributed/Final/report/main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 28.
-LaTeX Font Info:    Trying to load font information for OML+nxlmi on input line 28.
+LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 31.
+LaTeX Font Info:    Trying to load font information for OML+nxlmi on input line 31.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/omlnxlmi.fd
 File: omlnxlmi.fd 2013/11/19 Fontinst v1.933 font definitions for OML/nxlmi.
 )
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 28.
-LaTeX Font Info:    Trying to load font information for U+ntxexa on input line 28.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 31.
+LaTeX Font Info:    Trying to load font information for U+ntxexa on input line 31.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/untxexa.fd
 File: untxexa.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxexa.
 )
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 28.
-LaTeX Font Info:    Trying to load font information for LMS+ntxsy on input line 28.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 31.
+LaTeX Font Info:    Trying to load font information for LMS+ntxsy on input line 31.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/lmsntxsy.fd
 File: lmsntxsy.fd 2016/07/02 Fontinst v1.933 font definitions for LMS/ntxsy.
 )
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 28.
-LaTeX Font Info:    Trying to load font information for LMX+ntxexx on input line 28.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 31.
+LaTeX Font Info:    Trying to load font information for LMX+ntxexx on input line 31.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/lmxntxexx.fd
 File: lmxntxexx.fd 2016/07/03 Fontinst v1.933 font definitions for LMX/ntxexx.
 )
-LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    ... okay on input line 31.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 28.
-LaTeX Font Info:    Trying to load font information for OT1+LinuxLibertineT-TLF on input line 28.
+(Font)              scaled to size 8.0pt on input line 31.
+LaTeX Font Info:    Trying to load font information for OT1+LinuxLibertineT-TLF on input line 31.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/libertine/OT1LinuxLibertineT-TLF.fd
 File: OT1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for OT1/LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 28.
+(Font)              scaled to size 8.0pt on input line 31.
 <<ot1.cmap>>
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.2pt on input line 28.
+(Font)              scaled to size 6.2pt on input line 31.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.5pt on input line 28.
+(Font)              scaled to size 5.5pt on input line 31.
 <<oml.cmap>>
-LaTeX Font Info:    Trying to load font information for U+msa on input line 28.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 31.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 28.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 31.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 28.
+LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 31.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/untxmia.fd
 File: untxmia.fd 2018/04/14 Fontinst v1.933 font definitions for U/ntxmia.
 )
-LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 28.
+LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 31.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/untxsym.fd
 File: untxsym.fd 2015/03/20 Fontinst v1.933 font definitions for U/ntxsym.
 )
-LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 28.
+LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 31.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/untxsyc.fd
 File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
 )
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/sb/n' will be
-(Font)              scaled to size 8.0pt on input line 28.
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/sb/n' will be
-(Font)              scaled to size 6.2pt on input line 28.
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/sb/n' will be
-(Font)              scaled to size 5.5pt on input line 28.
-LaTeX Info: Redefining \microtypecontext on input line 28.
+LaTeX Font Info:    Trying to load font information for U+stmry on input line 31.
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/stmaryrd/Ustmry.fd)
+
+LaTeX Font Warning: Font shape `U/stmry/m/n' in size <5.5> not available
+(Font)              size <5> substituted on input line 31.
+
+LaTeX Info: Redefining \microtypecontext on input line 31.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `basictext'.
-LaTeX Info: Redefining \showhyphens on input line 28.
+LaTeX Info: Redefining \showhyphens on input line 31.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -1019,22 +886,22 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- ABD: EveryShipout initializing macros
-\AtBeginShipoutBox=\box75
-Package hyperref Info: Link coloring ON on input line 28.
+ABD: EveryShipout initializing macros
+\AtBeginShipoutBox=\box66
+Package hyperref Info: Link coloring ON on input line 31.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
  (/usr/local/texlive/2020/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count352
+\c@section@level=\count339
 )
-LaTeX Info: Redefining \ref on input line 28.
-LaTeX Info: Redefining \pageref on input line 28.
-LaTeX Info: Redefining \nameref on input line 28.
+LaTeX Info: Redefining \ref on input line 31.
+LaTeX Info: Redefining \pageref on input line 31.
+LaTeX Info: Redefining \nameref on input line 31.
  (/Users/donaldpinckney/Personal/Distributed/Final/report/main.out) (/Users/donaldpinckney/Personal/Distributed/Final/report/main.out)
-\@outlinefile=\write5
-\openout5 = `main.out'.
+\@outlinefile=\write6
+\openout6 = `main.out'.
 
  (/usr/local/texlive/2020/texmf-dist/tex/generic/stringenc/se-pdfdoc.def
 File: se-pdfdoc.def 2019/11/29 v1.12 stringenc: PDFDocEncoding
@@ -1043,21 +910,21 @@ File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
 )
 
 Package hyperxmp Warning: Missing pdftitle (required for PDF standards
-(hyperxmp)                compliance) on input line 28.
+(hyperxmp)                compliance) on input line 31.
 
 (/usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count353
-\scratchdimen=\dimen327
-\scratchbox=\box76
-\nofMPsegments=\count354
-\nofMParguments=\count355
-\everyMPshowfont=\toks51
-\MPscratchCnt=\count356
-\MPscratchDim=\dimen328
-\MPnumerator=\count357
-\makeMPintoPDFobject=\count358
-\everyMPtoPDFconversion=\toks52
+\scratchcounter=\count340
+\scratchdimen=\dimen289
+\scratchbox=\box67
+\nofMPsegments=\count341
+\nofMParguments=\count342
+\everyMPshowfont=\toks39
+\MPscratchCnt=\count343
+\MPscratchDim=\dimen290
+\MPnumerator=\count344
+\makeMPintoPDFobject=\count345
+\everyMPtoPDFconversion=\toks40
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
@@ -1098,80 +965,195 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\c@mv@tabular=\count359
-\c@mv@boldtabular=\count360
-(/usr/local/texlive/2020/texmf-dist/tex/latex/upquote/upquote.sty
-Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verbatim
-)
+\c@mv@tabular=\count346
+\c@mv@boldtabular=\count347
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
-\c@lstlisting=\count361
+\c@lstlisting=\count348
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 20.74pt on input line 37.
+(Font)              scaled to size 20.74pt on input line 40.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 20.74pt on input line 37.
+(Font)              scaled to size 20.74pt on input line 40.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 37.
-LaTeX Font Info:    Trying to load font information for T1+LinuxBiolinumT-TLF on input line 37.
- (/usr/local/texlive/2020/texmf-dist/tex/latex/libertine/T1LinuxBiolinumT-TLF.fd
+(Font)              scaled to size 12.0pt on input line 40.
+LaTeX Font Info:    Trying to load font information for T1+LinuxBiolinumT-TLF on input line 40.
+(/usr/local/texlive/2020/texmf-dist/tex/latex/libertine/T1LinuxBiolinumT-TLF.fd
 File: T1LinuxBiolinumT-TLF.fd 2017/03/20 (autoinst) Font definitions for T1/LinuxBiolinumT-TLF.
 )
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 37.
+(Font)              scaled to size 10.0pt on input line 40.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxBiolinumT-TLF' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 37.
+(Font)              scaled to size 10.0pt on input line 40.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.3pt on input line 37.
+(Font)              scaled to size 7.3pt on input line 40.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/sb/n' will be
-(Font)              scaled to size 10.0pt on input line 37.
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/sb/n' will be
-(Font)              scaled to size 7.3pt on input line 37.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 10.0pt on input line 54.
+(Font)              scaled to size 10.0pt on input line 57.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 12.0pt on input line 54.
- (/Users/donaldpinckney/Personal/Distributed/Final/report/main.bbl
+(Font)              scaled to size 12.0pt on input line 57.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 8.0pt on input line 45.
-) [1.1{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+(Font)              scaled to size 10.0pt on input line 65.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/it' will be
+(Font)              scaled to size 10.0pt on input line 92.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
+(Font)              scaled to size 8.0pt on input line 155.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 6.2pt on input line 155.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 5.5pt on input line 155.
+LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 156.
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/inconsolata/t1zi4.fd
+File: t1zi4.fd 2018/01/14 T1/zi4 (Inconsolata)
+)
+LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
+(Font)              scaled to size 8.0pt on input line 156.
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `zi4' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+
+Overfull \hbox (28.26726pt too wide) detected at line 167
+[]
+ []
+
+
+Class acmart Warning: A possible image without description on input line 171.
+
+LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
+(Font)              scaled to size 10.0pt on input line 180.
+[1.1{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 86.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 86.
- (/Users/donaldpinckney/Personal/Distributed/Final/report/main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 86.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 86.
+\openout4 = `main.pyg'.
+
+ (/Users/donaldpinckney/Personal/Distributed/Final/report/_minted-main/default-pyg-prefix.pygstyle) (/Users/donaldpinckney/Personal/Distributed/Final/report/_minted-main/default.pygstyle) (/Users/donaldpinckney/Personal/Distributed/Final/report/_minted-main/14A707A7CA5CCBCD43A4497A162845CBAD2952B9D438CF3A851AD1A2317B1A02.pygtex
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 6.0pt on input line 2.
+LaTeX Font Info:    Font shape `T1/zi4/b/n' will be
+(Font)              scaled to size 8.0pt on input line 2.
+LaTeX Font Info:    Trying to load font information for TS1+zi4 on input line 4.
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/inconsolata/ts1zi4.fd
+File: ts1zi4.fd 2018/01/14 TS1/zi4 (Inconsolata)
+)
+LaTeX Font Info:    Font shape `TS1/zi4/m/n' will be
+(Font)              scaled to size 8.0pt on input line 4.
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `zi4' (encoding: TS1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+)
+\openout4 = `main.pyg'.
+
+ (/Users/donaldpinckney/Personal/Distributed/Final/report/_minted-main/5DE34E928F7BB1E7D4580A37F146290EAD2952B9D438CF3A851AD1A2317B1A02.pygtex)
+\openout4 = `main.pyg'.
+
+ (/Users/donaldpinckney/Personal/Distributed/Final/report/_minted-main/9EC022D9CA8443A7E2D3DFF65BB5B0A12565C76C4C5231B3DECB0A497FE1012A.pygtex)
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 7.3pt on input line 261.
+\openout4 = `main.pyg'.
+
+ (/Users/donaldpinckney/Personal/Distributed/Final/report/_minted-main/F989BA0839BECCE300221F0E323754242565C76C4C5231B3DECB0A497FE1012A.pygtex
+
+LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
+(Font)              using `T1/zi4/m/n' instead on input line 3.
+
+)
+Overfull \hbox (1.6851pt too wide) in paragraph at lines 292--300
+[]\T1/LinuxLibertineT-TLF/m/n/10 (-20) For ex-am-ple, the dataflow graph for \T1/zi4/m/n/10 composedAdder \T1/LinuxLibertineT-TLF/m/n/10 (-20) would
+ []
+
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
+(Font)              scaled to size 8.0pt on input line 332.
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.332 
+       [2.2]
+Underfull \vbox (badness 1406) has occurred while \output is active []
+
+
+Underfull \vbox (badness 1406) has occurred while \output is active []
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.435 I
+       f we let $E$ be the edge set of the dataflow graph, [3.3]
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
+(Font)              scaled to size 10.0pt on input line 436.
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
+(Font)              scaled to size 7.3pt on input line 436.
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
+(Font)              scaled to size 5.5pt on input line 436.
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.550 
+       [4.4] (/Users/donaldpinckney/Personal/Distributed/Final/report/main.bbl
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
+(Font)              scaled to size 8.0pt on input line 51.
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
+(Font)              scaled to size 8.0pt on input line 72.
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
+(Font)              scaled to size 6.2pt on input line 72.
+)pdfTeX warning (ext4): destination with the same identifier (name{page.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.560 \onecolumn
+                 [5.5
+
+]
+
+Class acmart Warning: Some images may lack descriptions.
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 563.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 563.
+(/Users/donaldpinckney/Personal/Distributed/Final/report/main.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 563.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 563.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 79FF4C12C6402909F24907394C73B656;2122.
+(rerunfilecheck)             Checksum: DB803522D43A39301339C55696C6D258;2593.
+
+
+LaTeX Font Warning: Size substitutions with differences
+(Font)              up to 0.5pt have occurred.
+
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+runsystem(rm main.pyg)...executed.
+
  ) 
 Here is how much of TeX's memory you used:
- 34325 strings out of 480608
- 613871 string characters out of 5903631
- 879332 words of memory out of 5000000
- 49316 multiletter control sequences out of 15000+600000
- 625640 words of font info for 131 fonts, out of 8000000 for 9000
+ 26252 strings out of 480608
+ 432687 string characters out of 5903631
+ 764660 words of memory out of 5000000
+ 41159 multiletter control sequences out of 15000+600000
+ 694804 words of font info for 288 fonts, out of 8000000 for 9000
  1304 hyphenation exceptions out of 8191
- 68i,11n,100p,917b,472s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}</usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb>
-Output written on /Users/donaldpinckney/Personal/Distributed/Final/report/main.pdf (1 page, 277177 bytes).
+ 63i,12n,100p,917b,491s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_kijugd.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_ki75ao.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}</usr/local/texlive/2020/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4b.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI7.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTBI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txexs.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
+Output written on /Users/donaldpinckney/Personal/Distributed/Final/report/main.pdf (5 pages, 439421 bytes).
 PDF statistics:
- 91 PDF objects out of 1000 (max. 8388607)
- 75 compressed objects within 1 object stream
- 14 named destinations out of 1000 (max. 500000)
- 23661 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 202 PDF objects out of 1000 (max. 8388607)
+ 162 compressed objects within 2 object streams
+ 35 named destinations out of 1000 (max. 500000)
+ 52345 words of extra memory for PDF output out of 61914 (max. 10000000)
 

@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{1}
+\begin{thebibliography}{3}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -37,12 +37,49 @@
 \providecommand\natexlab[1]{#1}
 \providecommand\showeprint[2][]{arXiv:#2}
 
-\bibitem[\protect\citeauthoryear{Felleisen}{Felleisen}{1988}]%
-        {felleisen:1988:the}
-\bibfield{author}{\bibinfo{person}{Mattias Felleisen}.}
-  \bibinfo{year}{1988}\natexlab{}.
-\newblock \showarticletitle{The Theory and Practice of First-Class Prompts}
-  \emph{(\bibinfo{series}{POPL'88})}. \bibinfo{pages}{180--190}.
+\bibitem[\protect\citeauthoryear{Baldini, Cheng, Fink, Mitchell, Muthusamy,
+  Rabbah, Suter, and Tardieu}{Baldini et~al\mbox{.}}{2017}]%
+        {baldini:trilemma}
+\bibfield{author}{\bibinfo{person}{Ioana Baldini}, \bibinfo{person}{Perry
+  Cheng}, \bibinfo{person}{Stephen~J. Fink}, \bibinfo{person}{Nick Mitchell},
+  \bibinfo{person}{Vinod Muthusamy}, \bibinfo{person}{Rodric Rabbah},
+  \bibinfo{person}{Philippe Suter}, {and} \bibinfo{person}{Olivier Tardieu}.}
+  \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{The Serverless Trilemma: Function Composition for
+  Serverless Computing}. In \bibinfo{booktitle}{\emph{ACM SIGPLAN International
+  Symposium on New Ideas, New Paradigms, and Reflections on Programming and
+  Software (Onward!)}}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Chong, Liu, Myers, Qi, Vikram, Zheng, and
+  Zheng}{Chong et~al\mbox{.}}{2007}]%
+        {chong:swift}
+\bibfield{author}{\bibinfo{person}{Stephen Chong}, \bibinfo{person}{Jed Liu},
+  \bibinfo{person}{Andrew~C. Myers}, \bibinfo{person}{Xin Qi},
+  \bibinfo{person}{K. Vikram}, \bibinfo{person}{Lantian Zheng}, {and}
+  \bibinfo{person}{Xin Zheng}.} \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{Secure Web Applications via Automatic
+  Partitioning}. In \bibinfo{booktitle}{\emph{Proceedings of Twenty-First ACM
+  SIGOPS Symposium on Operating Systems Principles}}
+  \emph{(\bibinfo{series}{SOSP '07})}. \bibinfo{publisher}{Association for
+  Computing Machinery}, \bibinfo{address}{New York, NY, USA},
+  \bibinfo{pages}{31–44}.
+\newblock
+\showISBNx{9781595935915}
+\urldef\tempurl%
+\url{https://doi.org/10.1145/1294261.1294265}
+\showDOI{\tempurl}
+
+
+\bibitem[\protect\citeauthoryear{Hughes}{Hughes}{2000}]%
+        {hughes:arrows}
+\bibfield{author}{\bibinfo{person}{John Hughes}.}
+  \bibinfo{year}{2000}\natexlab{}.
+\newblock \showarticletitle{Generalising Monads to Arrows}.
+\newblock \bibinfo{journal}{\emph{Science of Computer Programming}}
+  \bibinfo{volume}{37}, \bibinfo{number}{1--3} (\bibinfo{date}{May}
+  \bibinfo{year}{2000}), \bibinfo{pages}{67--111}.
 \newblock
 
 
